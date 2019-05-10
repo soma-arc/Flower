@@ -1,0 +1,27 @@
+{
+  "name": "Flower",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "release": "webpack --mode production",
+    "build": "webpack --mode development",
+    "start": "webpack-dev-server",
+    "lint": "eslint src/**/*.js",
+    "test": "webpack --config=webpack.config-test.js && mocha --require source-map-support/register tmp/test-bundle.js"
+  },
+  "author": "soma_arc",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/polyfill": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "dependencies": {
+    "eslint": "^5.16.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+    "extends": ["standard", "vue"],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "mocha": true,
+    },
+    "rules": {
+        "indent": ["error", 4, { "ArrayExpression": "first",
+                                 "ObjectExpression": "first",
+                                 "FunctionExpression": {"parameters": "first"},
+                                 "CallExpression": {"arguments": "first"}}],
+        "semi": ["off"],
+        "comma-dangle": ["off"],
+        "space-before-function-paren": ["off"],
+        "yoda": ["off"]
+    },
+    "settings": {
+        "import/resolver": {
+            "webpack": {
+            }
+        }
+    },
+    "plugins": [
+        "json"
+    ]
+
+}
