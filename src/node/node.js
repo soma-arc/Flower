@@ -21,5 +21,20 @@ export default class Node {
                                                this.posX + this.width, this.posY + 50 + i * 50));
         }
         this.id = Randomstr();
+
+        this.updateListeners = [];
+    }
+
+    update() {}
+
+    updated () {
+        for (const listener of this.updateListeners) {
+            listener();
+        }
+    }
+
+    
+    addUpdateListener(listener) {
+        this.updateListeners.push(listener);
     }
 }
