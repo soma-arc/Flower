@@ -4,16 +4,25 @@
         <title>Node</title>
         <meta charset="UTF-8" />
         <link rel="shortcut icon" href="./img/favicon.png">
-        <!-- <link rel="stylesheet" href="//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css"> -->
+        <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
         <style>
-         html, body {
+         *,
+         *::before,
+         *::after {
+             box-sizing: border-box;
+         }
+         html {
+             font-size: 100%;
              height: 100%;
-             width: 100%;
+         }
+         body {
+             margin: 0;
+             height: 100%
          }
         </style>
         <script type="text/javascript" src="./bundle.js"></script>
     </head>
     <body>
-        <canvas id="canvas" ></canvas>
+        <div id="app" ></div>
     </body>
 </html>
