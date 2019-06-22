@@ -12,11 +12,8 @@
 <script>
 
 export default {
-    props: [],
+    props: ['scene', 'canvasManager'],
     methods: {
-        render: function() {
-            this.canvasHandler.render();
-        },
     },
     components: {
     },
