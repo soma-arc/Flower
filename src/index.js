@@ -4,14 +4,15 @@ import 'buefy/dist/buefy.css';
 import Root from './vue/root.vue';
 import Scene from './scene.js';
 import CanvasManager from './canvasManager.js';
+import { ConstantNode } from './node/node.js';
 
 window.addEventListener('load', () => {
     Vue.use(Buefy);
     window.Vue = Vue;
 
     const scene = new Scene();
-    const canvasManager = new canvasManager(scene);
-    
+    const canvasManager = new CanvasManager(scene);
+
     const d = { 'scene': scene,
                 'canvasManager': canvasManager };
 
@@ -24,4 +25,10 @@ window.addEventListener('load', () => {
         },
         components: { 'root': Root }
     });
+
+    canvasManager.init();
+
+    scene.nodes.push(new ConstantNode(100, 10));
+
+    canvasManager.renderGraph();
 });

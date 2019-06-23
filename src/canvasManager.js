@@ -7,9 +7,10 @@ export default class CanvasManager {
 
     init() {
         this.graphCanvas = new GraphCanvas2d('graphCanvas', this.scene);
+        this.graphCanvas.resizeCanvas();
     }
 
-    render() {
+    renderGraph() {
         this.graphCanvas.render();
     }
 }
