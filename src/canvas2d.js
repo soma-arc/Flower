@@ -1,4 +1,5 @@
 import Canvas from './canvas.js';
+import { Edge, FloatEdge } from './node/edge.js';
 
 export class GraphCanvas2d extends Canvas {
     constructor(canvasId, scene) {
@@ -19,8 +20,11 @@ export class GraphCanvas2d extends Canvas {
 
         this.selectedNode = undefined;
         this.selectedSocket = undefined;
+        this.unfinishedEdge = undefined;
 
-        this.mouseState = { diffX: 0,
+        this.mouseState = { x: 0,
+                            y: 0,
+                            diffX: 0,
                             diffY: 0 };
     }
 
@@ -37,7 +41,7 @@ export class GraphCanvas2d extends Canvas {
 
         ctx.fillStyle = 'rgb(255, 255, 255)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.scene.renderGraph(ctx);
+        this.scene.renderGraph(ctx, this.mouseState);
 
         ctx.restore();
     }
@@ -53,8 +57,15 @@ export class GraphCanvas2d extends Canvas {
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
 
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
-            // this.pressSocket(x, y);
-            this.selectedNode = this.pressNode(x, y);
+            this.selectedSocket = this.pressSocket(x, y);
+            if (this.selectedSocket === undefined) {
+                this.selectedNode = this.pressNode(x, y);
+            } else {
+                this.scene.unfinishedEdge = new Edge(this.selectedSocket, undefined);
+                this.mouseState.x = x;
+                this.mouseState.y = y;
+            }
+            this.render();
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
             console.log('wheel');
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
@@ -64,16 +75,44 @@ export class GraphCanvas2d extends Canvas {
 
     mouseUpListener(event) {
         this.selectedNode = undefined;
+
+        if (this.scene.unfinishedEdge !== undefined) {
+            const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+            const s = this.pressSocket(x, y);
+            if (s !== undefined && s !== this.selectedSocket) {
+                const r1 = this.selectedSocket.isOutput;
+                const r2 = s.isOutput;
+                if (((r1 && !r2) || (!r1 && r2)) &&
+                    !this.scene.inputDuplicate(s)) {
+                    if (this.scene.unfinishedEdge.s1.socketType === s.socketType) {
+                        this.scene.unfinishedEdge.s1.edgeOn = true;
+                        s.edgeOn = true;
+                        const e = new FloatEdge(this.scene.unfinishedEdge.s1,
+                                                s);
+                        this.scene.edges.push(e);
+                    }
+                }
+            }
+
+            this.scene.unfinishedEdge = undefined;
+        }
+
+        this.render();
     }
 
     mouseMoveListener(event) {
         event.preventDefault();
         this.canvas.focus();
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+        this.mouseState.x = x;
+        this.mouseState.y = y;
 
         if (this.selectedNode !== undefined) {
             this.selectedNode.x = x - this.mouseState['diffX'];
             this.selectedNode.y = y - this.mouseState['diffY'];
+            this.render();
+        }
+        if (this.scene.unfinishedEdge !== undefined) {
             this.render();
         }
     }

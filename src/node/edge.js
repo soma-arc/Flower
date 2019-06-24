@@ -22,20 +22,20 @@ export class Edge {
             y4 = this.s2.parent.y + this.s2.y;
         }
 
-        if (this.s1.isInput) {
-            x2 = x1 - Math.max(100, (x4 - x1) * 0.5);
-            y2 = y1;
-            x3 = x4 + Math.max(100, (x4 - x1) * 0.5);
-            y3 = y4;
-        } else {
+        if (this.s1.isOutput) {
             x2 = x1 + Math.max(100, (x4 - x1) * 0.5);
             y2 = y1;
             x3 = x4 - Math.max(100, (x4 - x1) * 0.5);
             y3 = y4;
+        } else {
+            x2 = x1 - Math.max(100, (x4 - x1) * 0.5);
+            y2 = y1;
+            x3 = x4 + Math.max(100, (x4 - x1) * 0.5);
+            y3 = y4;
         }
 
         ctx.strokeStyle = 'rgb(0, 0, 0)';
-        // ctx.lineWidth = 5;
+        ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.bezierCurveTo(x2, y2, x3, y3, x4, y4);

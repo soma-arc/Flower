@@ -4,7 +4,7 @@ import 'buefy/dist/buefy.css';
 import Root from './vue/root.vue';
 import Scene from './scene.js';
 import CanvasManager from './canvasManager.js';
-import { ConstantNode } from './node/node.js';
+import { ConstantNode, PointNode } from './node/node.js';
 
 window.addEventListener('load', () => {
     Vue.use(Buefy);
@@ -35,5 +35,6 @@ window.addEventListener('load', () => {
     });
 
     scene.nodes.push(new ConstantNode(100, 10));
+    scene.nodes.push(new PointNode(250, 10));
     canvasManager.renderGraph();
 });

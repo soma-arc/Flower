@@ -98,13 +98,13 @@ export class PointNode extends Node {
         // x coord
         this.input2 = new FloatSocket(this, this.leftX, this.downY2, false);
         this.output1 = new PointSocket(this, this.rightX, this.downY1, true);
-        this.sockets.add(this.Input1);
-        this.sockets.add(this.Input2);
-        this.sockets.add(this.Output1);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.input2);
+        this.sockets.push(this.output1);
     }
 
     renderNode(ctx, sceneScale) {
-        this.renderPane();
+        this.renderPane(ctx, sceneScale);
         ctx.fillStyle = 'black';
         const xx = this.x + 12;
         const yy = this.y + 36;
