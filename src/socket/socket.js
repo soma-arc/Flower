@@ -9,7 +9,7 @@ export class Socket {
 
         this.socketType = '';
 
-        this.radius = 10;
+        this.radius = 8;
     }
 
     renderSocket(ctx) {
