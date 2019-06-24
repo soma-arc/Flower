@@ -39,7 +39,7 @@ export class Node {
         }
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.font = "12px 'Times New Roman'";
-        ctx.strokeText(this.name, this.x + 6, this.y + 18);
+        ctx.fillText(this.name, this.x + 6, this.y + 18);
     }
 
     renderNode(ctx, sceneScale) {
@@ -47,6 +47,14 @@ export class Node {
     }
 
     update() {}
+
+    isPressed(mx, my) {
+        if (this.x < mx && mx < this.x + this.width &&
+            this.y < my && my < this.y + this.height) {
+            return true;
+        }
+        return false;
+    }
 }
 
 export class ConstantNode extends Node {

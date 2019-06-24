@@ -28,7 +28,12 @@ window.addEventListener('load', () => {
 
     canvasManager.init();
 
-    scene.nodes.push(new ConstantNode(100, 10));
+    let resizeTimer = setTimeout(canvasManager.resizeCallback, 500);
+    window.addEventListener('resize', () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(canvasManager.resizeCallback, 500);
+    });
 
+    scene.nodes.push(new ConstantNode(100, 10));
     canvasManager.renderGraph();
 });

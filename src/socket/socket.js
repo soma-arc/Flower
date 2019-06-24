@@ -8,6 +8,8 @@ export class Socket {
         this.edgeOn = false;
 
         this.socketType = '';
+
+        this.radius = 10;
     }
 
     renderSocket(ctx) {
@@ -16,11 +18,22 @@ export class Socket {
         ctx.strokeStyle = 'rgb(0, 0, 0)';
         ctx.fillStyle = this.socketColor;
         ctx.beginPath();
-        ctx.arc(xx, yy, 10, 0, 2 * Math.PI);
+        ctx.arc(xx, yy, this.radius, 0, 2 * Math.PI);
         ctx.fill();
     }
 
     update() {}
+
+    isPressed(mx, my) {
+        const xx = this.parent.x + this.x;
+        const yy = this.parent.y + this.y;
+        const tx = mx - xx;
+        const ty = my - yy;
+        if (Math.sqrt(tx * tx + ty * ty) < this.radius) {
+            return true;
+        }
+        return false;
+    }
 }
 
 export class FloatSocket extends Socket {

@@ -16,6 +16,12 @@ export class GraphCanvas2d extends Canvas {
 
         this.canvas = document.getElementById(this.canvasId);
         this.ctx = this.canvas.getContext('2d');
+
+        this.selectedNode = undefined;
+        this.selectedSocket = undefined;
+
+        this.mouseState = { diffX: 0,
+                            diffY: 0 };
     }
 
     resizeCanvas() {
@@ -33,13 +39,65 @@ export class GraphCanvas2d extends Canvas {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.scene.renderGraph(ctx);
 
-        ctx.fillStyle = 'rgb(255, 255, 0)';
-        ctx.beginPath();
-        ctx.rect(0, 0, 100, 100);
-        ctx.fill();
-        ctx.closePath();
-
         ctx.restore();
+    }
+
+    computeCoordinates(mx, my) {
+        const rect = this.canvas.getBoundingClientRect();
+        return [mx - rect.left, my - rect.top];
+    }
+
+    mouseDownListener(event) {
+        event.preventDefault();
+        this.canvas.focus();
+        const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+
+        if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
+            // this.pressSocket(x, y);
+            this.selectedNode = this.pressNode(x, y);
+        } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
+            console.log('wheel');
+        } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
+            console.log('right');
+        }
+    }
+
+    mouseUpListener(event) {
+        this.selectedNode = undefined;
+    }
+
+    mouseMoveListener(event) {
+        event.preventDefault();
+        this.canvas.focus();
+        const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+
+        if (this.selectedNode !== undefined) {
+            this.selectedNode.x = x - this.mouseState['diffX'];
+            this.selectedNode.y = y - this.mouseState['diffY'];
+            this.render();
+        }
+    }
+
+    pressNode(x, y) {
+        for (const n of this.scene.nodes) {
+            if (n.isPressed(x, y)) {
+                this.mouseState['diffX'] = x - n.x;
+                this.mouseState['diffY'] = y - n.y;
+                return n;
+            }
+        }
+        return undefined;
+    }
+
+    pressSocket(x, y) {
+        for (const n of this.scene.nodes) {
+            for (const s of n.sockets) {
+                if (s.isPressed(x, y)) {
+                    return s;
+                }
+            }
+        }
+        return undefined;
     }
 }
 
