@@ -1,5 +1,6 @@
 import { FloatSocket,
-         PointSocket } from '../socket/socket.js';
+         PointSocket,
+         LineSocket } from '../socket/socket.js';
 
 export class Node {
     constructor(x, y) {
@@ -120,5 +121,61 @@ export class PointNode extends Node {
         }
         this.output1.valueX = this.value2;
         this.output1.valueY = this.value1;
+    }
+}
+
+export class LineTwoPointsNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.nodeColor = 'rgb(255, 100, 100)';
+        this.name = 'LineTwoPoints';
+
+        this.valueA = 1;
+        this.valueB = 1;
+        this.valueC = -500;
+        this.valueD = 0;
+
+        this.input1 = new PointSocket(this, this.leftX, this.downY1, false);
+        this.input2 = new PointSocket(this, this.leftX, this.downY2, false);
+        this.output1 = new LineSocket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.input2);
+        this.sockets.push(this.output1);
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+        let str;
+        if (this.valueB !== 0) {
+            if (this.valueC / this.valueB < 0) {
+                str = `y=${Math.round(-this.valueA / this.valueB * 10) / 10}x+` +
+                    `${Math.round(-this.valueC / this.valueB * 10) / 10}`;
+            } else {
+                str = `y=${Math.round(-this.valueA / this.valueB * 10) / 10}x-` +
+                    `${Math.round(this.valueC / this.valueB * 10) / 10}`;
+            }
+        } else {
+            str = `x=${Math.round(-this.valueC / this.valueA * 10) / 10}`;
+        }
+        ctx.fillText(`${str}`, xx, yy)
+    }
+
+    update() {
+        const x1 = this.input1.valueX;
+        const y1 = this.input1.valueY;
+        const x2 = this.input2.valueX;
+        const y2 = this.input2.valueY;
+        this.valueA = y2 - y1;
+        this.valueB = -x2 + x1
+        this.valueC = -x1 * (y2 - y1) + y1 * (x2 - x1);
+        const mag = Math.sqrt(this.valueA * this.valueA + this.valueB * this.valueB);
+        this.valueA /= mag;
+        this.valueB /= mag;
+        this.valueC /= mag;
+        this.output1.valueA = this.valueA;
+        this.output1.valueB = this.valueB;
+        this.output1.valueC = this.valueC;
     }
 }

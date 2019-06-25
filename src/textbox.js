@@ -13,7 +13,7 @@ export default class Textbox {
 
         this.parent = undefined;
 
-        for (const i = 0; i < 128; i++) {
+        for (let i = 0; i < 128; i++) {
             this.textboxText = ' ';
         }
     }
