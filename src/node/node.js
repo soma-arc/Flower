@@ -1,6 +1,8 @@
 import { FloatSocket,
          PointSocket,
-         LineSocket } from '../socket/socket.js';
+         LineSocket,
+         CircleSocket } from '../socket/socket.js';
+import Textbox from '../textbox.js';
 
 export class Node {
     constructor(x, y) {
@@ -18,6 +20,9 @@ export class Node {
         this.downY2 = this.height - 25;
         this.downY3 = this.height - 40;
         this.name = '';
+        this.isShowingOption = false;
+
+        this.textbox = new Textbox();
     }
 
     renderPane(ctx, sceneScale) {
@@ -56,6 +61,10 @@ export class Node {
         }
         return false;
     }
+
+    showOption() {}
+
+    closeTextbox() {}
 }
 
 export class ConstantNode extends Node {
@@ -78,11 +87,38 @@ export class ConstantNode extends Node {
         const xx = this.x + 12;
         const yy = this.y + 36;
         ctx.fillText(`${this.value}`, xx, yy);
+
+        if (this.isShowingOption) {
+            //            this.textbox.showOption();
+            this.textbox.textboxX = this.x + 12;
+            this.textbox.textboxY = this.y + 24;
+            this.textbox.renderTextbox(ctx);
+        }
     }
 
     update() {
         this.out1 = this.value;
         this.output1.value = this.out1;
+    }
+
+    showOption() {
+        this.textbox.textboxX = this.x + 12;
+        this.textbox.textboxY = this.y + 24;
+        this.textbox.textboxWidth = 80;
+        this.textbox.setupTextbox();
+        this.textbox.renderOn = true;
+
+        const str = `${this.value}`;
+        for (let i = 0; i < str.length; i++) {
+            this.textbox.textboxText[i] = str.charAt(i);
+        }
+        this.textbox.textboxCursor = str.length;
+        this.textbox.parent = this;
+    }
+
+    closeTextbox() {
+        this.value = parseFloat(this.textbox.getTextboxArray());
+        this.textbox.renderOn = false;
     }
 }
 
@@ -177,5 +213,161 @@ export class LineTwoPointsNode extends Node {
         this.output1.valueA = this.valueA;
         this.output1.valueB = this.valueB;
         this.output1.valueC = this.valueC;
+    }
+}
+
+export class LineMirrorNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.nodeColor = 'rgb(0, 255, 255)';
+        this.name = 'LineMirror';
+
+        this.valueA = 1;
+        this.valueB = 1;
+        this.valueC = -500;
+        this.lineMirrorType = 'p->m';
+
+        this.input1 = new LineSocket(this, this.leftX, this.downY1, false);
+        this.output1 = new LineSocket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.output1);
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black'
+        ctx.font = "12px 'Times New Roman'";
+
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+
+        let str;
+        if (this.valueB !== 0) {
+            if (this.valueC / this.valueB < 0) {
+                str = `y=${Math.round(-this.valueA / this.valueB * 10) / 10}x+` +
+                    `${Math.round(-this.valueC / this.valueB * 10) / 10}`;
+            } else {
+                str = `y=${Math.round(-this.valueA / this.valueB * 10) / 10}x-` +
+                    `${Math.round(this.valueC / this.valueB * 10) / 10}`;
+            }
+        } else {
+            str = `x=${Math.round(-this.valueC / this.valueA * 10) / 10}`;
+        }
+        ctx.fillText(`${str}`, xx, yy);
+        ctx.fillText(`${this.lineMirrorType}`, xx, yy + 18);
+    }
+
+    update() {
+        this.valueA = this.input1.valueA;
+        this.valueB = this.input1.valueB;
+        this.valueC = this.input1.valueC;
+        this.output1.valueA = this.valueA;
+        this.output1.valueB = this.valueB;
+        this.output1.valueC = this.valueC;
+    }
+}
+
+export class CircleThreePointsNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.nodeColor = 'rgb(255, 100, 0)';
+        this.name = 'CircleThreePoints';
+
+        this.valueX = 1;
+        this.valieY = 1;
+        this.valueR = 1;
+
+        this.input1 = new PointSocket(this, this.leftX, this.downY1, false);
+        this.input2 = new PointSocket(this, this.leftX, this.downY2, false);
+        this.input3 = new PointSocket(this, this.leftX, this.downY3, false);
+        this.output1 = new CircleSocket(this, this.rightX, this.downY1, true);
+
+        this.sockets.push(this.input1);
+        this.sockets.push(this.input2);
+        this.sockets.push(this.input3);
+        this.sockets.push(this.output1);
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black'
+        ctx.font = "12px 'Times New Roman'";
+
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+
+        let str1 = `(${Math.round(this.valueX * 10) / 10}, ${Math.round(this.valueY * 10) / 10})`;
+        ctx.fillText(str1, xx, yy);
+        str1 = `r=${Math.round(this.valueR * 10) / 10}`;
+        ctx.fillText(str1, xx, yy + 18);
+    }
+
+    update() {
+        const x1 = this.input1.valueX;
+        const y1 = this.input1.valueY;
+        const x2 = this.input2.valueX;
+        const y2 = this.input2.valueY;
+        const x3 = this.input3.valueX;
+        const y3 = this.input3.valueY;
+        // (x-x1)^2+(y-y1)^2 = (x-x2)^2+(y-y2)^2
+        // x1^2+y1^2-x2^1-y2^2 = 2(x1-x2)x +2(y1-y2)y 
+        // x1^2+y1^2-x3^1-y3^2 = 2(x1-x3)x +2(y1-y3)y 
+        const a = 2 * (x1 - x2);
+        const b = 2 * (y1 - y2);
+        const c = 2 * (x1 - x3);
+        const d = 2 * (y1 - y3);
+        const p = x1 * x1 + y1 * y1 - x2 * x2 - y2 * y2;
+        const q = x1 * x1 + y1 * y1 - x3 * x3 - y3 * y3;
+
+        this.valueX = (p * d - b * q) / (a * d - b * c);
+        this.valueY = (a * q - p * c) / (a * d - b * c);
+        this.valueR = Math.sqrt((this.valueX - x1) * (this.valueX - x1) + (this.valueY - y1) * (this.valueY - y1));
+
+        this.output1.valueX = this.valueX;
+        this.output1.valueY = this.valueY;
+        this.output1.valueR = this.valueR;
+    }
+}
+
+export class CircleMirrorNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.nodeColor = 'rgb(255, 100, 0)';
+        this.name = 'CirleMirror';
+
+        this.valueX = 1;
+        this.valueY = 1;
+        this.valueR = 1;
+        this.circleMirrorType = 'in->out';
+
+        this.input1 = new CircleSocket(this, this.leftX, this.downY1, false);
+        this.output1 = new CircleSocket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.output1);
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black'
+        ctx.font = "12px 'Times New Roman'";
+
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+
+        let str1 = `(${Math.round(this.valueX * 10) / 10}, ${Math.round(this.valueY * 10) / 10})`;
+        ctx.fillText(str1, xx, yy);
+        str1 = `r=${Math.round(this.valueR * 10) / 10}`;
+        ctx.fillText(str1, xx, yy + 18);
+        ctx.fillText(this.circleMirrorType, xx, yy + 18 + 18);
+    }
+
+    update() {
+        this.valueX = this.input1.valueX;
+        this.valueY = this.input1.valueY;
+        this.valueR = this.input1.valueR;
+
+        this.output1.valueX = this.valueX;
+        this.output1.valueY = this.valueY;
+        this.output1.valueR = this.valueR;
     }
 }

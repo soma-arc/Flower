@@ -1,10 +1,10 @@
 <template>
   <div class="contentParent">
     <div class="graphPanel">
-      <canvas class="canvas" id="graphCanvas"></canvas>
+      <canvas class="canvas" id="graphCanvas" tabindex="100"></canvas>
     </div>
     <div class="constructionPanel">
-      <canvas class="canvas" id="constructionCanvas"></canvas>
+      <canvas class="canvas" id="constructionCanvas" tabindex="101"></canvas>
     </div>
   </div>
 </template>

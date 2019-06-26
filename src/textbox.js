@@ -1,3 +1,4 @@
+
 export default class Textbox {
     constructor() {
         this.textboxX = 100;
@@ -12,10 +13,13 @@ export default class Textbox {
         this.renderOn = false;
 
         this.parent = undefined;
+    }
 
+    setupTextbox() {
         for (let i = 0; i < 128; i++) {
-            this.textboxText = ' ';
+            this.textboxText[i] = ' ';
         }
+        this.textboxCursor = 0;
     }
 
     renderTextbox(ctx) {
@@ -38,10 +42,10 @@ export default class Textbox {
                              this.textboxY + this.textboxHeight - 5);
             }
         }
-        this.drawTextboxCursor(ctx);
+        this.renderTextboxCursor(ctx);
     }
 
-    drawTextboxCursor(ctx) {
+    renderTextboxCursor(ctx) {
         ctx.fillStyle = 'rgb(50, 50, 50)';
         ctx.lineWidth = 1;
 
@@ -60,6 +64,34 @@ export default class Textbox {
             for (let i = 126; i >= this.textboxCursor; i--) {
                 this.textboxText[i + 1] = this.textboxText[i];
             }
+            this.textboxText[this.textboxCursor] = key;
+            if (this.textboxCursor === this.textboxStart + 30) {
+                this.textboxStart++;
+            }
+            this.textboxCursor++;
+        }
+        if (key === 'ArrowRight') {
+            if (this.textboxStart < 95 && this.textboxCursor === this.textboxStart + 30) {
+                this.textboxStart++;
+            }
+            if (this.textboxCursor < 127) {
+                this.textboxCursor++;
+            }
+        }
+        if (key === 'ArrowLeft') {
+            if (this.textboxStart > 0 && this.textboxCursor === 2) {
+                this.textboxStart--;
+            }
+            if (this.textboxCursor > 0) {
+                this.textboxCursor--;
+            }
+        }
+        if (key === 'Backspace' && this.textboxCursor > 0) {
+            for (let i = this.textboxCursor; i < 128; i++) {
+                this.textboxText[i - 1] = this.textboxText[i];
+            }
+            this.textboxText[127] = ' ';
+            this.textboxCursor--;
         }
     }
 

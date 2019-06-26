@@ -19,6 +19,7 @@ export class GraphCanvas2d extends Canvas {
         this.ctx = this.canvas.getContext('2d');
 
         this.selectedNode = undefined;
+        this.optionNode = undefined;
         this.selectedSocket = undefined;
         this.unfinishedEdge = undefined;
 
@@ -26,6 +27,21 @@ export class GraphCanvas2d extends Canvas {
                             y: 0,
                             diffX: 0,
                             diffY: 0 };
+
+        function keyEvent(event) {
+            if (event.key === 'Enter') {
+                this.optionNode.closeTextbox();
+                this.optionNode.isShowingOption = false;
+                this.optionNode = undefined;
+                this.render();
+            }
+            if (this.optionNode !== undefined &&
+                this.optionNode.isShowingOption) {
+                this.optionNode.textbox.keyTextbox(event.key);
+                this.render();
+            }
+        }
+        this.canvas.addEventListener('keydown', keyEvent.bind(this));
     }
 
     resizeCanvas() {
@@ -39,7 +55,7 @@ export class GraphCanvas2d extends Canvas {
         const ctx = this.ctx;
         ctx.save();
 
-        ctx.fillStyle = 'rgb(255, 255, 255)';
+        ctx.fillStyle = 'rgb(220, 220, 220)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.scene.renderGraph(ctx, this.mouseState);
 
@@ -56,6 +72,13 @@ export class GraphCanvas2d extends Canvas {
         this.canvas.focus();
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
 
+        if (this.optionNode !== undefined) {
+            this.optionNode.closeTextbox();
+            this.optionNode.isShowingOption = false;
+            this.optionNode = undefined;
+            this.render();
+        }
+
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             this.selectedSocket = this.pressSocket(x, y);
             if (this.selectedSocket === undefined) {
@@ -69,9 +92,26 @@ export class GraphCanvas2d extends Canvas {
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
             console.log('wheel');
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
-            console.log('right');
+            this.optionNode = this.pressNode(x, y);
+            if (this.optionNode !== undefined) {
+                this.optionNode.isShowingOption = true;
+                this.optionNode.showOption();
+                this.render();
+            } else {
+                // ShowMenu
+            }
         }
     }
+
+    // keydownListener(event) {
+    //     console.log(event);
+    //     console.log(event.key);
+    //     if (this.selectedNode !== undefined &&
+    //         this.selectedNode.isShowingOption) {
+    //         this.selectedNode.textbox.keyTextbox(event.key);
+    //         this.render();
+    //     }
+    // }
 
     mouseUpListener(event) {
         this.selectedNode = undefined;
@@ -137,6 +177,9 @@ export class GraphCanvas2d extends Canvas {
             }
         }
         return undefined;
+    }
+
+    keydownListener(event) {
     }
 }
 
