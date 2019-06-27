@@ -26,4 +26,8 @@ export default class Scene {
         }
         return false;
     }
+
+    addNode(node) {
+        this.nodes.push(node);
+    }
 }

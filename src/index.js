@@ -34,7 +34,7 @@ window.addEventListener('load', () => {
         resizeTimer = window.setTimeout(canvasManager.resizeCallback, 500);
     });
 
-    scene.nodes.push(new ConstantNode(100, 10));
-    scene.nodes.push(new PointNode(250, 10));
+    scene.addNode(new ConstantNode(100, 10));
+    scene.addNode(new PointNode(250, 10));
     canvasManager.renderGraph();
 });

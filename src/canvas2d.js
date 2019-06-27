@@ -1,5 +1,12 @@
 import Canvas from './canvas.js';
 import { Edge, FloatEdge } from './node/edge.js';
+import { ConstantNode, PointNode, LineTwoPointsNode,
+         LineMirrorNode, CircleThreePointsNode,
+         CircleMirrorNode } from './node/node.js';
+
+const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
+                   'LineMirror', 'CircleThreePoints',
+                   'CircleMirror'];
 
 export class GraphCanvas2d extends Canvas {
     constructor(canvasId, scene) {
@@ -42,6 +49,8 @@ export class GraphCanvas2d extends Canvas {
             }
         }
         this.canvas.addEventListener('keydown', keyEvent.bind(this));
+
+        this.isRenderingMenu = false;
     }
 
     resizeCanvas() {
@@ -58,6 +67,10 @@ export class GraphCanvas2d extends Canvas {
         ctx.fillStyle = 'rgb(220, 220, 220)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.scene.renderGraph(ctx, this.mouseState);
+
+        if (this.isRenderingMenu) {
+            this.renderMenu(ctx);
+        }
 
         ctx.restore();
     }
@@ -83,6 +96,13 @@ export class GraphCanvas2d extends Canvas {
             this.selectedSocket = this.pressSocket(x, y);
             if (this.selectedSocket === undefined) {
                 this.selectedNode = this.pressNode(x, y);
+                if (this.selectedNode === undefined) {
+                    if (this.isRenderingMenu){
+                        this.selectAddNode(x, y);
+                    } else {
+                        this.addNode(x, y);
+                    }
+                }
             } else {
                 this.scene.unfinishedEdge = new Edge(this.selectedSocket, undefined);
                 this.mouseState.x = x;
@@ -96,10 +116,74 @@ export class GraphCanvas2d extends Canvas {
             if (this.optionNode !== undefined) {
                 this.optionNode.isShowingOption = true;
                 this.optionNode.showOption();
-                this.render();
             } else {
-                // ShowMenu
+                this.isRenderingMenu = !this.isRenderingMenu;
             }
+            this.render();
+        }
+    }
+
+    renderMenu(ctx) {
+        for (let y = 0; y < MENU_ITEM.length; y++) {
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'pink';
+            ctx.rect(5, 5 + y * 30, 150, 30);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        for (let y = 0; y < MENU_ITEM.length; y++) {
+            ctx.font = "18px 'Times New Roman'";
+            ctx.fillStyle = 'black';
+            ctx.fillText(MENU_ITEM[y], 10, 30 + y * 30);
+        }
+    }
+
+    selectAddNode(x, y) {
+        let index = -1;
+        for (let yy = 0; yy < MENU_ITEM.length; yy++) {
+            //ctx.rect(5, 5 + y * 30, 150, 30);
+            if (5 < x && x < 5 + 150 &&
+                5 + yy * 30 < y && y < 5 + yy * 30 + 30) {
+                index = yy;
+                break;
+            }
+        }
+
+        if (index === -1) {
+            this.addingNode = undefined;
+        }
+
+        this.addingNode = MENU_ITEM[index];
+        this.isRenderingMenu = false;
+    }
+
+    addNode(x, y) {
+        switch (this.addingNode) {
+        case 'Constant': {
+            this.scene.addNode(new ConstantNode(x, y));
+            break;
+        }
+        case 'Point': {
+            this.scene.addNode(new PointNode(x, y));
+            break;
+        }
+        case 'LineTwoPoints': {
+            this.scene.addNode(new LineTwoPointsNode(x, y));
+            break;
+        }
+        case 'LineMirror': {
+            this.scene.addNode(new LineMirrorNode(x, y));
+            break;
+        }
+        case 'CircleThreePoints': {
+            this.scene.addNode(new CircleThreePointsNode(x, y));
+            break;
+        }
+        case 'CircleMirror': {
+            this.scene.addNode(new CircleMirrorNode(x, y));
+            break;
+        }
         }
     }
 

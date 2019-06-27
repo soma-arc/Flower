@@ -20,6 +20,7 @@ export class Socket {
         ctx.beginPath();
         ctx.arc(xx, yy, this.radius, 0, 2 * Math.PI);
         ctx.fill();
+        ctx.stroke();
     }
 
     update() {}
