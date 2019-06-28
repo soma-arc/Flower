@@ -1,5 +1,5 @@
 import Canvas from './canvas.js';
-import { Edge, FloatEdge } from './node/edge.js';
+import { Edge, FloatEdge, PointEdge } from './node/edge.js';
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
          CircleMirrorNode } from './node/node.js';
@@ -60,6 +60,10 @@ export class GraphCanvas2d extends Canvas {
     }
 
     render() {
+        for (let i = 0; i < 5; i++) {
+            this.update();
+        }
+
         const ctx = this.ctx;
         ctx.save();
 
@@ -233,11 +237,28 @@ export class GraphCanvas2d extends Canvas {
                 if (((r1 && !r2) || (!r1 && r2)) &&
                     !this.scene.inputDuplicate(s)) {
                     if (this.scene.unfinishedEdge.s1.socketType === s.socketType) {
-                        this.scene.unfinishedEdge.s1.edgeOn = true;
-                        s.edgeOn = true;
-                        const e = new FloatEdge(this.scene.unfinishedEdge.s1,
-                                                s);
-                        this.scene.edges.push(e);
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Float') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new FloatEdge(this.scene.unfinishedEdge.s1,
+                                                    s);
+                            this.scene.edges.push(e);
+                        }
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Point') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new PointEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }
+                        /* TODO: implement LineEdge and CircleEdge
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Line') {
+                            const e = new LineEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
+                            const e = new CircleEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }*/
                     }
                 }
             }
@@ -285,6 +306,16 @@ export class GraphCanvas2d extends Canvas {
             }
         }
         return undefined;
+    }
+
+    update() {
+        for (const e of this.scene.edges) {
+            e.update();
+        }
+
+        for (const n of this.scene.nodes) {
+            n.update();
+        }
     }
 }
 

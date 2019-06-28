@@ -170,7 +170,6 @@ export class LineTwoPointsNode extends Node {
         this.valueA = 1;
         this.valueB = 1;
         this.valueC = -500;
-        this.valueD = 0;
 
         this.input1 = new PointSocket(this, this.leftX, this.downY1, false);
         this.input2 = new PointSocket(this, this.leftX, this.downY2, false);
@@ -196,14 +195,18 @@ export class LineTwoPointsNode extends Node {
         } else {
             str = `x=${Math.round(-this.valueC / this.valueA * 10) / 10}`;
         }
+
+        ctx.fillStyle = 'black';
         ctx.fillText(`${str}`, xx, yy)
     }
 
     update() {
+        console.log('lineTwo');
         const x1 = this.input1.valueX;
         const y1 = this.input1.valueY;
         const x2 = this.input2.valueX;
         const y2 = this.input2.valueY;
+        console.log(`${x1}  ${y1}  ${x2}  ${y2}`);
         this.valueA = y2 - y1;
         this.valueB = -x2 + x1
         this.valueC = -x1 * (y2 - y1) + y1 * (x2 - x1);
@@ -211,6 +214,7 @@ export class LineTwoPointsNode extends Node {
         this.valueA /= mag;
         this.valueB /= mag;
         this.valueC /= mag;
+
         this.output1.valueA = this.valueA;
         this.output1.valueB = this.valueB;
         this.output1.valueC = this.valueC;
@@ -311,8 +315,8 @@ export class CircleThreePointsNode extends Node {
         const x3 = this.input3.valueX;
         const y3 = this.input3.valueY;
         // (x-x1)^2+(y-y1)^2 = (x-x2)^2+(y-y2)^2
-        // x1^2+y1^2-x2^1-y2^2 = 2(x1-x2)x +2(y1-y2)y 
-        // x1^2+y1^2-x3^1-y3^2 = 2(x1-x3)x +2(y1-y3)y 
+        // x1^2+y1^2-x2^1-y2^2 = 2(x1-x2)x +2(y1-y2)y
+        // x1^2+y1^2-x3^1-y3^2 = 2(x1-x3)x +2(y1-y3)y
         const a = 2 * (x1 - x2);
         const b = 2 * (y1 - y2);
         const c = 2 * (x1 - x3);
