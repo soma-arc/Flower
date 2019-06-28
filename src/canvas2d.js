@@ -36,35 +36,6 @@ export class GraphCanvas2d extends Canvas {
                             diffX: 0,
                             diffY: 0 };
 
-        function keyEvent(event) {
-            if (event.key === 'Enter') {
-                this.optionNode.closeTextbox();
-                this.optionNode.isShowingOption = false;
-                this.optionNode = undefined;
-                this.render();
-            } else if (event.key === 'Delete') {
-                for (let e = this.scene.edges.length - 1; e >= 0; e--) {
-                    if (this.scene.edges[e].s1.parent.selected ||
-                        this.scene.edges[e].s2.parent.selected) {
-                        this.scene.edges.splice(e, 1);
-                    }
-                }
-                for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
-                    if (this.scene.nodes[n].selected) {
-                        this.scene.nodes.splice(n, 1);
-                    }
-                }
-                this.restoreSocketEdgeOn();
-                this.render();
-            }
-            if (this.optionNode !== undefined &&
-                this.optionNode.isShowingOption) {
-                this.optionNode.textbox.keyTextbox(event.key);
-                this.render();
-            }
-        }
-        this.canvas.addEventListener('keydown', keyEvent.bind(this));
-
         this.isRenderingMenu = false;
     }
 
@@ -80,7 +51,7 @@ export class GraphCanvas2d extends Canvas {
             e.s2.edgeOn = true;
         }
     }
-    
+
     resizeCanvas() {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth * this.pixelRatio;
@@ -94,11 +65,12 @@ export class GraphCanvas2d extends Canvas {
 
         ctx.fillStyle = 'rgb(220, 220, 220)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.scene.renderGraph(ctx, this.mouseState);
 
         if (this.isRenderingMenu) {
             this.renderMenu(ctx);
         }
+
+        this.scene.renderGraph(ctx, this.mouseState);
 
         ctx.restore();
     }
@@ -221,15 +193,33 @@ export class GraphCanvas2d extends Canvas {
         }
     }
 
-    // keydownListener(event) {
-    //     console.log(event);
-    //     console.log(event.key);
-    //     if (this.draggingNode !== undefined &&
-    //         this.draggingNode.isShowingOption) {
-    //         this.draggingNode.textbox.keyTextbox(event.key);
-    //         this.render();
-    //     }
-    // }
+    keydownListener(event) {
+        if (event.key === 'Enter') {
+            this.optionNode.closeTextbox();
+            this.optionNode.isShowingOption = false;
+            this.optionNode = undefined;
+            this.render();
+        } else if (event.key === 'Delete') {
+            for (let e = this.scene.edges.length - 1; e >= 0; e--) {
+                if (this.scene.edges[e].s1.parent.selected ||
+                    this.scene.edges[e].s2.parent.selected) {
+                    this.scene.edges.splice(e, 1);
+                }
+            }
+            for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
+                if (this.scene.nodes[n].selected) {
+                    this.scene.nodes.splice(n, 1);
+                }
+            }
+            this.restoreSocketEdgeOn();
+            this.render();
+        }
+        if (this.optionNode !== undefined &&
+            this.optionNode.isShowingOption) {
+            this.optionNode.textbox.keyTextbox(event.key);
+            this.render();
+        }
+    }
 
     mouseUpListener(event) {
         this.draggingNode = undefined;
@@ -295,9 +285,6 @@ export class GraphCanvas2d extends Canvas {
             }
         }
         return undefined;
-    }
-
-    keydownListener(event) {
     }
 }
 
