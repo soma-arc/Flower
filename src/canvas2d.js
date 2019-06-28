@@ -26,6 +26,7 @@ export class GraphCanvas2d extends Canvas {
         this.ctx = this.canvas.getContext('2d');
 
         this.selectedNode = undefined;
+        this.draggingNode = undefined;
         this.optionNode = undefined;
         this.selectedSocket = undefined;
         this.unfinishedEdge = undefined;
@@ -41,6 +42,20 @@ export class GraphCanvas2d extends Canvas {
                 this.optionNode.isShowingOption = false;
                 this.optionNode = undefined;
                 this.render();
+            } else if (event.key === 'Delete') {
+                for (let e = this.scene.edges.length - 1; e >= 0; e--) {
+                    if (this.scene.edges[e].s1.parent.selected ||
+                        this.scene.edges[e].s2.parent.selected) {
+                        this.scene.edges.splice(e, 1);
+                    }
+                }
+                for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
+                    if (this.scene.nodes[n].selected) {
+                        this.scene.nodes.splice(n, 1);
+                    }
+                }
+                this.restoreSocketEdgeOn();
+                this.render();
             }
             if (this.optionNode !== undefined &&
                 this.optionNode.isShowingOption) {
@@ -53,6 +68,19 @@ export class GraphCanvas2d extends Canvas {
         this.isRenderingMenu = false;
     }
 
+    restoreSocketEdgeOn () {
+        for (const n of this.scene.nodes) {
+            for (const s of n.sockets) {
+                s.edgeOn = false;
+            }
+        }
+
+        for (const e of this.scene.edges) {
+            e.s1.edgeOn = true;
+            e.s2.edgeOn = true;
+        }
+    }
+    
     resizeCanvas() {
         const parent = this.canvas.parentElement;
         this.canvas.width = parent.clientWidth * this.pixelRatio;
@@ -95,13 +123,19 @@ export class GraphCanvas2d extends Canvas {
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             this.selectedSocket = this.pressSocket(x, y);
             if (this.selectedSocket === undefined) {
-                this.selectedNode = this.pressNode(x, y);
-                if (this.selectedNode === undefined) {
-                    if (this.isRenderingMenu){
+                if (this.selectedNode !== undefined) {
+                    this.selectedNode.selected = false;
+                }
+                this.draggingNode = this.pressNode(x, y);
+                this.selectedNode = this.draggingNode;
+                if (this.draggingNode === undefined) {
+                    if (this.isRenderingMenu) {
                         this.selectAddNode(x, y);
                     } else {
                         this.addNode(x, y);
                     }
+                } else {
+                    this.draggingNode.selected = true;
                 }
             } else {
                 this.scene.unfinishedEdge = new Edge(this.selectedSocket, undefined);
@@ -190,15 +224,15 @@ export class GraphCanvas2d extends Canvas {
     // keydownListener(event) {
     //     console.log(event);
     //     console.log(event.key);
-    //     if (this.selectedNode !== undefined &&
-    //         this.selectedNode.isShowingOption) {
-    //         this.selectedNode.textbox.keyTextbox(event.key);
+    //     if (this.draggingNode !== undefined &&
+    //         this.draggingNode.isShowingOption) {
+    //         this.draggingNode.textbox.keyTextbox(event.key);
     //         this.render();
     //     }
     // }
 
     mouseUpListener(event) {
-        this.selectedNode = undefined;
+        this.draggingNode = undefined;
 
         if (this.scene.unfinishedEdge !== undefined) {
             const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
@@ -231,9 +265,9 @@ export class GraphCanvas2d extends Canvas {
         this.mouseState.x = x;
         this.mouseState.y = y;
 
-        if (this.selectedNode !== undefined) {
-            this.selectedNode.x = x - this.mouseState['diffX'];
-            this.selectedNode.y = y - this.mouseState['diffY'];
+        if (this.draggingNode !== undefined) {
+            this.draggingNode.x = x - this.mouseState['diffX'];
+            this.draggingNode.y = y - this.mouseState['diffY'];
             this.render();
         }
         if (this.scene.unfinishedEdge !== undefined) {
