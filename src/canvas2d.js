@@ -3,6 +3,8 @@ import { Edge, FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
          CircleMirrorNode } from './node/node.js';
+import { GetWebGL2Context, CreateSquareVbo, CreateFloatTextures,
+         AttachShader, LinkProgram } from './glUtils.js';
 
 const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
                    'LineMirror', 'CircleThreePoints',
@@ -50,13 +52,6 @@ export class GraphCanvas2d extends Canvas {
             e.s1.edgeOn = true;
             e.s2.edgeOn = true;
         }
-    }
-
-    resizeCanvas() {
-        const parent = this.canvas.parentElement;
-        this.canvas.width = parent.clientWidth * this.pixelRatio;
-        this.canvas.height = parent.clientHeight * this.pixelRatio;
-        this.canvasRatio = this.canvas.width / this.canvas.height / 2;
     }
 
     render() {
@@ -137,6 +132,7 @@ export class GraphCanvas2d extends Canvas {
         for (let y = 0; y < MENU_ITEM.length; y++) {
             ctx.strokeStyle = 'black';
             ctx.fillStyle = 'pink';
+            ctx.beginPath();
             ctx.rect(5, 5 + y * 30, 150, 30);
             ctx.fill();
             ctx.stroke();
@@ -322,6 +318,10 @@ export class GraphCanvas2d extends Canvas {
     }
 }
 
+const RENDER_FRAGMENT = require('./shaders/render.frag');
+const RENDER_VERTEX = require('./shaders/render.vert');
+const CONSTRUCTION_FRAG = require('./shaders/construction.frag');
+
 export class ConstructionCanvas2d extends Canvas {
     constructor(canvasId, scene) {
         super(canvasId);
@@ -332,15 +332,60 @@ export class ConstructionCanvas2d extends Canvas {
             button: -1
         };
 
+        this.canvas = document.getElementById(this.canvasId);
+
         this.scale = 1;
         this.scaleFactor = 1.25;
         this.translate = [0, 0];
+
+        this.gl = GetWebGL2Context(this.canvas);
+        this.vertexBuffer = CreateSquareVbo(this.gl);
+
+        this.renderCanvasProgram = this.gl.createProgram();
+        AttachShader(this.gl, RENDER_VERTEX,
+                     this.renderCanvasProgram, this.gl.VERTEX_SHADER);
+        AttachShader(this.gl, RENDER_FRAGMENT,
+                     this.renderCanvasProgram, this.gl.FRAGMENT_SHADER);
+        LinkProgram(this.gl, this.renderCanvasProgram);
+        this.renderVAttrib = this.gl.getAttribLocation(this.renderCanvasProgram,
+                                                       'a_vertex');
+        this.texturesFrameBuffer = this.gl.createFramebuffer();
+        this.initRenderTextures();
+
     }
 
-    init() {
-        this.canvas = document.getElementById(this.canvasId);
+    initRenderTextures() {
+        this.renderTextures = CreateFloatTextures(this.gl, this.canvas.width,
+                                                  this.canvas.height, 2);
     }
 
-    render() {
+    renderToTexture(textures, width, height) {
+        this.gl.getExtension("EXT_color_buffer_float");
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.texturesFrameBuffer);
+        this.gl.viewport(0, 0, width, height);
+        this.gl.useProgram(this.spheirahedraProgram);
+        this.setRenderUniformValues(width, height, textures[0]);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
+        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0,
+                                     this.gl.TEXTURE_2D, textures[1], 0);
+        this.gl.enableVertexAttribArray(this.renderCanvasVAttrib);
+        this.gl.vertexAttribPointer(this.renderCanvasVAttrib, 2, this.gl.FLOAT, false, 0, 0);
+        this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        textures.reverse();
+    }
+
+    renderTexturesToCanvas(textures) {
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.gl.useProgram(this.renderCanvasProgram);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, textures[0]);
+        const tex = this.gl.getUniformLocation(this.renderCanvasProgram, 'u_texture');
+        this.gl.uniform1i(tex, textures[0]);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
+        this.gl.vertexAttribPointer(this.renderVAttrib, 2,
+                                    this.gl.FLOAT, false, 0, 0);
+        this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+        this.gl.flush();
     }
 }
