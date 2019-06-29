@@ -83,3 +83,65 @@ export class PointEdge extends Edge {
         }
     }
 }
+
+export class LineEdge extends Edge {
+    constructor(s1, s2) {
+        super(s1, s2);
+        this.valueA = 0;
+        this.valueB = 0;
+        this.valueC = 0;
+    }
+
+    update() {
+        if (this.s1.isOutput) {
+            this.valueA = this.s1.valueA;
+            this.s2.valueA = this.valueA;
+
+            this.valueB = this.s1.valueB;
+            this.s2.valueB = this.valueB;
+
+            this.valueC = this.s1.valueC;
+            this.s2.valueC = this.valueC;
+        } else if (this.s2.isOutput) {
+            this.valueA = this.s2.valueA;
+            this.s1.valueA = this.valueA;
+
+            this.valueB = this.s2.valueB;
+            this.s1.valueB = this.valueB;
+
+            this.valueC = this.s2.valueC;
+            this.s1.valueC = this.valueC;
+        }
+    }
+}
+
+export class CircleEdge extends Edge {
+    constructor(s1, s2) {
+        super(s1, s2);
+        this.valueX = 0;
+        this.valueY = 0;
+        this.valueR = 0;
+    }
+
+    update() {
+        if (this.s1.isOutput) {
+            this.valueX = this.s1.valueX;
+            this.s2.valueX = this.valueX;
+
+            this.valueY = this.s1.valueY;
+            this.s2.valueY = this.valueY;
+
+            this.valueC = this.s1.valueC;
+            this.s2.valueC = this.valueC;
+        } else if (this.s2.isOutput) {
+            this.valueX = this.s2.valueX;
+            this.s1.valueX = this.valueX;
+
+            this.valueB = this.s2.valueY;
+            this.s1.valueB = this.valueY;
+
+            this.valueC = this.s2.valueC;
+            this.s1.valueC = this.valueC;
+        }
+    }
+}
