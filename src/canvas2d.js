@@ -70,6 +70,7 @@ export class GraphCanvas2d extends Canvas {
             this.renderMenu(ctx);
         }
 
+        ctx.scale(this.scale, this.scale);
         ctx.translate(this.translate[0], this.translate[1]);
 
         this.scene.renderGraph(ctx, this.mouseState);
@@ -77,16 +78,26 @@ export class GraphCanvas2d extends Canvas {
         ctx.restore();
     }
 
+    mouseWheelListener(event) {
+        event.preventDefault();
+        if (event.deltaY > 0) {
+            this.scale /= this.scaleFactor;
+        } else {
+            this.scale *= this.scaleFactor;
+        }
+        this.render();
+    }
+
     computeCoordinates(mx, my) {
         const rect = this.canvas.getBoundingClientRect();
-        return [mx - rect.left - this.translate[0],
-                my - rect.top - this.translate[1]];
+        return [(mx - rect.left) / this.scale - this.translate[0],
+                (my - rect.top) / this.scale - this.translate[1]];
     }
 
     computeOriginalCoord(mx, my) {
         const rect = this.canvas.getBoundingClientRect();
-        return [mx - rect.left,
-                my - rect.top];
+        return [(mx - rect.left) / this.scale,
+                (my - rect.top) / this.scale];
     }
 
     mouseDownListener(event) {
