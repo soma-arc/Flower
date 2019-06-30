@@ -15,6 +15,8 @@ export default class CanvasManager {
         this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas', this.scene);
         this.constructionCanvas.resizeCanvas();
         this.constructionCanvas.addEventListeners();
+
+        this.constructionCanvas.render();
     }
 
     renderGraph() {
