@@ -36,7 +36,8 @@ export class GraphCanvas2d extends Canvas {
         this.mouseState = { x: 0,
                             y: 0,
                             diffX: 0,
-                            diffY: 0 };
+                            diffY: 0,
+                            button: -1 };
 
         this.isRenderingMenu = false;
     }
@@ -69,6 +70,8 @@ export class GraphCanvas2d extends Canvas {
             this.renderMenu(ctx);
         }
 
+        ctx.translate(this.translate[0], this.translate[1]);
+
         this.scene.renderGraph(ctx, this.mouseState);
 
         ctx.restore();
@@ -76,7 +79,14 @@ export class GraphCanvas2d extends Canvas {
 
     computeCoordinates(mx, my) {
         const rect = this.canvas.getBoundingClientRect();
-        return [mx - rect.left, my - rect.top];
+        return [mx - rect.left - this.translate[0],
+                my - rect.top - this.translate[1]];
+    }
+
+    computeOriginalCoord(mx, my) {
+        const rect = this.canvas.getBoundingClientRect();
+        return [mx - rect.left,
+                my - rect.top];
     }
 
     mouseDownListener(event) {
@@ -101,7 +111,8 @@ export class GraphCanvas2d extends Canvas {
                 this.selectedNode = this.draggingNode;
                 if (this.draggingNode === undefined) {
                     if (this.isRenderingMenu) {
-                        this.selectAddNode(x, y);
+                        const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
+                        this.selectAddNode(ox, oy);
                     } else {
                         this.addNode(x, y);
                     }
@@ -115,7 +126,8 @@ export class GraphCanvas2d extends Canvas {
             }
             this.render();
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
-            console.log('wheel');
+            this.mouseState.x = x;
+            this.mouseState.y = y;
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
             this.optionNode = this.pressNode(x, y);
             if (this.optionNode !== undefined) {
@@ -124,6 +136,78 @@ export class GraphCanvas2d extends Canvas {
             } else {
                 this.isRenderingMenu = !this.isRenderingMenu;
             }
+            this.render();
+        }
+        this.mouseState.button = event.button;
+    }
+
+    mouseUpListener(event) {
+        this.draggingNode = undefined;
+
+        if (this.scene.unfinishedEdge !== undefined) {
+            const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+            const s = this.pressSocket(x, y);
+            if (s !== undefined && s !== this.selectedSocket) {
+                const r1 = this.selectedSocket.isOutput;
+                const r2 = s.isOutput;
+                if (((r1 && !r2) || (!r1 && r2)) &&
+                    !this.scene.inputDuplicate(s)) {
+                    if (this.scene.unfinishedEdge.s1.socketType === s.socketType) {
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Float') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new FloatEdge(this.scene.unfinishedEdge.s1,
+                                                    s);
+                            this.scene.edges.push(e);
+                        }
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Point') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new PointEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Line') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new LineEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }
+                        if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
+                            this.scene.unfinishedEdge.s1.edgeOn = true;
+                            s.edgeOn = true;
+                            const e = new CircleEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.edges.push(e);
+                        }
+                    }
+                }
+            }
+
+            this.scene.unfinishedEdge = undefined;
+        }
+
+        this.mouseState.button = -1;
+        this.render();
+    }
+
+    mouseMoveListener(event) {
+        event.preventDefault();
+        this.canvas.focus();
+        const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+
+        if (this.draggingNode !== undefined) {
+            this.draggingNode.x = x - this.mouseState['diffX'];
+            this.draggingNode.y = y - this.mouseState['diffY'];
+            this.render();
+        }
+        if (this.scene.unfinishedEdge !== undefined) {
+            this.mouseState.x = x;
+            this.mouseState.y = y;
+            this.render();
+        }
+
+        if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
+            this.translate[0] += x - this.mouseState.x;
+            this.translate[1] += y - this.mouseState.y;
             this.render();
         }
     }
@@ -221,70 +305,6 @@ export class GraphCanvas2d extends Canvas {
         }
     }
 
-    mouseUpListener(event) {
-        this.draggingNode = undefined;
-
-        if (this.scene.unfinishedEdge !== undefined) {
-            const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
-            const s = this.pressSocket(x, y);
-            if (s !== undefined && s !== this.selectedSocket) {
-                const r1 = this.selectedSocket.isOutput;
-                const r2 = s.isOutput;
-                if (((r1 && !r2) || (!r1 && r2)) &&
-                    !this.scene.inputDuplicate(s)) {
-                    if (this.scene.unfinishedEdge.s1.socketType === s.socketType) {
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Float') {
-                            this.scene.unfinishedEdge.s1.edgeOn = true;
-                            s.edgeOn = true;
-                            const e = new FloatEdge(this.scene.unfinishedEdge.s1,
-                                                    s);
-                            this.scene.edges.push(e);
-                        }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Point') {
-                            this.scene.unfinishedEdge.s1.edgeOn = true;
-                            s.edgeOn = true;
-                            const e = new PointEdge(this.scene.unfinishedEdge.s1, s);
-                            this.scene.edges.push(e);
-                        }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Line') {
-                            this.scene.unfinishedEdge.s1.edgeOn = true;
-                            s.edgeOn = true;
-                            const e = new LineEdge(this.scene.unfinishedEdge.s1, s);
-                            this.scene.edges.push(e);
-                        }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
-                            this.scene.unfinishedEdge.s1.edgeOn = true;
-                            s.edgeOn = true;
-                            const e = new CircleEdge(this.scene.unfinishedEdge.s1, s);
-                            this.scene.edges.push(e);
-                        }
-                    }
-                }
-            }
-
-            this.scene.unfinishedEdge = undefined;
-        }
-
-        this.render();
-    }
-
-    mouseMoveListener(event) {
-        event.preventDefault();
-        this.canvas.focus();
-        const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
-        this.mouseState.x = x;
-        this.mouseState.y = y;
-
-        if (this.draggingNode !== undefined) {
-            this.draggingNode.x = x - this.mouseState['diffX'];
-            this.draggingNode.y = y - this.mouseState['diffY'];
-            this.render();
-        }
-        if (this.scene.unfinishedEdge !== undefined) {
-            this.render();
-        }
-    }
-
     pressNode(x, y) {
         for (const n of this.scene.nodes) {
             if (n.isPressed(x, y)) {
@@ -377,10 +397,10 @@ export class ConstructionCanvas2d extends Canvas {
         this.uniLocations = [];
         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
                                                           'u_accTexture'));
-        // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
-        //                                                   'u_resolution'));
-        // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
-        //                                                   'u_geometry'));
+         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
+                                                           'u_resolution'));
+        this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
+                                                          'u_geometry'));
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                   'u_maxIISIterations'));
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
@@ -395,9 +415,9 @@ export class ConstructionCanvas2d extends Canvas {
         this.gl.activeTexture(this.gl.TEXTURE0 + textureIndex);
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.uniform1i(this.uniLocations[i++], textureIndex);
-        // this.gl.uniform2f(this.uniLocations[i++], width, height);
-        // this.gl.uniform3f(this.uniLocations[i++],
-        //                   this.translate.x, this.translate.y, this.scale);
+        this.gl.uniform2f(this.uniLocations[i++], width, height);
+        this.gl.uniform3f(this.uniLocations[i++],
+                          this.translate.x, this.translate.y, this.scale);
         // this.gl.uniform1i(this.uniLocations[i++], this.maxIterations);
         // this.gl.uniform1i(this.uniLocations[i++], this.isRenderingGenerator);
         // i = this.scene.setUniformValues(this.gl, this.uniLocations, i, this.scale);
