@@ -66,6 +66,10 @@ export class Node {
     showOption() {}
 
     closeTextbox() {}
+
+    setUniformLocations(gl, uniLocation, program, index) {}
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {}
 }
 
 export class ConstantNode extends Node {
@@ -159,6 +163,17 @@ export class PointNode extends Node {
         this.output1.valueX = this.value2;
         this.output1.valueY = this.value1;
     }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program, `u_point${index}`))
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform2f(uniLocation[uniI++],
+                     this.value1, this.value2);
+        return uniI;
+    }
 }
 
 export class LineTwoPointsNode extends Node {
@@ -201,12 +216,10 @@ export class LineTwoPointsNode extends Node {
     }
 
     update() {
-        console.log('lineTwo');
         const x1 = this.input1.valueX;
         const y1 = this.input1.valueY;
         const x2 = this.input2.valueX;
         const y2 = this.input2.valueY;
-        console.log(`${x1}  ${y1}  ${x2}  ${y2}`);
         this.valueA = y2 - y1;
         this.valueB = -x2 + x1
         this.valueC = -x1 * (y2 - y1) + y1 * (x2 - x1);
@@ -218,6 +231,17 @@ export class LineTwoPointsNode extends Node {
         this.output1.valueA = this.valueA;
         this.output1.valueB = this.valueB;
         this.output1.valueC = this.valueC;
+    }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program, `u_line${index}`))
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform2f(uniLocation[uniI++],
+                     this.value1, this.value2);
+        return uniI;
     }
 }
 
@@ -338,7 +362,7 @@ export class CircleMirrorNode extends Node {
     constructor(x, y) {
         super(x, y);
         this.nodeColor = 'rgb(255, 100, 0)';
-        this.name = 'CirleMirror';
+        this.name = 'CircleMirror';
 
         this.valueX = 1;
         this.valueY = 1;

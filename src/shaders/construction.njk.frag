@@ -6,6 +6,23 @@ uniform sampler2D u_accTexture;
 uniform vec2 u_resolution;
 uniform vec3 u_geometry; // [translateX, translateY, scele]
 
+//[x, y, r]
+{% for n in range(0, numPoint) %}
+uniform vec3 u_point{{ n }};
+{% endfor %}
+
+{% for n in range(0, numLineTwoPoints) %}
+{% endfor %}
+
+{% for n in range(0, numLineMirror) %}
+{% endfor %}
+
+{% for n in range(0, numCircleThreePoints) %}
+{% endfor %}
+
+{% for n in range(0, numCircleMirror) %}
+{% endfor %}
+
 // from Syntopia http://blog.hvidtfeldts.net/index.php/2015/01/path-tracing-3d-fractals/
 vec2 rand2n(const vec2 co, const float sampleIndex) {
     vec2 seed = co * (sampleIndex + 1.0);

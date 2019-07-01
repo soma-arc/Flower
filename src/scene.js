@@ -1,3 +1,6 @@
+const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
+                   'CircleThreePoints', 'CircleMirror'];
+
 export default class Scene {
     constructor() {
         this.nodes = [];
@@ -29,5 +32,33 @@ export default class Scene {
 
     addNode(node) {
         this.nodes.push(node);
+    }
+
+    getUniforms() {
+        let numPoints = 0;
+        for (const n of this.nodes) {
+            if (n.name === 'Point') {
+                numPoints++;
+            }
+        }
+
+        return { 'numPoints': numPoints };
+    }
+
+    // context for nunjucks
+    getContext() {
+        const context = {}
+        for (const node of this.nodes) {
+            for (const nodeName of OBJ_NAMES) {
+                if (node.name === nodeName) {
+                    if (context[`num${nodeName}`] === undefined) {
+                        context[`num${nodeName}`] = 0;
+                    }
+                    context[`num${nodeName}`]++;
+                    break;
+                }
+            }
+        }
+        return context;
     }
 }

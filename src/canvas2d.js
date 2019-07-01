@@ -286,6 +286,7 @@ export class GraphCanvas2d extends Canvas {
             break;
         }
         }
+        console.log(this.scene.getContext());
     }
 
     keydownListener(event) {
@@ -351,7 +352,7 @@ export class GraphCanvas2d extends Canvas {
 
 const RENDER_FRAGMENT = require('./shaders/render.frag');
 const RENDER_VERTEX = require('./shaders/render.vert');
-const CONSTRUCTION_FRAG = require('./shaders/construction.frag');
+const CONSTRUCTION_FRAG_TMPL = require('./shaders/construction.njk.frag');
 
 export class ConstructionCanvas2d extends Canvas {
     constructor(canvasId, scene) {
@@ -392,7 +393,7 @@ export class ConstructionCanvas2d extends Canvas {
         AttachShader(this.gl, RENDER_VERTEX, this.renderProgram, this.gl.VERTEX_SHADER);
         // attachShader(this.gl, CIRCLE_EDGE_SHADER_TMPL.render(this.scene.getContext()),
         //              this.renderProgram, this.gl.FRAGMENT_SHADER);
-        AttachShader(this.gl, CONSTRUCTION_FRAG,
+        AttachShader(this.gl, CONSTRUCTION_FRAG_TMPL.render({}),
                      this.renderProgram, this.gl.FRAGMENT_SHADER);
         LinkProgram(this.gl, this.renderProgram);
         this.renderVAttrib = this.gl.getAttribLocation(this.renderProgram, 'a_vertex');
@@ -408,10 +409,14 @@ export class ConstructionCanvas2d extends Canvas {
         this.uniLocations = [];
         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
                                                           'u_accTexture'));
-         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
-                                                           'u_resolution'));
+        this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
+                                                          'u_resolution'));
         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
                                                           'u_geometry'));
+        // for (let n = 0; n < this.numPoints.length; n++) {
+        //     this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
+        //                                                       `u_point${n}`));
+        // }
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                   'u_maxIISIterations'));
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
