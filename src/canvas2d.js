@@ -11,9 +11,10 @@ const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
                    'CircleMirror'];
 
 export class GraphCanvas2d extends Canvas {
-    constructor(canvasId, scene) {
+    constructor(canvasId, scene, canvasManager) {
         super(canvasId);
         this.scene = scene;
+        this.canvasManager = canvasManager;
         this.mouseState = {
             isPressing: false,
             prevPosition: [0, 0],
@@ -286,7 +287,8 @@ export class GraphCanvas2d extends Canvas {
             break;
         }
         }
-        console.log(this.scene.getContext());
+
+        this.canvasManager.compileRenderShader();
     }
 
     keydownListener(event) {
@@ -355,9 +357,10 @@ const RENDER_VERTEX = require('./shaders/render.vert');
 const CONSTRUCTION_FRAG_TMPL = require('./shaders/construction.njk.frag');
 
 export class ConstructionCanvas2d extends Canvas {
-    constructor(canvasId, scene) {
+    constructor(canvasId, scene, canvasManager) {
         super(canvasId);
         this.scene = scene;
+        this.canvasManager = canvasManager;
         this.mouseState = {
             isPressing: false,
             prevPosition: [0, 0],
@@ -371,6 +374,7 @@ export class ConstructionCanvas2d extends Canvas {
         this.translate = [0, 0];
 
         this.gl = GetWebGL2Context(this.canvas);
+
         this.vertexBuffer = CreateSquareVbo(this.gl);
 
         // render to canvas
@@ -393,7 +397,7 @@ export class ConstructionCanvas2d extends Canvas {
         AttachShader(this.gl, RENDER_VERTEX, this.renderProgram, this.gl.VERTEX_SHADER);
         // attachShader(this.gl, CIRCLE_EDGE_SHADER_TMPL.render(this.scene.getContext()),
         //              this.renderProgram, this.gl.FRAGMENT_SHADER);
-        AttachShader(this.gl, CONSTRUCTION_FRAG_TMPL.render({}),
+        AttachShader(this.gl, CONSTRUCTION_FRAG_TMPL.render(this.scene.getContext()),
                      this.renderProgram, this.gl.FRAGMENT_SHADER);
         LinkProgram(this.gl, this.renderProgram);
         this.renderVAttrib = this.gl.getAttribLocation(this.renderProgram, 'a_vertex');
@@ -413,6 +417,7 @@ export class ConstructionCanvas2d extends Canvas {
                                                           'u_resolution'));
         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
                                                           'u_geometry'));
+
         // for (let n = 0; n < this.numPoints.length; n++) {
         //     this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                       `u_point${n}`));
@@ -421,13 +426,13 @@ export class ConstructionCanvas2d extends Canvas {
         //                                                   'u_maxIISIterations'));
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                   'u_isRenderingGenerator'));
-        // this.scene.setUniformLocation(this.gl, this.uniLocations, this.renderProgram);
+        this.scene.setUniformLocations(this.gl, this.uniLocations, this.renderProgram);
+        console.log(this.uniLocations);
     }
 
     setRenderUniformValues(width, height, texture) {
         let i = 0;
         let textureIndex = 0;
-
         this.gl.activeTexture(this.gl.TEXTURE0 + textureIndex);
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.uniform1i(this.uniLocations[i++], textureIndex);
@@ -436,7 +441,7 @@ export class ConstructionCanvas2d extends Canvas {
                           this.translate.x, this.translate.y, this.scale);
         // this.gl.uniform1i(this.uniLocations[i++], this.maxIterations);
         // this.gl.uniform1i(this.uniLocations[i++], this.isRenderingGenerator);
-        // i = this.scene.setUniformValues(this.gl, this.uniLocations, i, this.scale);
+        i = this.scene.setUniformValues(this.gl, this.uniLocations, i, this.scale);
     }
 
     renderToTexture(textures, width, height) {

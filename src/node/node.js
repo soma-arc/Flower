@@ -165,7 +165,8 @@ export class PointNode extends Node {
     }
 
     setUniformLocations(gl, uniLocation, program, index) {
-        uniLocation.push(gl.getUniformLocation(program, `u_point${index}`))
+        uniLocation.push(gl.getUniformLocation(program,
+                                               `u_point${index}`));
     }
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
@@ -240,7 +241,7 @@ export class LineTwoPointsNode extends Node {
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
         gl.uniform2f(uniLocation[uniI++],
-                     this.value1, this.value2);
+                     this.value1, this.value2); //[dirX, dirY, normal.x, normal.y]
         return uniI;
     }
 }

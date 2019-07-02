@@ -1,5 +1,6 @@
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
                    'CircleThreePoints', 'CircleMirror'];
+import Vue from 'vue';
 
 export default class Scene {
     constructor() {
@@ -34,20 +35,29 @@ export default class Scene {
         this.nodes.push(node);
     }
 
-    getUniforms() {
-        let numPoints = 0;
-        for (const n of this.nodes) {
-            if (n.name === 'Point') {
-                numPoints++;
+    setUniformLocations(gl, uniLocations, program) {
+        const objects = {};
+        for (const node of this.nodes) {
+            if (objects[node.name] === undefined) {
+                objects[node.name] = [];
+            }
+            objects[node.name].push(node);
+        }
+        const objKeyNames = Object.keys(objects);
+        for (const objName of objKeyNames) {
+            const objArray = objects[objName];
+            for (let i = 0; i < objArray.length; i++) {
+                objArray[i].setUniformLocations(gl, uniLocations, program, i);
             }
         }
+    }
 
-        return { 'numPoints': numPoints };
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
     }
 
     // context for nunjucks
     getContext() {
-        const context = {}
+        const context = {};
         for (const node of this.nodes) {
             for (const nodeName of OBJ_NAMES) {
                 if (node.name === nodeName) {

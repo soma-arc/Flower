@@ -8,11 +8,11 @@ export default class CanvasManager {
     }
 
     init() {
-        this.graphCanvas = new GraphCanvas2d('graphCanvas', this.scene);
+        this.graphCanvas = new GraphCanvas2d('graphCanvas', this.scene, this);
         this.graphCanvas.resizeCanvas();
         this.graphCanvas.addEventListeners();
 
-        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas', this.scene);
+        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas', this.scene, this);
         this.constructionCanvas.resizeCanvas();
         this.constructionCanvas.addEventListeners();
 
@@ -21,6 +21,10 @@ export default class CanvasManager {
 
     renderGraph() {
         this.graphCanvas.render();
+    }
+
+    compileRenderShader() {
+        this.constructionCanvas.compileRenderShader();
     }
 
     resize() {
