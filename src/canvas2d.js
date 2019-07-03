@@ -427,7 +427,7 @@ export class ConstructionCanvas2d extends Canvas {
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                   'u_isRenderingGenerator'));
         this.scene.setUniformLocations(this.gl, this.uniLocations, this.renderProgram);
-        console.log(this.uniLocations);
+        this.scene.setUniformLocations(this.gl ,)
     }
 
     setRenderUniformValues(width, height, texture) {

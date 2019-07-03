@@ -53,6 +53,22 @@ export default class Scene {
     }
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        const objects = {};
+        for (const node of this.nodes) {
+            if (objects[node.name] === undefined) {
+                objects[node.name] = [];
+            }
+            objects[node.name].push(node);
+        }
+        const objKeyNames = Object.keys(objects);
+        for (const objName of objKeyNames) {
+            const objArray = objects[objName];
+            for (let i = 0; i < objArray.length; i++) {
+                uniI = objArray[i].setUniformValues(gl, uniLocation, uniI, sceneScale);
+            }
+        }
+        return uniI;
     }
 
     // context for nunjucks

@@ -130,8 +130,8 @@ export class ConstantNode extends Node {
 export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);
-        this.value1 = 100;
-        this.value2 = 100;
+        this.value1 = 10;
+        this.value2 = 10;
         this.nodeColor = 'rgb(255, 0, 255)';
         this.name = 'Point';
 
@@ -143,6 +143,8 @@ export class PointNode extends Node {
         this.sockets.push(this.input1);
         this.sockets.push(this.input2);
         this.sockets.push(this.output1);
+
+        this.uiRadius = 0.1;
     }
 
     renderNode(ctx, sceneScale) {
@@ -171,8 +173,9 @@ export class PointNode extends Node {
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
-        gl.uniform2f(uniLocation[uniI++],
-                     this.value1, this.value2);
+        gl.uniform3f(uniLocation[uniI++],
+                     this.value1, this.value2, this.uiRadius);
+        //console.log(`${this.value1}, ${this.value2}, ${this.uiRadius}`);
         return uniI;
     }
 }
