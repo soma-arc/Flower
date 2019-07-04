@@ -18,6 +18,7 @@ uniform vec3 u_point{{ n }};
 {% endfor %}
 
 {% for n in range(0, numCircleThreePoints) %}
+uniform vec3 u_circleThreePoints{{ n }};
 {% endfor %}
 
 {% for n in range(0, numCircleMirror) %}
@@ -42,8 +43,27 @@ void main() {
         position = position * u_geometry.z;
         position += u_geometry.xy;
 
-        vec3 col = vec3(1, 0, 0);
-        sum += col;
+        if(abs(position.x) < .01) {
+            sum += vec3(1);
+            continue;
+        }
+        if(abs(position.y) < .01) {
+            sum += vec3(1);
+            continue;
+        }
+
+        {% for n in range(0, numCircleThreePoints) %}
+        if(distance(u_circleThreePoints{{ n }}.xy, position) < u_circleThreePoints{{ n }}.z){
+            sum += vec3(1, 0, 0);
+        }
+        {% endfor %}
+
+        {% for n in range(0, numPoint) %}
+        if (distance(u_point{{ n }}.xy, position) < u_point{{ n }}.z){
+            sum += vec3(0, 0, 1);
+        }
+        {% endfor %}
+
     }
     outColor = vec4(sum / MAX_SAMPLES, 1);
 }

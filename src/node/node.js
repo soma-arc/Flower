@@ -360,6 +360,18 @@ export class CircleThreePointsNode extends Node {
         this.output1.valueY = this.valueY;
         this.output1.valueR = this.valueR;
     }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program,
+                                               `u_circleThreePoints${index}`));
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform3f(uniLocation[uniI++],
+                     this.valueX, this.valueY, this.valueR);
+        return uniI;
+    }
 }
 
 export class CircleMirrorNode extends Node {

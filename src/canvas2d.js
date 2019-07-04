@@ -290,6 +290,7 @@ export class GraphCanvas2d extends Canvas {
         }
 
         this.canvasManager.compileRenderShader();
+        this.canvasManager.constructionCanvas.render();
     }
 
     keydownListener(event) {
@@ -372,7 +373,7 @@ export class ConstructionCanvas2d extends Canvas {
         this.canvas = document.getElementById(this.canvasId);
         this.resizeCanvas();
 
-        this.scale = 1;
+        this.scale = 100;
         this.scaleFactor = 1.25;
         this.translate = [0, 0];
 
