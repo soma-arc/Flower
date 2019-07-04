@@ -3,7 +3,7 @@ import { Edge, FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
          CircleMirrorNode } from './node/node.js';
-import { GetWebGL2Context, CreateSquareVbo, CreateRGBATextures,
+import { GetWebGL2Context, CreateSquareVbo, CreateRGBATextures, CreateRGBTextures,
          AttachShader, LinkProgram } from './glUtils.js';
 
 const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
@@ -364,6 +364,7 @@ export class ConstructionCanvas2d extends Canvas {
         this.mouseState = {
             isPressing: false,
             prevPosition: [0, 0],
+            prevTranslate: [0, 0],
             button: -1
         };
 
@@ -390,6 +391,74 @@ export class ConstructionCanvas2d extends Canvas {
         this.compileRenderShader();
         this.initRenderTextures();
         this.texturesFrameBuffer = this.gl.createFramebuffer();
+    }
+
+    mouseWheelListener(event) {
+        event.preventDefault();
+        if (event.deltaY < 0) {
+            this.scale /= this.scaleFactor;
+        } else {
+            this.scale *= this.scaleFactor;
+        }
+        this.render();
+    }
+
+    mouseDownListener(event) {
+        event.preventDefault();
+        this.canvas.focus();
+        const mouse = this.calcSceneCoord(event.clientX, event.clientY);
+        this.mouseState.button = event.button;
+
+        this.mouseState.prevPosition = mouse;
+        this.mouseState.prevTranslate = this.translate;
+        this.mouseState.isPressing = true;
+    }
+
+    mouseMoveListener(event) {
+        // envent.button return 0 when the mouse is not pressed.
+        // Thus we check if the mouse is pressed.
+        if (!this.mouseState.isPressing) return;
+        const mouse = this.calcSceneCoord(event.clientX, event.clientY);
+        if (this.mouseState.button === Canvas.MOUSE_BUTTON_LEFT) {
+        } else if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
+            this.translate[0] = this.translate[0] - (mouse[0] - (this.mouseState.prevPosition[0]))
+            this.translate[1] = this.translate[1] - (mouse[1] - (this.mouseState.prevPosition[1]))
+            this.render();
+        }
+    }
+
+    mouseUpListener(event) {
+        this.mouseState.isPressing = false;
+    }
+
+    mouseOutListener(event) {
+        this.mouseState.isPressing = false;
+    }
+
+    /**
+     * Calculate screen coordinates from mouse position
+     * scale * [-width/2, width/2]x[-height/2, height/2]
+     * @param {number} mx
+     * @param {number} my
+     * @returns {Vec2}
+     */
+    calcCanvasCoord(mx, my) {
+        const rect = this.canvas.getBoundingClientRect();
+        return [this.scale * (((mx - rect.left) * this.pixelRatio) /
+                              this.canvas.height - this.canvasRatio),
+                this.scale * -(((my - rect.top) * this.pixelRatio) /
+                               this.canvas.height - 0.5)];
+    }
+
+    /**
+     * Calculate coordinates on scene (consider translation) from mouse position
+     * @param {number} mx
+     * @param {number} my
+     * @returns {Vec2}
+     */
+    calcSceneCoord(mx, my) {
+        const [x, y] = this.calcCanvasCoord(mx, my);
+        return [x + this.translate[0], y + this.translate[1]];
     }
 
     compileRenderShader() {
@@ -427,7 +496,6 @@ export class ConstructionCanvas2d extends Canvas {
         // this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                   'u_isRenderingGenerator'));
         this.scene.setUniformLocations(this.gl, this.uniLocations, this.renderProgram);
-        this.scene.setUniformLocations(this.gl ,)
     }
 
     setRenderUniformValues(width, height, texture) {
@@ -438,7 +506,7 @@ export class ConstructionCanvas2d extends Canvas {
         this.gl.uniform1i(this.uniLocations[i++], textureIndex);
         this.gl.uniform2f(this.uniLocations[i++], width, height);
         this.gl.uniform3f(this.uniLocations[i++],
-                          this.translate.x, this.translate.y, this.scale);
+                          this.translate[0], this.translate[1], this.scale);
         // this.gl.uniform1i(this.uniLocations[i++], this.maxIterations);
         // this.gl.uniform1i(this.uniLocations[i++], this.isRenderingGenerator);
         i = this.scene.setUniformValues(this.gl, this.uniLocations, i, this.scale);
