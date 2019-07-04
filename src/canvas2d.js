@@ -26,6 +26,7 @@ export class GraphCanvas2d extends Canvas {
         this.translate = [0, 0];
 
         this.canvas = document.getElementById(this.canvasId);
+        this.resizeCanvas();
         this.ctx = this.canvas.getContext('2d');
 
         this.selectedNode = undefined;
@@ -369,6 +370,7 @@ export class ConstructionCanvas2d extends Canvas {
         };
 
         this.canvas = document.getElementById(this.canvasId);
+        this.resizeCanvas();
 
         this.scale = 1;
         this.scaleFactor = 1.25;
