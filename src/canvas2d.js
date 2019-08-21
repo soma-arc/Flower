@@ -98,8 +98,8 @@ export class GraphCanvas2d extends Canvas {
 
     computeOriginalCoord(mx, my) {
         const rect = this.canvas.getBoundingClientRect();
-        return [(mx - rect.left) / this.scale,
-                (my - rect.top) / this.scale];
+        return [(mx - rect.left),
+                (my - rect.top)];
     }
 
     mouseDownListener(event) {
