@@ -412,6 +412,12 @@ export class ConstructionCanvas2d extends Canvas {
         const mouse = this.calcSceneCoord(event.clientX, event.clientY);
         this.mouseState.button = event.button;
 
+        if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
+            this.scene.select(mouse, this.scale);
+            console.log(this.scene.selectedState);
+            this.render();
+        }
+
         this.mouseState.prevPosition = mouse;
         this.mouseState.prevTranslate = this.translate;
         this.mouseState.isPressing = true;
@@ -423,6 +429,8 @@ export class ConstructionCanvas2d extends Canvas {
         if (!this.mouseState.isPressing) return;
         const mouse = this.calcSceneCoord(event.clientX, event.clientY);
         if (this.mouseState.button === Canvas.MOUSE_BUTTON_LEFT) {
+            const moved = this.scene.move(mouse);
+            if (moved) this.render();
         } else if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.translate[0] = this.translate[0] - (mouse[0] - (this.mouseState.prevPosition[0]))
             this.translate[1] = this.translate[1] - (mouse[1] - (this.mouseState.prevPosition[1]))

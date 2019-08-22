@@ -3,6 +3,7 @@ import { FloatSocket,
          LineSocket,
          CircleSocket } from '../socket/socket.js';
 import Textbox from '../textbox.js';
+import SelectionState from '../selectionState.js';
 
 export class Node {
     constructor(x, y) {
@@ -70,6 +71,15 @@ export class Node {
     setUniformLocations(gl, uniLocation, program, index) {}
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {}
+
+    // mouse = [x, y]
+    select(mouse, sceneScale) {
+        return new SelectionState();
+    }
+
+    move(mouse, selectionState) {
+        return false;
+    }
 }
 
 export class ConstantNode extends Node {
@@ -175,8 +185,26 @@ export class PointNode extends Node {
         let uniI = uniIndex;
         gl.uniform3f(uniLocation[uniI++],
                      this.value1, this.value2, this.uiRadius);
-        //console.log(`${this.value1}, ${this.value2}, ${this.uiRadius}`);
+        // console.log(`${this.value1}, ${this.value2}, ${this.uiRadius}`);
         return uniI;
+    }
+
+    select(mouse, sceneScale) {
+        const dx = mouse[0] - this.value1;
+        const dy = mouse[1] - this.value2;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d > this.uiRadius/* * sceneScale*/) return new SelectionState();
+        console.log(d);
+        return new SelectionState().setObj(this)
+            .setDiffObj(dx, dy);
+    }
+
+    move(mouse, selectionState) {
+        this.value1 = mouse[0] - selectionState.diffX;
+        this.value2 = mouse[1] - selectionState.diffY;
+        console.log(mouse);
+        console.log(selectionState.diffObj);
+        this.update();
     }
 }
 
@@ -244,7 +272,8 @@ export class LineTwoPointsNode extends Node {
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
         gl.uniform2f(uniLocation[uniI++],
-                     this.value1, this.value2); //[dirX, dirY, normal.x, normal.y]
+                     this.input1.valueX, this.value1.valueY,
+                     this.input2.valueX, this.input2.valueY); // [dirX, dirY, normal.x, normal.y]
         return uniI;
     }
 }

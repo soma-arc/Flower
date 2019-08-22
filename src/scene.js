@@ -1,12 +1,16 @@
+import Vue from 'vue';
+import SelectionState from './selectionState.js';
+
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
                    'CircleThreePoints', 'CircleMirror'];
-import Vue from 'vue';
 
 export default class Scene {
     constructor() {
         this.nodes = [];
         this.edges = [];
         this.unfinishedEdge = undefined;
+        this.selectedObj = undefined;
+        this.selectedState = new SelectionState();
     }
 
     renderGraph(ctx, mouseState) {
@@ -86,5 +90,26 @@ export default class Scene {
             }
         }
         return context;
+    }
+
+    select (mouse, sceneScale) {
+        for (const node of this.nodes) {
+            const state = node.select(mouse, sceneScale);
+            if (state.isSelectingObj()) {
+                this.selectedState = state;
+                this.selectedObj = this.selectedState.selectedObj;
+                this.selectedState.selectedObj.selected = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    move(mouse, selectionState) {
+        if (this.selectedState.isSelectingObj()) {
+            this.selectedState.selectedObj.move(mouse, this.selectedState);
+            return true;
+        }
+        return false;
     }
 }

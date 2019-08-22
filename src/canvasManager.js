@@ -12,7 +12,8 @@ export default class CanvasManager {
         this.graphCanvas.resizeCanvas();
         this.graphCanvas.addEventListeners();
 
-        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas', this.scene, this);
+        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas',
+                                                           this.scene, this);
         this.constructionCanvas.resizeCanvas();
         this.constructionCanvas.addEventListeners();
 
