@@ -102,6 +102,7 @@ export default class Scene {
                 return true;
             }
         }
+        this.selectedState = new SelectionState();
         return false;
     }
 
