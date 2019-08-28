@@ -117,9 +117,10 @@ export class GraphCanvas2d extends Canvas {
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             this.selectedSocket = this.pressSocket(x, y);
             if (this.selectedNode !== undefined) this.selectedNode.selected = false;
-            this.draggingNode = this.pressNode(x, y);
-            this.selectedNode = this.draggingNode;
+
             if (this.selectedSocket === undefined) {
+                this.draggingNode = this.pressNode(x, y);
+                this.selectedNode = this.draggingNode;
                 if (this.selectedNode !== undefined) {
                     this.selectedNode.selected = false;
                 }
