@@ -306,11 +306,13 @@ export class GraphCanvas2d extends Canvas {
                 if (this.scene.edges[e].s1.parent.selected ||
                     this.scene.edges[e].s2.parent.selected) {
                     this.scene.edges.splice(e, 1);
+                    break;
                 }
             }
             for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
                 if (this.scene.nodes[n].selected) {
                     this.scene.nodes.splice(n, 1);
+                    break;
                 }
             }
             this.restoreSocketEdgeOn();
