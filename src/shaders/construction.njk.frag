@@ -53,13 +53,6 @@ void main() {
             continue;
         }
 
-        {% for n in range(0, numCircleThreePoints) %}
-        if(distance(u_circleThreePoints{{ n }}.xy, position) < u_circleThreePoints{{ n }}.z){
-            sum += vec3(1, 0, 0);
-            continue;
-        }
-        {% endfor %}
-
         {% for n in range(0, numPoint) %}
         if (distance(u_point{{ n }}.xy, position) < u_point{{ n }}.z){
             sum += vec3(0, 0, 1);
@@ -75,6 +68,12 @@ void main() {
         }
         {% endfor %}
 
+        {% for n in range(0, numCircleThreePoints) %}
+        if(distance(u_circleThreePoints{{ n }}.xy, position) < u_circleThreePoints{{ n }}.z){
+            sum += vec3(1, 0, 0);
+            continue;
+        }
+        {% endfor %}
     }
     outColor = vec4(sum / MAX_SAMPLES, 1);
 }
