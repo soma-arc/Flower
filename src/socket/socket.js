@@ -6,7 +6,7 @@ export class Socket {
         this.isOutput = isOutput;
         this.socketColor = 'rgb(0, 255, 0)';
         this.edgeOn = false;
-
+        this.edge = undefined;
         this.socketType = '';
 
         this.radius = 8;

@@ -24,6 +24,13 @@ export class Node {
         this.isShowingOption = false;
 
         this.textbox = new Textbox();
+        this.id = this.getUniqueStr();
+    }
+
+    getUniqueStr(myStrong) {
+        let strong = 1000;
+        if (myStrong) strong = myStrong;
+        return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16)
     }
 
     renderPane(ctx, sceneScale) {
@@ -273,9 +280,14 @@ export class LineTwoPointsNode extends Node {
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
-        gl.uniform2f(uniLocation[uniI++],
-                     this.input1.valueX, this.value1.valueY,
-                     this.input2.valueX, this.input2.valueY); // [dirX, dirY, normal.x, normal.y]
+        const v = [this.input2.valueX - this.input1.valueX,
+                   this.input2.valueY - this.input1.valueY];
+        const d = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+        const d2 = [v[0] / d, v[1] / d];
+        const n = [d2[0], d2[1]];
+        gl.uniform4f(uniLocation[uniI++],
+                     this.input1.valueX, this.input1.valueY,
+                     -n[1], n[0]); // [dirX, dirY, normal.x, normal.y]
         return uniI;
     }
 }

@@ -2,6 +2,13 @@ export class Edge {
     constructor(s1, s2) {
         this.s1 = s1;
         this.s2 = s2;
+        this.id = this.getUniqueStr();
+    }
+
+    getUniqueStr(myStrong) {
+        let strong = 1000;
+        if (myStrong) strong = myStrong;
+        return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16)
     }
 
     renderEdge(ctx, sceneScale, mouseState) {

@@ -52,8 +52,8 @@ export class GraphCanvas2d extends Canvas {
         }
 
         for (const e of this.scene.edges) {
-            e.s1.edgeOn = true;
-            e.s2.edgeOn = true;
+            e.s1.edgeOn = false;
+            e.s2.edgeOn = false;
         }
     }
 
@@ -116,12 +116,14 @@ export class GraphCanvas2d extends Canvas {
 
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             this.selectedSocket = this.pressSocket(x, y);
+            if (this.selectedNode !== undefined) this.selectedNode.selected = false;
+            this.draggingNode = this.pressNode(x, y);
+            this.selectedNode = this.draggingNode;
             if (this.selectedSocket === undefined) {
                 if (this.selectedNode !== undefined) {
                     this.selectedNode.selected = false;
                 }
-                this.draggingNode = this.pressNode(x, y);
-                this.selectedNode = this.draggingNode;
+
                 if (this.draggingNode === undefined) {
                     if (this.isRenderingMenu) {
                         const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
@@ -171,24 +173,32 @@ export class GraphCanvas2d extends Canvas {
                             s.edgeOn = true;
                             const e = new FloatEdge(this.scene.unfinishedEdge.s1,
                                                     s);
+                            this.scene.unfinishedEdge.s1.edge = e;
+                            s.edge = e;
                             this.scene.edges.push(e);
                         }
                         if (this.scene.unfinishedEdge.s1.socketType === 'Point') {
                             this.scene.unfinishedEdge.s1.edgeOn = true;
                             s.edgeOn = true;
                             const e = new PointEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.unfinishedEdge.s1.edge = e;
+                            s.edge = e;
                             this.scene.edges.push(e);
                         }
                         if (this.scene.unfinishedEdge.s1.socketType === 'Line') {
                             this.scene.unfinishedEdge.s1.edgeOn = true;
                             s.edgeOn = true;
                             const e = new LineEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.unfinishedEdge.s1.edge = e;
+                            s.edge = e;
                             this.scene.edges.push(e);
                         }
                         if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
                             this.scene.unfinishedEdge.s1.edgeOn = true;
                             s.edgeOn = true;
                             const e = new CircleEdge(this.scene.unfinishedEdge.s1, s);
+                            this.scene.unfinishedEdge.s1.edge = e;
+                            s.edge = e;
                             this.scene.edges.push(e);
                         }
                         this.canvasManager.constructionCanvas.render();
@@ -290,7 +300,6 @@ export class GraphCanvas2d extends Canvas {
             break;
         }
         }
-
         this.canvasManager.compileRenderShader();
         this.canvasManager.constructionCanvas.render();
     }
@@ -302,19 +311,27 @@ export class GraphCanvas2d extends Canvas {
             this.optionNode = undefined;
             this.render();
         } else if (event.key === 'Delete') {
-            for (let e = this.scene.edges.length - 1; e >= 0; e--) {
-                if (this.scene.edges[e].s1.parent.selected ||
-                    this.scene.edges[e].s2.parent.selected) {
-                    this.scene.edges.splice(e, 1);
-                    break;
-                }
-            }
             for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
-                if (this.scene.nodes[n].selected) {
+                if (this.selectedNode === undefined) break;
+                if (this.scene.nodes[n].id === this.selectedNode.id) {
                     this.scene.nodes.splice(n, 1);
+
+                    for (const socket of this.selectedNode.sockets) {
+                        if (socket.edge === undefined) continue;
+                        for (let e = this.scene.edges.length - 1; e >= 0; e--) {
+                            if (this.scene.edges[e].id === socket.edge.id) {
+                                this.scene.edges.splice(e, 1);
+                                socket.edge.s1.edgeOn = false;
+                                socket.edge.s2.edgeOn = false;
+                                socket.edge = undefined;
+                            }
+                        }
+                    }
+                    this.selectedNode = undefined;
                     break;
                 }
             }
+
             this.restoreSocketEdgeOn();
             this.render();
             this.canvasManager.compileRenderShader();
