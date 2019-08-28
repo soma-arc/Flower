@@ -191,6 +191,7 @@ export class GraphCanvas2d extends Canvas {
                             const e = new CircleEdge(this.scene.unfinishedEdge.s1, s);
                             this.scene.edges.push(e);
                         }
+                        this.canvasManager.constructionCanvas.render();
                     }
                 }
             }
@@ -200,6 +201,7 @@ export class GraphCanvas2d extends Canvas {
 
         this.mouseState.button = -1;
         this.render();
+        this.canvasManager.constructionCanvas.render();
     }
 
     mouseMoveListener(event) {
@@ -313,6 +315,8 @@ export class GraphCanvas2d extends Canvas {
             }
             this.restoreSocketEdgeOn();
             this.render();
+            this.canvasManager.compileRenderShader();
+            this.canvasManager.constructionCanvas.render();
         }
         if (this.optionNode !== undefined &&
             this.optionNode.isShowingOption) {
@@ -430,7 +434,10 @@ export class ConstructionCanvas2d extends Canvas {
         const mouse = this.calcSceneCoord(event.clientX, event.clientY);
         if (this.mouseState.button === Canvas.MOUSE_BUTTON_LEFT) {
             const moved = this.scene.move(mouse);
-            if (moved) this.render();
+            if (moved) {
+                this.render();
+                this.canvasManager.graphCanvas.render();
+            }
         } else if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.translate[0] = this.translate[0] - (mouse[0] - (this.mouseState.prevPosition[0]))
             this.translate[1] = this.translate[1] - (mouse[1] - (this.mouseState.prevPosition[1]))

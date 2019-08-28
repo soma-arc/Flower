@@ -141,7 +141,7 @@ export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);
         this.value1 = 10;
-        this.value2 = 10;
+        this.value2 = 20;
         this.nodeColor = 'rgb(255, 0, 255)';
         this.name = 'Point';
 
@@ -168,8 +168,10 @@ export class PointNode extends Node {
     }
 
     update() {
-        if (this.input1.edgeOn && this.input2.edgeOn) {
+        if (this.input1.edgeOn) {
             this.value1 = this.input1.value;
+        }
+        if (this.input2.edgeOn) {
             this.value2 = this.input2.value;
         }
         this.output1.valueX = this.value2;
@@ -184,14 +186,14 @@ export class PointNode extends Node {
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
         gl.uniform3f(uniLocation[uniI++],
-                     this.value1, this.value2, this.uiRadius);
+                     this.value2, this.value1, this.uiRadius);
         // console.log(`${this.value1}, ${this.value2}, ${this.uiRadius}`);
         return uniI;
     }
 
     select(mouse, sceneScale) {
-        const dx = mouse[0] - this.value1;
-        const dy = mouse[1] - this.value2;
+        const dx = mouse[0] - this.value2;
+        const dy = mouse[1] - this.value1;
         const d = Math.sqrt(dx * dx + dy * dy);
         if (d > this.uiRadius/* * sceneScale*/) return new SelectionState();
         console.log(d);
@@ -200,8 +202,8 @@ export class PointNode extends Node {
     }
 
     move(mouse, selectionState) {
-        this.value1 = mouse[0] - selectionState.diffX;
-        this.value2 = mouse[1] - selectionState.diffY;
+        this.value2 = mouse[0] - selectionState.diffX;
+        this.value1 = mouse[1] - selectionState.diffY;
         console.log(mouse);
         console.log(selectionState.diffObj);
         this.update();
