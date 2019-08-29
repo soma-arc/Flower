@@ -262,7 +262,7 @@ export class LineTwoPointsNode extends Node {
         const x2 = this.input2.valueX;
         const y2 = this.input2.valueY;
         this.valueA = y2 - y1;
-        this.valueB = -x2 + x1
+        this.valueB = -x2 + x1;
         this.valueC = -x1 * (y2 - y1) + y1 * (x2 - x1);
         const mag = Math.sqrt(this.valueA * this.valueA + this.valueB * this.valueB);
         this.valueA /= mag;
@@ -272,6 +272,9 @@ export class LineTwoPointsNode extends Node {
         this.output1.valueA = this.valueA;
         this.output1.valueB = this.valueB;
         this.output1.valueC = this.valueC;
+
+        this.output1.p1 = [x1, y1];
+        this.output1.p2 = [x2, y2];
     }
 
     setUniformLocations(gl, uniLocation, program, index) {
@@ -301,6 +304,8 @@ export class LineMirrorNode extends Node {
         this.valueA = 1;
         this.valueB = 1;
         this.valueC = -500;
+        this.p1 = [0, 0];
+        this.p2 = [0, 0];
         this.lineMirrorType = 'p->m';
 
         this.input1 = new LineSocket(this, this.leftX, this.downY1, false);
@@ -337,9 +342,32 @@ export class LineMirrorNode extends Node {
         this.valueA = this.input1.valueA;
         this.valueB = this.input1.valueB;
         this.valueC = this.input1.valueC;
+        this.p1 = this.input1.p1;
+        this.p2 = this.input1.p2;
+
         this.output1.valueA = this.valueA;
         this.output1.valueB = this.valueB;
         this.output1.valueC = this.valueC;
+        this.output1.p1 = this.p1;
+        this.output1.p2 = this.p2;
+    }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program, `u_lineMirror${index}`))
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        const v = [this.p2[0] - this.p1[0],
+                   this.p2[1] - this.p1[1]];
+        const d = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+        const d2 = [v[0] / d, v[1] / d];
+        const n = [d2[0], d2[1]];
+        gl.uniform4f(uniLocation[uniI++],
+                     this.p2[0], this.p2[1],
+                     -n[1], n[0]); // [dirX, dirY, normal.x, normal.y]
+        console.log(`${this.p2[0]}, ${this.p2[1]}`);
+        return uniI;
     }
 }
 

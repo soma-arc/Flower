@@ -64,6 +64,9 @@ export class LineSocket extends Socket {
         this.valueA = 0;
         this.valueB = 0;
         this.valueC = 0;
+
+        this.p1 = [0, 0];
+        this.p2 = [0, 0];
     }
 }
 

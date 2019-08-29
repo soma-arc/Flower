@@ -97,6 +97,9 @@ export class LineEdge extends Edge {
         this.valueA = 0;
         this.valueB = 0;
         this.valueC = 0;
+
+        this.p1 = [0, 0];
+        this.p2 = [0, 0];
     }
 
     update() {
@@ -109,6 +112,11 @@ export class LineEdge extends Edge {
 
             this.valueC = this.s1.valueC;
             this.s2.valueC = this.valueC;
+
+            this.p1 = this.s1.p1;
+            this.s2.p1 = this.p1;
+            this.p2 = this.s1.p2;
+            this.s2.p2 = this.p2;
         } else if (this.s2.isOutput) {
             this.valueA = this.s2.valueA;
             this.s1.valueA = this.valueA;
@@ -118,6 +126,11 @@ export class LineEdge extends Edge {
 
             this.valueC = this.s2.valueC;
             this.s1.valueC = this.valueC;
+
+            this.p1 = this.s2.p1;
+            this.s1.p1 = this.p1;
+            this.p2 = this.s2.p2;
+            this.s1.p2 = this.p2;
         }
     }
 }
