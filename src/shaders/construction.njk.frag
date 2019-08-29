@@ -24,6 +24,7 @@ uniform vec3 u_circleThreePoints{{ n }};
 {% endfor %}
 
 {% for n in range(0, numCircleMirror) %}
+uniform vec4 u_circleMirror{{ n }};
 {% endfor %}
 
 vec3 hsv2rgb(float h, float s, float v){
@@ -42,6 +43,13 @@ vec2 rand2n(const vec2 co, const float sampleIndex) {
                 fract(cos(dot(seed.xy ,vec2(4.898,7.23))) * 23421.631));
 }
 
+// circle [x, y, radius, radius * radius]
+vec2 circleInvert(const vec2 pos, const vec4 circle){
+    vec2 p = pos - circle.xy;
+    float d = length(p);
+    return (p * circle.w)/(d * d) + circle.xy;
+}
+
 vec3 computeColor(float loopNum) {
     return hsv2rgb(0.01 + 0.05 * (loopNum -1.), 1., 1.);
 }
@@ -52,6 +60,15 @@ bool IIS(vec2 pos, out vec3 col) {
     bool inFund = true;
     
     for (int i = 0; i < MAX_ITERATIONS; i++) {
+        {% for n in range(0, numCircleMirror) %}
+        if(distance(pos, u_circleMirror{{ n }}.xy) < u_circleMirror{{ n }}.z){
+            pos = circleInvert(pos, u_circleMirror{{ n }});
+            inFund = false;
+            invNum++;
+            continue;
+        }
+        {% endfor %}
+        
         {% for n in range(0, numLineMirror) %}
         pos -= u_lineMirror{{ n }}.xy;
         float dHalfPlane{{ n }} = dot(pos, u_lineMirror{{ n }}.zw);
@@ -60,7 +77,7 @@ bool IIS(vec2 pos, out vec3 col) {
         pos -= 2.0 * min(0., dHalfPlane{{ n }}) * u_lineMirror{{ n }}.zw;
         pos += u_lineMirror{{ n }}.xy;
         {% endfor %}
-
+        
         if (inFund) break;
     }
     

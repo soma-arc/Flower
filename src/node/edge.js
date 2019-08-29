@@ -151,8 +151,8 @@ export class CircleEdge extends Edge {
             this.valueY = this.s1.valueY;
             this.s2.valueY = this.valueY;
 
-            this.valueC = this.s1.valueC;
-            this.s2.valueC = this.valueC;
+            this.valueR = this.s1.valueR;
+            this.s2.valueR = this.valueR;
         } else if (this.s2.isOutput) {
             this.valueX = this.s2.valueX;
             this.s1.valueX = this.valueX;
@@ -160,8 +160,8 @@ export class CircleEdge extends Edge {
             this.valueB = this.s2.valueY;
             this.s1.valueB = this.valueY;
 
-            this.valueC = this.s2.valueC;
-            this.s1.valueC = this.valueC;
+            this.valueR = this.s2.valueR;
+            this.s1.valueR = this.valueR;
         }
     }
 }

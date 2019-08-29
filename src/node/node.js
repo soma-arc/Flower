@@ -486,4 +486,16 @@ export class CircleMirrorNode extends Node {
         this.output1.valueY = this.valueY;
         this.output1.valueR = this.valueR;
     }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program,
+                                               `u_circleMirror${index}`));
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform4f(uniLocation[uniI++],
+                     this.valueX, this.valueY, this.valueR, this.valueR * this.valueR);
+        return uniI;
+    }
 }
