@@ -144,6 +144,124 @@ export class ConstantNode extends Node {
     }
 }
 
+export class SinWaveNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+
+        this.period = 1000;
+        this.amplitude = 1;
+        this.phaseShift = 0;
+        this.offset = 0;
+        this.value = 1;
+        this.out1 = 0;
+        this.optionIndex = -1;
+
+        this.nodeColor = 'rgb(0, 255, 255)';
+        this.name = 'SinWave';
+        this.output1 = new FloatSocket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.output1);
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black';
+
+        let xx = this.x + 12;
+        let yy = this.y + 36;
+        let str = `p:${this.period}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `a:${this.amplitude}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `p:${this.phaseShift}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `o:${this.offset}`;
+        ctx.fillText(str, xx, yy);
+
+        if (this.isShowingOption) {
+            for (let y = 0; y < 4; y++) {
+                ctx.strokeStyle = 'rgb(0, 0, 0)';
+                ctx.fillStyle = 'rgb(228, 228, 228)';
+                xx = this.x + 12;
+                yy = this.y + 24 + y * 34;
+                ctx.beginPath();
+                ctx.rect(xx, yy, 120, 34);
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+                ctx.fillStyle = 'rgb(0, 0, 0)';
+                ctx.font = "18px 'Times New Roman'";
+                if (y === 0) ctx.fillText('period', xx + 12, yy + 24);
+                else if (y === 1) ctx.fillText('amplitude', xx + 12, yy + 24);
+                else if (y === 2) ctx.fillText('shift', xx + 12, yy + 24);
+                else if (y === 3) ctx.fillText('offset', xx + 12, yy + 24);
+            }
+        }
+
+        if (this.optionIndex >= 0) {
+            this.textbox.textboxX = this.x + 12;
+            this.textbox.textboxY = this.y + 24 + this.optionIndex * 34;
+            this.textbox.textboxWidth = 80;
+            this.textbox.setupTextbox();
+            this.textbox.renderOn = true;
+
+            let str;
+            if (this.optionIndex === 0) str = `${this.period}`;
+            else if (this.optionIndex === 1) str = `${this.amplitude}`;
+            else if (this.optionIndex === 2) str = `${this.phaseShift}`;
+            else if (this.optionIndex === 3) str = `${this.offset}`;
+
+            for (let i = 0; i < str.length; i++) {
+                this.textbox.textboxText[i] = str.charAt(i);
+            }
+            this.textbox.textboxCursor = str.length;
+            this.textbox.parent = this;
+            this.textbox.renderTextbox(ctx);
+        } else {
+            this.closeTextbox()
+        }
+    }
+
+    closeTextbox() {
+        if (this.optionIndex === 0) this.period = parseFloat(this.textbox.getTextboxArray());
+        else if (this.optionIndex === 1) this.amplitude = parseFloat(this.textbox.getTextboxArray());
+        else if (this.optionIndex === 2) this.phaseShift = parseFloat(this.textbox.getTextboxArray());
+        else if (this.optionIndex === 3) this.offset = parseFloat(this.textbox.getTextboxArray());
+        this.textbox.renderOn = false;
+    }
+
+    isPressed(mx, my) {
+        if (this.isShowingOption) {
+            for (let y = 0; y < 4; y++) {
+                const xx = this.x + 12;
+                const yy = this.y + 24 + y * 34;
+                if (xx < mx && mx < xx + 120 &&
+                    yy < my && my < yy + 34) {
+                    this.optionIndex = y;
+                    console.log(y);
+                    return true;
+                }
+            }
+        }
+
+        if (this.x < mx && mx < this.x + this.width &&
+            this.y < my && my < this.y + this.height) {
+            return true;
+        }
+        this.optionIndex = -1;
+        return false;
+    }
+
+    update() {
+        this.out1 = this.value =
+            this.offset + this.amplitude *
+            Math.sin(2 * Math.PI * (this.phaseShift + new Date().getTime() / this.period));
+        this.output1.value = this.out1;
+    }
+}
+
 export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);

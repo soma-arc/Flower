@@ -2,13 +2,13 @@ import Canvas from './canvas.js';
 import { Edge, FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js';
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
-         CircleMirrorNode } from './node/node.js';
+         CircleMirrorNode, SinWaveNode } from './node/node.js';
 import { GetWebGL2Context, CreateSquareVbo, CreateRGBATextures, CreateRGBTextures,
          AttachShader, LinkProgram } from './glUtils.js';
 
 const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
                    'LineMirror', 'CircleThreePoints',
-                   'CircleMirror'];
+                   'CircleMirror', 'SinWave'];
 
 export class GraphCanvas2d extends Canvas {
     constructor(canvasId, scene, canvasManager) {
@@ -108,13 +108,26 @@ export class GraphCanvas2d extends Canvas {
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
 
         if (this.optionNode !== undefined) {
-            this.optionNode.closeTextbox();
-            this.optionNode.isShowingOption = false;
-            this.optionNode = undefined;
-            this.render();
+            if (this.optionNode.name === 'Constant') {
+                this.optionNode.closeTextbox();
+                this.optionNode.isShowingOption = false;
+                this.optionNode = undefined;
+                this.render();
+            } else if (this.optionNode.name === 'SinWave') {
+                const pressed = this.optionNode.isPressed(x, y);
+                if (pressed === false) {
+                    this.optionNode.isShowingOption = false;
+                    this.optionNode = undefined;
+                    this.render();
+                }
+                return;
+            }
         }
 
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
+            if (this.optionNode !== undefined) {
+                this.optionNode.isPressed(x, y);
+            }
             this.selectedSocket = this.pressSocket(x, y);
             if (this.selectedNode !== undefined) this.selectedNode.selected = false;
 
@@ -271,6 +284,7 @@ export class GraphCanvas2d extends Canvas {
         }
 
         this.addingNode = MENU_ITEM[index];
+        console.log(this.addingNode);
         this.isRenderingMenu = false;
     }
 
@@ -298,6 +312,10 @@ export class GraphCanvas2d extends Canvas {
         }
         case 'CircleMirror': {
             this.scene.addNode(new CircleMirrorNode(x, y));
+            break;
+        }
+        case 'SinWave': {
+            this.scene.addNode(new SinWaveNode(x, y));
             break;
         }
         }

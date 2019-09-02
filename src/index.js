@@ -35,4 +35,11 @@ window.addEventListener('load', () => {
     });
 
     canvasManager.renderGraph();
+
+    function renderLoop() {
+        canvasManager.render();
+        window.setTimeout(renderLoop, 10);
+    }
+
+    renderLoop();
 });

@@ -24,6 +24,11 @@ export default class CanvasManager {
         this.graphCanvas.render();
     }
 
+    render() {
+        this.graphCanvas.render();
+        this.constructionCanvas.render();
+    }
+
     compileRenderShader() {
         this.constructionCanvas.compileRenderShader();
     }
