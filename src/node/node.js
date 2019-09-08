@@ -220,7 +220,7 @@ export class SinWaveNode extends Node {
             this.textbox.parent = this;
             this.textbox.renderTextbox(ctx);
         } else {
-            this.closeTextbox()
+            this.closeTextbox();
         }
     }
 
@@ -240,7 +240,6 @@ export class SinWaveNode extends Node {
                 if (xx < mx && mx < xx + 120 &&
                     yy < my && my < yy + 34) {
                     this.optionIndex = y;
-                    console.log(y);
                     return true;
                 }
             }
@@ -259,6 +258,26 @@ export class SinWaveNode extends Node {
             this.offset + this.amplitude *
             Math.sin(2 * Math.PI * (this.phaseShift + new Date().getTime() / this.period));
         this.output1.value = this.out1;
+    }
+
+    showOption() {
+        this.textbox.textboxX = this.x + 12;
+        this.textbox.textboxY = this.y + 24;
+        this.textbox.textboxWidth = 80;
+        this.textbox.setupTextbox();
+        this.textbox.renderOn = true;
+
+        const str = `${this.value}`;
+        for (let i = 0; i < str.length; i++) {
+            this.textbox.textboxText[i] = str.charAt(i);
+        }
+        this.textbox.textboxCursor = str.length;
+        this.textbox.parent = this;
+    }
+
+    closeTextbox() {
+        this.value = parseFloat(this.textbox.getTextboxArray());
+        this.textbox.renderOn = false;
     }
 }
 

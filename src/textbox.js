@@ -61,6 +61,7 @@ export default class Textbox {
     keyTextbox(key) {
         if ((0 <= parseInt(key) && parseInt(key) <= 9) ||
             (key === '.')) {
+            console.log('num' + key)
             for (let i = 126; i >= this.textboxCursor; i--) {
                 this.textboxText[i + 1] = this.textboxText[i];
             }
@@ -69,24 +70,23 @@ export default class Textbox {
                 this.textboxStart++;
             }
             this.textboxCursor++;
-        }
-        if (key === 'ArrowRight') {
+            console.log(this.textboxText);
+            console.log(this.textboxCursor);
+        } else if (key === 'ArrowRight') {
             if (this.textboxStart < 95 && this.textboxCursor === this.textboxStart + 30) {
                 this.textboxStart++;
             }
             if (this.textboxCursor < 127) {
                 this.textboxCursor++;
             }
-        }
-        if (key === 'ArrowLeft') {
+        } else if (key === 'ArrowLeft') {
             if (this.textboxStart > 0 && this.textboxCursor === 2) {
                 this.textboxStart--;
             }
             if (this.textboxCursor > 0) {
                 this.textboxCursor--;
             }
-        }
-        if (key === 'Backspace' && this.textboxCursor > 0) {
+        } else if (key === 'Backspace' && this.textboxCursor > 0) {
             for (let i = this.textboxCursor; i < 128; i++) {
                 this.textboxText[i - 1] = this.textboxText[i];
             }

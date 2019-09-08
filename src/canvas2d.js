@@ -116,6 +116,7 @@ export class GraphCanvas2d extends Canvas {
             } else if (this.optionNode.name === 'SinWave') {
                 const pressed = this.optionNode.isPressed(x, y);
                 if (pressed === false) {
+                    this.optionNode.closeTextbox();
                     this.optionNode.isShowingOption = false;
                     this.optionNode = undefined;
                     this.render();
@@ -325,9 +326,12 @@ export class GraphCanvas2d extends Canvas {
 
     keydownListener(event) {
         if (event.key === 'Enter') {
-            this.optionNode.closeTextbox();
-            this.optionNode.isShowingOption = false;
-            this.optionNode = undefined;
+            if (this.optionNode !== undefined) {
+                this.optionNode.closeTextbox();
+                this.optionNode.isShowingOption = false;
+                this.optionNode.optionIndex = -1;
+                this.optionNode = undefined;
+            }
             this.render();
         } else if (event.key === 'Delete') {
             for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
