@@ -93,6 +93,9 @@ export default class Scene {
     }
 
     select (mouse, sceneScale) {
+        if (this.selectedState.selectedObj !== undefined) {
+            this.selectedState.selectedObj.selected = false;
+        }
         for (const node of this.nodes) {
             const state = node.select(mouse, sceneScale);
             if (state.isSelectingObj()) {

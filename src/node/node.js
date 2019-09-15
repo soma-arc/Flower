@@ -298,7 +298,7 @@ export class PointNode extends Node {
         this.sockets.push(this.input2);
         this.sockets.push(this.output1);
 
-        this.uiRadius = 0.1;
+        this.uiRadius = 0.5;
     }
 
     renderNode(ctx, sceneScale) {
