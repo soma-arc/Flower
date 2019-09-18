@@ -4,6 +4,7 @@ import { FloatSocket,
          CircleSocket } from '../socket/socket.js';
 import Textbox from '../textbox.js';
 import SelectionState from '../selectionState.js';
+import SelectionNodeState from './selectionState.js';
 
 export class Node {
     constructor(x, y) {
@@ -25,6 +26,9 @@ export class Node {
 
         this.textbox = new Textbox();
         this.id = this.getUniqueStr();
+
+        this.selectionState = new SelectionState();
+        this.selectionNodeState = new SelectionNodeState();
     }
 
     getUniqueStr(myStrong) {
@@ -63,12 +67,47 @@ export class Node {
 
     update() {}
 
-    isPressed(mx, my) {
+    selectNode(mx, my) {
+        this.selectionState = new SelectionState();
+
+        if (this.isPressedSocket(mx, my)) return true;
+        if (this.isPressedBody(mx, my)) return true;
+        if (this.isShowingOption && this.isPressedOption()) {
+            
+        }
+        return false;
+    }
+
+    isPressedSocket(mx, my) {
+        for (const s of this.sockets) {
+            const [selected, diffX, diffY] = s.isPressed(mx, my)
+            if (selected) {
+                this.selectionNodeState.selection = SelectionState.SELECT_SOCKET;
+                this.selectionNodeState.x = s.x;
+                this.selectionNodeState.y = s.y;
+                this.selectionNodeState.diffX = diffX;
+                this.selectionNodeState.diffY = diffY;
+                this.selectionNodeState.selectedSocket = s;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isPressedBody(mx, my) {
         if (this.x < mx && mx < this.x + this.width &&
             this.y < my && my < this.y + this.height) {
+            this.selectionNodeState.selection = SelectionNodeState.SELECT_BODY;
+            this.selectionNodeState.x = this.x;
+            this.selectionNodeState.y = this.y;
+            this.selectionNodeState.diffX = mx - this.x;
+            this.selectionNodeState.diffY = my - this.y;
             return true;
         }
         return false;
+    }
+
+    isPressedOption() {
     }
 
     showOption() {}
@@ -232,7 +271,7 @@ export class SinWaveNode extends Node {
         this.textbox.renderOn = false;
     }
 
-    isPressed(mx, my) {
+    isPressedBody(mx, my) {
         if (this.isShowingOption) {
             for (let y = 0; y < 4; y++) {
                 const xx = this.x + 12;
@@ -339,9 +378,9 @@ export class PointNode extends Node {
         const dx = mouse[0] - this.value2;
         const dy = mouse[1] - this.value1;
         const d = Math.sqrt(dx * dx + dy * dy);
-        if (d > this.uiRadius/* * sceneScale*/) return new SelectionState();
+        if (d > this.uiRadius/* * sceneScale*/) return new SelectionObjState();
         console.log(d);
-        return new SelectionState().setObj(this)
+        return new SelectionObjState().setObj(this)
             .setDiffObj(dx, dy);
     }
 

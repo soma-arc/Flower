@@ -9,7 +9,15 @@ export class Socket {
         this.edge = undefined;
         this.socketType = '';
 
+        this.id = this.getUniqueStr();
+
         this.radius = 8;
+    }
+
+    getUniqueStr(myStrong) {
+        let strong = 1000;
+        if (myStrong) strong = myStrong;
+        return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16)
     }
 
     renderSocket(ctx) {
@@ -31,9 +39,9 @@ export class Socket {
         const tx = mx - xx;
         const ty = my - yy;
         if (Math.sqrt(tx * tx + ty * ty) < this.radius) {
-            return true;
+            return [true, tx, ty];
         }
-        return false;
+        return [false, tx, ty];
     }
 }
 
