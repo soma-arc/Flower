@@ -382,7 +382,7 @@ export class PointNode extends Node {
         const d = Math.sqrt(dx * dx + dy * dy);
         if (d > this.uiRadius/* * sceneScale*/) return new ConstructionState();
         console.log(d);
-        return new ConstructionState().setObj(this)
+        return new ConstructionState().setNode(this)
             .setDiffObj(dx, dy);
     }
 

@@ -3,7 +3,7 @@ export default class ConstructionState {
      *
      */
     constructor () {
-        this.selectedObj = undefined;
+        this.selectedNode = undefined;
         this.componentId = -1;
         // difference between mouse and the object
         // (e.g. center of the circle)
@@ -18,8 +18,8 @@ export default class ConstructionState {
      * @param {Node} obj
      * @returns {SelectionState}
      */
-    setObj (obj) {
-        this.selectedObj = obj;
+    setNode (node) {
+        this.selectedNode = node;
         return this;
     }
 
@@ -59,7 +59,7 @@ export default class ConstructionState {
      *
      * @returns {boolean}
      */
-    isSelectingObj () {
-        return this.selectedObj !== undefined;
+    isSelectingNode () {
+        return this.selectedNode !== undefined;
     }
 }

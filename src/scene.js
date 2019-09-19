@@ -9,7 +9,7 @@ export default class Scene {
         this.nodes = [];
         this.edges = [];
         this.unfinishedEdge = undefined;
-        this.selectedObj = undefined;
+        this.selectedNode = undefined;
         this.constructionState = new ConstructionState();
     }
 
@@ -93,15 +93,16 @@ export default class Scene {
     }
 
     select (mouse, sceneScale) {
-        if (this.constructionState.selectedObj !== undefined) {
-            this.constructionState.selectedObj.selected = false;
+        if (this.constructionState.selectedNode !== undefined) {
+            this.constructionState.selectedNode.selected = false;
         }
         for (const node of this.nodes) {
             const state = node.select(mouse, sceneScale);
-            if (state.isSelectingObj()) {
+            if (state.isSelectingNode()) {
                 this.constructionState = state;
-                this.selectedObj = this.constructionState.selectedObj;
-                this.constructionState.selectedObj.selected = true;
+                if (this.selectedNode !== undefined) this.selectedNode.selected = false;
+                this.selectedNode = this.constructionState.selectedNode;
+                this.constructionState.selectedNode.selected = true;
                 return true;
             }
         }
@@ -110,8 +111,8 @@ export default class Scene {
     }
 
     move(mouse, selectionState) {
-        if (this.constructionState.isSelectingObj()) {
-            this.constructionState.selectedObj.move(mouse, this.constructionState);
+        if (this.constructionState.isSelectingNode()) {
+            this.constructionState.selectedNode.move(mouse, this.constructionState);
             return true;
         }
         return false;

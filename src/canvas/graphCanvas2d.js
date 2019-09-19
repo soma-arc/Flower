@@ -24,7 +24,7 @@ export default class GraphCanvas2d extends Canvas {
         this.resizeCanvas();
         this.ctx = this.canvas.getContext('2d');
 
-        this.selectedNode = undefined;
+        //this.selectedNode = undefined;
         this.draggingNode = undefined;
         this.optionNode = undefined;
         this.selectedSocket = undefined;
@@ -116,9 +116,9 @@ export default class GraphCanvas2d extends Canvas {
 
                     this.scene.unfinishedEdge = new Edge(n.graphState.selectedSocket,
                                                          undefined);
-                    if (this.selectedNode !== undefined) this.selectedNode.selected = false;
-                    this.selectedNode = n;
-                    this.selectedNode.selected = true;
+                    if (this.scene.selectedNode !== undefined) this.scene.selectedNode.selected = false;
+                    this.scene.selectedNode = n;
+                    this.scene.selectedNode.selected = true;
                     this.selectedSocket = n.graphState.selectedSocket;
                     this.mouseState.x = x;
                     this.mouseState.y = y;
@@ -126,11 +126,11 @@ export default class GraphCanvas2d extends Canvas {
                 }
                 if (n.graphState.selection === GraphState.SELECT_BODY) {
                     this.draggingNode = n;
-                    if (this.selectedNode !== undefined) {
-                        this.selectedNode.selected = false;
+                    if (this.scene.selectedNode !== undefined) {
+                        this.scene.selectedNode.selected = false;
                     }
-                    this.selectedNode = n;
-                    this.selectedNode.selected = true;
+                    this.scene.selectedNode = n;
+                    this.scene.selectedNode.selected = true;
                     // this.mouseState.x = x;
                     // this.mouseState.y = y;
                     return;
@@ -309,11 +309,11 @@ export default class GraphCanvas2d extends Canvas {
             break;
         }
         }
-        if (this.selectedNode !== undefined) {
-            this.selectedNode.selected = false;
+        if (this.scene.selectedNode !== undefined) {
+            this.scene.selectedNode.selected = false;
         }
-        this.selectedNode = this.scene.nodes[this.scene.nodes.length - 1];
-        this.selectedNode.selected = true;
+        this.scene.selectedNode = this.scene.nodes[this.scene.nodes.length - 1];
+        this.scene.selectedNode.selected = true;
         this.canvasManager.compileRenderShader();
         this.canvasManager.constructionCanvas.render();
     }
@@ -329,11 +329,11 @@ export default class GraphCanvas2d extends Canvas {
             this.render();
         } else if (event.key === 'Delete') {
             for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
-                if (this.selectedNode === undefined) break;
-                if (this.scene.nodes[n].id === this.selectedNode.id) {
+                if (this.scene.selectedNode === undefined) break;
+                if (this.scene.nodes[n].id === this.scene.selectedNode.id) {
                     this.scene.nodes.splice(n, 1);
 
-                    for (const socket of this.selectedNode.sockets) {
+                    for (const socket of this.scene.selectedNode.sockets) {
                         if (socket.edge === undefined) continue;
                         for (let e = this.scene.edges.length - 1; e >= 0; e--) {
                             if (this.scene.edges[e].id === socket.edge.id) {
@@ -344,7 +344,7 @@ export default class GraphCanvas2d extends Canvas {
                             }
                         }
                     }
-                    this.selectedNode = undefined;
+                    this.scene.selectedNode = undefined;
                     break;
                 }
             }
