@@ -10,8 +10,16 @@ export class Socket {
         this.socketType = '';
 
         this.radius = 8;
+
+        this.id = this.getUniqueStr();
     }
 
+    getUniqueStr(myStrong) {
+        let strong = 1000;
+        if (myStrong) strong = myStrong;
+        return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16)
+    }
+    
     renderSocket(ctx) {
         const xx = this.parent.x + this.x;
         const yy = this.parent.y + this.y;
@@ -25,15 +33,15 @@ export class Socket {
 
     update() {}
 
-    isPressed(mx, my) {
+    isPressedAndDiff(mx, my) {
         const xx = this.parent.x + this.x;
         const yy = this.parent.y + this.y;
         const tx = mx - xx;
         const ty = my - yy;
         if (Math.sqrt(tx * tx + ty * ty) < this.radius) {
-            return true;
+            return [true, tx, ty];
         }
-        return false;
+        return [false, tx, ty];
     }
 }
 

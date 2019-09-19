@@ -4,6 +4,7 @@ import { FloatSocket,
          CircleSocket } from '../socket/socket.js';
 import Textbox from '../textbox.js';
 import ConstructionState from '../state/constructionState.js';
+import GraphState from '../state/graphState.js';
 
 export class Node {
     constructor(x, y) {
@@ -25,6 +26,9 @@ export class Node {
 
         this.textbox = new Textbox();
         this.id = this.getUniqueStr();
+
+        this.constructionState = new ConstructionState();
+        this.graphState = new GraphState();
     }
 
     getUniqueStr(myStrong) {
@@ -63,12 +67,49 @@ export class Node {
 
     update() {}
 
-    isPressed(mx, my) {
+    selectNode(mx, my) {
+        this.graphState = new GraphState();
+
+        console.log('pressedSocket');
+        if (this.isPressedSocket(mx, my)) return true;
+        console.log('pressedBody');
+        if (this.isPressedBody(mx, my)) return true;
+        console.log('pressedOption');
+        if (this.isShowingOption && this.isPressedOption()) {
+        }
+        return false;
+    }
+
+    isPressedSocket(mx, my) {
+        for (const s of this.sockets) {
+            const [selected, diffX, diffY] = s.isPressedAndDiff(mx, my);
+            if (selected) {
+                this.graphState.selection = GraphState.SELECT_SOCKET;
+                this.graphState.x = s.x;
+                this.graphState.y = s.y;
+                this.graphState.diffX = diffX;
+                this.graphState.diffY = diffY;
+                this.graphState.selectedSocket = s;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    isPressedBody(mx, my) {
         if (this.x < mx && mx < this.x + this.width &&
             this.y < my && my < this.y + this.height) {
+            this.graphState.selection = GraphState.SELECT_BODY;
+            this.graphState.x = this.x;
+            this.graphState.y = this.y;
+            this.graphState.diffX = mx - this.x;
+            this.graphState.diffY = my - this.y;
             return true;
         }
         return false;
+    }
+
+    isPressedOption() {
     }
 
     showOption() {}
@@ -84,7 +125,7 @@ export class Node {
         return new ConstructionState();
     }
 
-    move(mouse, constructionState) {
+    move(mouse, selectionState) {
         return false;
     }
 }

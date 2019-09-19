@@ -4,6 +4,8 @@ import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
          CircleMirrorNode, SinWaveNode } from '../node/node.js';
 
+import GraphState from '../state/graphState.js';
+
 const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
                    'LineMirror', 'CircleThreePoints',
                    'CircleMirror', 'SinWave'];
@@ -13,11 +15,6 @@ export default class GraphCanvas2d extends Canvas {
         super(canvasId);
         this.scene = scene;
         this.canvasManager = canvasManager;
-        this.mouseState = {
-            isPressing: false,
-            prevPosition: [0, 0],
-            button: -1
-        };
 
         this.scale = 1;
         this.scaleFactor = 1.25;
@@ -105,77 +102,59 @@ export default class GraphCanvas2d extends Canvas {
         this.canvas.focus();
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
 
-        if (this.optionNode !== undefined) {
-            if (this.optionNode.name === 'Constant') {
-                this.optionNode.closeTextbox();
-                this.optionNode.isShowingOption = false;
-                this.optionNode = undefined;
-                this.render();
-            } else if (this.optionNode.name === 'SinWave') {
-                const pressed = this.optionNode.isPressed(x, y);
-                if (pressed === false) {
-                    this.optionNode.closeTextbox();
-                    this.optionNode.isShowingOption = false;
-                    this.optionNode = undefined;
-                    this.render();
-                }
+        if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
+            if (this.isRenderingMenu) {
+                const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
+                this.selectAddingNodeFromList(ox, oy);
                 return;
             }
-        }
 
-        if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
-            if (this.optionNode !== undefined) {
-                this.optionNode.isPressed(x, y);
-            }
-            this.selectedSocket = this.pressSocket(x, y);
-            if (this.selectedNode !== undefined) this.selectedNode.selected = false;
+            for (const n of this.scene.nodes) {
+                n.selectNode(x, y);
+                if (n.graphState.selection === GraphState.SELECT_SOCKET) {
+                    console.log('in socket');
 
-            if (this.selectedSocket === undefined) {
-                this.draggingNode = this.pressNode(x, y);
-                this.selectedNode = this.draggingNode;
-                if (this.selectedNode !== undefined) {
-                    this.selectedNode.selected = false;
+                    this.scene.unfinishedEdge = new Edge(n.graphState.selectedSocket,
+                                                         undefined);
+                    if (this.selectedNode !== undefined) this.selectedNode.selected = false;
+                    this.selectedNode = n;
+                    this.selectedNode.selected = true;
+                    this.selectedSocket = n.graphState.selectedSocket;
+                    this.mouseState.x = x;
+                    this.mouseState.y = y;
+                    return;
                 }
-
-                if (this.draggingNode === undefined) {
-                    if (this.isRenderingMenu) {
-                        const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
-                        this.selectAddingNodeFromList(ox, oy);
-                    } else {
-                        this.addNode(x, y);
+                if (n.graphState.selection === GraphState.SELECT_BODY) {
+                    this.draggingNode = n;
+                    if (this.selectedNode !== undefined) {
+                        this.selectedNode.selected = false;
                     }
-                } else {
-                    this.draggingNode.selected = true;
+                    this.selectedNode = n;
+                    this.selectedNode.selected = true;
+                    // this.mouseState.x = x;
+                    // this.mouseState.y = y;
+                    return;
                 }
-            } else {
-                this.scene.unfinishedEdge = new Edge(this.selectedSocket, undefined);
-                this.mouseState.x = x;
-                this.mouseState.y = y;
             }
-            this.render();
+
+            this.addNode(x, y);
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.mouseState.x = x;
             this.mouseState.y = y;
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
-            this.optionNode = this.pressNode(x, y);
-            if (this.optionNode !== undefined) {
-                this.optionNode.isShowingOption = true;
-                this.optionNode.showOption();
-            } else {
-                this.isRenderingMenu = !this.isRenderingMenu;
-            }
+            this.isRenderingMenu = !this.isRenderingMenu;
             this.render();
         }
         this.mouseState.button = event.button;
     }
 
     mouseUpListener(event) {
-        this.draggingNode = undefined;
-
         if (this.scene.unfinishedEdge !== undefined) {
             const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
             const s = this.pressSocket(x, y);
-            if (s !== undefined && s !== this.selectedSocket) {
+            console.log(s);
+            console.log(this.selectedSocket);
+            if (s !== undefined && s.id !== this.selectedSocket.id) {
                 const r1 = this.selectedSocket.isOutput;
                 const r2 = s.isOutput;
                 if (((r1 && !r2) || (!r1 && r2)) &&
@@ -222,32 +201,44 @@ export default class GraphCanvas2d extends Canvas {
             this.scene.unfinishedEdge = undefined;
         }
 
+        this.draggingNode = undefined;
+        this.selectedSocket = undefined;
         this.mouseState.button = -1;
-        this.render();
-        this.canvasManager.constructionCanvas.render();
+        // this.render();
+        // this.canvasManager.constructionCanvas.render();
+    }
+
+    pushEdge(socket, edge) {
+        this.scene.unfinishedEdge.s1.edgeOn = true;
+        socket.edgeOn = true;
+        this.scene.unfinishedEdge.s1.edge = edge;
+        socket.edge = edge;
+        this.scene.edges.push(edge);
     }
 
     mouseMoveListener(event) {
         event.preventDefault();
         this.canvas.focus();
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
+        let flag = false;
 
-        if (this.draggingNode !== undefined) {
-            this.draggingNode.x = x - this.mouseState['diffX'];
-            this.draggingNode.y = y - this.mouseState['diffY'];
-            this.render();
-        }
         if (this.scene.unfinishedEdge !== undefined) {
             this.mouseState.x = x;
             this.mouseState.y = y;
-            this.render();
+            flag = true;
+        } else if (this.draggingNode !== undefined) {
+            this.draggingNode.x = x - this.draggingNode.graphState.diffX;
+            this.draggingNode.y = y - this.draggingNode.graphState.diffY;
+            flag = true;
         }
 
         if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.translate[0] += x - this.mouseState.x;
             this.translate[1] += y - this.mouseState.y;
-            this.render();
+            flag = true;
         }
+
+        if (flag) this.render();
     }
 
     renderMenu(ctx) {
@@ -318,6 +309,11 @@ export default class GraphCanvas2d extends Canvas {
             break;
         }
         }
+        if (this.selectedNode !== undefined) {
+            this.selectedNode.selected = false;
+        }
+        this.selectedNode = this.scene.nodes[this.scene.nodes.length - 1];
+        this.selectedNode.selected = true;
         this.canvasManager.compileRenderShader();
         this.canvasManager.constructionCanvas.render();
     }
@@ -379,7 +375,7 @@ export default class GraphCanvas2d extends Canvas {
     pressSocket(x, y) {
         for (const n of this.scene.nodes) {
             for (const s of n.sockets) {
-                if (s.isPressed(x, y)) {
+                if (s.isPressedAndDiff(x, y)[0]) {
                     return s;
                 }
             }
