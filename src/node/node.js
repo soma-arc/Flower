@@ -3,7 +3,7 @@ import { FloatSocket,
          LineSocket,
          CircleSocket } from '../socket/socket.js';
 import Textbox from '../textbox.js';
-import SelectionState from '../selectionState.js';
+import ConstructionState from '../state/constructionState.js';
 
 export class Node {
     constructor(x, y) {
@@ -81,10 +81,10 @@ export class Node {
 
     // mouse = [x, y]
     select(mouse, sceneScale) {
-        return new SelectionState();
+        return new ConstructionState();
     }
 
-    move(mouse, selectionState) {
+    move(mouse, constructionState) {
         return false;
     }
 }
@@ -339,17 +339,17 @@ export class PointNode extends Node {
         const dx = mouse[0] - this.value2;
         const dy = mouse[1] - this.value1;
         const d = Math.sqrt(dx * dx + dy * dy);
-        if (d > this.uiRadius/* * sceneScale*/) return new SelectionState();
+        if (d > this.uiRadius/* * sceneScale*/) return new ConstructionState();
         console.log(d);
-        return new SelectionState().setObj(this)
+        return new ConstructionState().setObj(this)
             .setDiffObj(dx, dy);
     }
 
-    move(mouse, selectionState) {
-        this.value2 = mouse[0] - selectionState.diffX;
-        this.value1 = mouse[1] - selectionState.diffY;
+    move(mouse, constructionState) {
+        this.value2 = mouse[0] - constructionState.diffX;
+        this.value1 = mouse[1] - constructionState.diffY;
         console.log(mouse);
-        console.log(selectionState.diffObj);
+        console.log(constructionState.diffObj);
         this.update();
     }
 }

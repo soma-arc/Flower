@@ -1,4 +1,5 @@
-import { GraphCanvas2d, ConstructionCanvas2d } from './canvas2d.js';
+import GraphCanvas2d from './canvas/graphCanvas2d.js';
+import ConstructionCanvas2d from './canvas/constructionCanvas2d.js';
 
 export default class CanvasManager {
     constructor(scene) {

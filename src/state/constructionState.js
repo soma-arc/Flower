@@ -1,4 +1,4 @@
-export default class SelectionState {
+export default class ConstructionState {
     /**
      *
      */

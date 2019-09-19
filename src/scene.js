@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import SelectionState from './selectionState.js';
+import ConstructionState from './state/constructionState.js';
 
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
                    'CircleThreePoints', 'CircleMirror'];
@@ -10,7 +10,7 @@ export default class Scene {
         this.edges = [];
         this.unfinishedEdge = undefined;
         this.selectedObj = undefined;
-        this.selectedState = new SelectionState();
+        this.constructionState = new ConstructionState();
     }
 
     renderGraph(ctx, mouseState) {
@@ -93,25 +93,25 @@ export default class Scene {
     }
 
     select (mouse, sceneScale) {
-        if (this.selectedState.selectedObj !== undefined) {
-            this.selectedState.selectedObj.selected = false;
+        if (this.constructionState.selectedObj !== undefined) {
+            this.constructionState.selectedObj.selected = false;
         }
         for (const node of this.nodes) {
             const state = node.select(mouse, sceneScale);
             if (state.isSelectingObj()) {
-                this.selectedState = state;
-                this.selectedObj = this.selectedState.selectedObj;
-                this.selectedState.selectedObj.selected = true;
+                this.constructionState = state;
+                this.selectedObj = this.constructionState.selectedObj;
+                this.constructionState.selectedObj.selected = true;
                 return true;
             }
         }
-        this.selectedState = new SelectionState();
+        this.constructionState = new ConstructionState();
         return false;
     }
 
     move(mouse, selectionState) {
-        if (this.selectedState.isSelectingObj()) {
-            this.selectedState.selectedObj.move(mouse, this.selectedState);
+        if (this.constructionState.isSelectingObj()) {
+            this.constructionState.selectedObj.move(mouse, this.constructionState);
             return true;
         }
         return false;
