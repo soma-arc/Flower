@@ -42,6 +42,8 @@ export default class Scene {
     setUniformLocations(gl, uniLocations, program) {
         const objects = {};
         for (const node of this.nodes) {
+            if (node.name === 'Constant' ||
+                node.name === 'SinWave') continue;
             if (objects[node.name] === undefined) {
                 objects[node.name] = [];
             }
@@ -49,6 +51,8 @@ export default class Scene {
         }
         const objKeyNames = Object.keys(objects);
         for (const objName of objKeyNames) {
+            if (objName === 'Constant' ||
+                objName === 'SinWave') continue;
             const objArray = objects[objName];
             for (let i = 0; i < objArray.length; i++) {
                 objArray[i].setUniformLocations(gl, uniLocations, program, i);
@@ -60,6 +64,8 @@ export default class Scene {
         let uniI = uniIndex;
         const objects = {};
         for (const node of this.nodes) {
+            if (node.name === 'Constant' ||
+                node.name === 'SinWave') continue;
             if (objects[node.name] === undefined) {
                 objects[node.name] = [];
             }
@@ -67,6 +73,8 @@ export default class Scene {
         }
         const objKeyNames = Object.keys(objects);
         for (const objName of objKeyNames) {
+            if (objName === 'Constant' ||
+                objName === 'SinWave') continue;
             const objArray = objects[objName];
             for (let i = 0; i < objArray.length; i++) {
                 uniI = objArray[i].setUniformValues(gl, uniLocation, uniI, sceneScale);
