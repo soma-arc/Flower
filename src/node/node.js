@@ -70,11 +70,8 @@ export class Node {
     selectNode(mx, my) {
         this.graphState = new GraphState();
 
-        console.log('pressedSocket');
         if (this.isPressedSocket(mx, my)) return true;
-        console.log('pressedBody');
         if (this.isPressedBody(mx, my)) return true;
-        console.log('pressedOption');
         if (this.isShowingOption && this.isPressedOption()) {
         }
         return false;

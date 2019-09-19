@@ -5,6 +5,18 @@ export class Edge {
         this.id = this.getUniqueStr();
     }
 
+    getAnotherSocket(s) {
+        if (s.id === this.s1.id &&
+            s.id !== this.s2.id) {
+            return this.s2;
+        } else if (s.id === this.s2.id &&
+                   s.id !== this.s1.id) {
+            return this.s1;
+        } else {
+            return undefined;
+        }
+    }
+
     getUniqueStr(myStrong) {
         let strong = 1000;
         if (myStrong) strong = myStrong;
