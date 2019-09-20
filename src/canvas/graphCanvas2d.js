@@ -16,13 +16,13 @@ export default class GraphCanvas2d extends Canvas {
         this.scene = scene;
         this.canvasManager = canvasManager;
 
-        this.scale = 1;
-        this.scaleFactor = 1.25;
-        this.translate = [0, 0];
-
         this.canvas = document.getElementById(this.canvasId);
         this.resizeCanvas();
         this.ctx = this.canvas.getContext('2d');
+
+        this.scale = 1;
+        this.scaleFactor = 1.25;
+        this.translate = [this.canvas.width * 0.5, this.canvas.height * 0.5];
 
         //this.selectedNode = undefined;
         this.draggingNode = undefined;
