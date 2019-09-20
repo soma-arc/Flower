@@ -67,8 +67,8 @@ export default class GraphCanvas2d extends Canvas {
             this.renderMenu(ctx);
         }
 
-        ctx.scale(this.scale, this.scale);
         ctx.translate(this.translate[0], this.translate[1]);
+        ctx.scale(this.scale, this.scale);
 
         this.scene.renderGraph(ctx, this.mouseState);
 
@@ -160,6 +160,13 @@ export default class GraphCanvas2d extends Canvas {
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
             for (const n of this.scene.nodes) {
                 n.selectNode(x, y);
+                if (n.graphState.selection !== GraphState.SELECT_NONE) {
+                    if (this.scene.selectedNode !== undefined) {
+                        this.scene.selectedNode.selected = false;
+                    }
+                    this.scene.selectedNode = n;
+                    this.scene.selectedNode.selected = true;
+                }
                 if (n.graphState.selection === GraphState.SELECT_BODY) {
                     n.isShowingOption = !n.isShowingOption;
                     return;
@@ -320,15 +327,7 @@ export default class GraphCanvas2d extends Canvas {
     }
 
     keydownListener(event) {
-        if (event.key === 'Enter') {
-            if (this.optionNode !== undefined) {
-                this.optionNode.closeTextbox();
-                this.optionNode.isShowingOption = false;
-                this.optionNode.optionIndex = -1;
-                this.optionNode = undefined;
-            }
-            this.render();
-        } else if (event.key === 'Delete') {
+        if (event.key === 'Delete') {
             for (let n = this.scene.nodes.length - 1; n >= 0; n--) {
                 if (this.scene.selectedNode === undefined) break;
                 if (this.scene.nodes[n].id === this.scene.selectedNode.id) {
@@ -355,10 +354,10 @@ export default class GraphCanvas2d extends Canvas {
             this.canvasManager.compileRenderShader();
             this.canvasManager.constructionCanvas.render();
         }
-        if (this.optionNode !== undefined &&
-            this.optionNode.isShowingOption) {
-            this.optionNode.textbox.keyTextbox(event.key);
-            this.render();
+
+        if (this.scene.selectedNode !== undefined &&
+            this.scene.selectedNode.isShowingOption) {
+            this.scene.selectedNode.keydown(event.key);
         }
     }
 

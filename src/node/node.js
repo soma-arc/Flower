@@ -79,17 +79,36 @@ export class Node {
         for (let y = 0; y < numBoxes; y++) {
             ctx.strokeStyle = 'rgb(0, 0, 0)';
             ctx.fillStyle = 'rgb(228, 228, 228)';
-            const xx = this.x + 12;
-            const yy = this.y + 24 + y * 34;
+            let xx = this.x + 12;
+            let yy = this.y + 24 + y * 34;
             ctx.beginPath();
-            ctx.rect(xx, yy, 120, 34);
+            ctx.rect(xx, yy, 180, 34);
             ctx.fill();
             ctx.stroke();
             ctx.closePath();
-            ctx.fillStyle = 'rgb(0, 0, 0)';
+
+            ctx.fillStyle = 'white';
+            xx += 5;
+            yy += 5;
+            ctx.beginPath();
+            ctx.rect(xx, yy, 80, 24);
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+
+            ctx.fillStyle = 'black';
             ctx.font = "18px 'Times New Roman'";
-            ctx.fillText(optionNames[y], xx + 12, yy + 24);
+            ctx.fillText(optionNames[y], xx + 90, yy + 23);
+            const textStartX = xx + 5;
+            const textStartY = yy + 18;
+            const cursor = `${this[optionNames[y]]}`.length;
+            ctx.fillText(this[optionNames[y]], textStartX, textStartY); // data
+            //console.log(`cursor ${cursor}`)
         }
+    }
+
+    keydown(key) {
+        console.log(`keydown ${this.id}`);
     }
     
     update() {}
@@ -248,7 +267,7 @@ export class SinWaveNode extends Node {
         this.sockets.push(this.output1);
 
         this.optionArray =  ['period', 'amplitude',
-                             'shift', 'offset'];
+                             'phaseShift', 'offset'];
     }
 
     renderNode(ctx, sceneScale) {
@@ -336,8 +355,8 @@ export class SinWaveNode extends Node {
 export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);
-        this.value1 = 10;
-        this.value2 = 20;
+        this.posY = 10;
+        this.posX = 20;
         this.nodeColor = 'rgb(255, 0, 255)';
         this.name = 'Point';
 
@@ -358,27 +377,27 @@ export class PointNode extends Node {
         ctx.fillStyle = 'black';
         const xx = this.x + 12;
         const yy = this.y + 36;
-        ctx.fillText(`${this.value2}`, xx, yy);
+        ctx.fillText(`${this.posX}`, xx, yy);
         const yy2 = yy + 18;
-        ctx.fillText(`${this.value1}`, xx, yy2);
+        ctx.fillText(`${this.posY}`, xx, yy2);
         if (this.isShowingOption) {
             this.renderOption(ctx);
         }
     }
 
     renderOption(ctx) {
-        this.renderOptionBoxes(ctx, ['x', 'y']);
+        this.renderOptionBoxes(ctx, ['posX', 'posY']);
     }
 
     update() {
         if (this.input1.edgeOn) {
-            this.value1 = this.input1.value;
+            this.posY = this.input1.value;
         }
         if (this.input2.edgeOn) {
-            this.value2 = this.input2.value;
+            this.posX = this.input2.value;
         }
-        this.output1.valueX = this.value2;
-        this.output1.valueY = this.value1;
+        this.output1.valueX = this.posX;
+        this.output1.valueY = this.posY;
     }
 
     setUniformLocations(gl, uniLocation, program, index) {
@@ -389,14 +408,14 @@ export class PointNode extends Node {
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
         let uniI = uniIndex;
         gl.uniform3f(uniLocation[uniI++],
-                     this.value2, this.value1, this.uiRadius);
-        // console.log(`${this.value1}, ${this.value2}, ${this.uiRadius}`);
+                     this.posX, this.posY, this.uiRadius);
+        // console.log(`${this.posY}, ${this.posX}, ${this.uiRadius}`);
         return uniI;
     }
 
     select(mouse, sceneScale) {
-        const dx = mouse[0] - this.value2;
-        const dy = mouse[1] - this.value1;
+        const dx = mouse[0] - this.posX;
+        const dy = mouse[1] - this.posY;
         const d = Math.sqrt(dx * dx + dy * dy);
         if (d > this.uiRadius/* * sceneScale*/) return new ConstructionState();
         console.log(d);
@@ -405,8 +424,8 @@ export class PointNode extends Node {
     }
 
     move(mouse, constructionState) {
-        this.value2 = mouse[0] - constructionState.diffX;
-        this.value1 = mouse[1] - constructionState.diffY;
+        this.posX = mouse[0] - constructionState.diffX;
+        this.posY = mouse[1] - constructionState.diffY;
         console.log(mouse);
         console.log(constructionState.diffObj);
         this.update();
@@ -539,7 +558,6 @@ export class LineMirrorNode extends Node {
     }
 
     renderOption(ctx) {
-        this.renderOptionBoxes(ctx, ['reverse']);
     }
 
     update() {
