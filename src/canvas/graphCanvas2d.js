@@ -100,6 +100,7 @@ export default class GraphCanvas2d extends Canvas {
     mouseDownListener(event) {
         event.preventDefault();
         this.canvas.focus();
+        this.mouseState.button = event.button;
         const [x, y] = this.computeCoordinates(event.clientX, event.clientY);
 
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
@@ -112,12 +113,8 @@ export default class GraphCanvas2d extends Canvas {
             for (const n of this.scene.nodes) {
                 n.selectNode(x, y);
                 if (n.graphState.selection === GraphState.SELECT_SOCKET) {
-                    console.log('select socket');
-                    console.log(n.graphState.selectedSocket);
                     if (n.graphState.selectedSocket.edgeOn &&
                         n.graphState.selectedSocket.isOutput === false) {
-                        console.log('release edge');
-                        console.log(n.graphState.selectedSocket.edge);
                         const anotherInputSocket = n.graphState.selectedSocket.edge.getAnotherSocket(n.graphState.selectedSocket);
                         this.scene.unfinishedEdge = new Edge(anotherInputSocket, undefined);
                         this.selectedSocket = anotherInputSocket;
@@ -161,10 +158,17 @@ export default class GraphCanvas2d extends Canvas {
             this.mouseState.x = x;
             this.mouseState.y = y;
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
+            for (const n of this.scene.nodes) {
+                n.selectNode(x, y);
+                if (n.graphState.selection === GraphState.SELECT_BODY) {
+                    n.isShowingOption = !n.isShowingOption;
+                    return;
+                }
+            }
+
             this.isRenderingMenu = !this.isRenderingMenu;
             this.render();
         }
-        this.mouseState.button = event.button;
     }
 
     mouseUpListener(event) {

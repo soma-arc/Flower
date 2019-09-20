@@ -29,6 +29,8 @@ export class Node {
 
         this.constructionState = new ConstructionState();
         this.graphState = new GraphState();
+
+        this.optionArray = [];
     }
 
     getUniqueStr(myStrong) {
@@ -63,8 +65,33 @@ export class Node {
 
     renderNode(ctx, sceneScale) {
         this.renderPane(ctx, sceneScale);
+        if (this.isShowingOption) {
+            this.renderOption(ctx)
+        }
     }
 
+    renderOption(ctx) {
+    }
+
+    renderOptionBoxes(ctx, optionNames) {
+        const numBoxes = optionNames.length;
+        if (numBoxes <= 0) return;
+        for (let y = 0; y < numBoxes; y++) {
+            ctx.strokeStyle = 'rgb(0, 0, 0)';
+            ctx.fillStyle = 'rgb(228, 228, 228)';
+            const xx = this.x + 12;
+            const yy = this.y + 24 + y * 34;
+            ctx.beginPath();
+            ctx.rect(xx, yy, 120, 34);
+            ctx.fill();
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.font = "18px 'Times New Roman'";
+            ctx.fillText(optionNames[y], xx + 12, yy + 24);
+        }
+    }
+    
     update() {}
 
     selectNode(mx, my) {
@@ -72,8 +99,6 @@ export class Node {
 
         if (this.isPressedSocket(mx, my)) return true;
         if (this.isPressedBody(mx, my)) return true;
-        if (this.isShowingOption && this.isPressedOption()) {
-        }
         return false;
     }
 
@@ -106,7 +131,29 @@ export class Node {
         return false;
     }
 
-    isPressedOption() {
+    isPressedOption(mx, my) {
+        console.log('isPressedOption');
+        if (this.isShowingOption && this.getOptionIndex(mx, my)) {
+            this.graphState.selection = GraphState.SELECT_OPTION;
+            console.log('click option');
+            return true;
+        }
+        return false;
+    }
+
+    getOptionIndex(mx, my) {
+        for (let y = 0; y < this.optionArray.length; y++) {
+            const xx = this.x + 12;
+            const yy = this.y + 24 + y * 34;
+            if (xx < mx && mx < xx + 120 &&
+                yy < my && my < yy + 34) {
+                this.optionIndex = y;
+                return true;
+            }
+        }
+
+        this.optionIndex = -1;
+        return false;
     }
 
     showOption() {}
@@ -149,11 +196,12 @@ export class ConstantNode extends Node {
         ctx.fillText(`${this.value}`, xx, yy);
 
         if (this.isShowingOption) {
-            //            this.textbox.showOption();
-            this.textbox.textboxX = this.x + 12;
-            this.textbox.textboxY = this.y + 24;
-            this.textbox.renderTextbox(ctx);
+            this.renderOption(ctx);
         }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, ['value']);
     }
 
     update() {
@@ -198,12 +246,15 @@ export class SinWaveNode extends Node {
         this.name = 'SinWave';
         this.output1 = new FloatSocket(this, this.rightX, this.downY1, true);
         this.sockets.push(this.output1);
+
+        this.optionArray =  ['period', 'amplitude',
+                             'shift', 'offset'];
     }
 
     renderNode(ctx, sceneScale) {
         this.renderPane(ctx, sceneScale);
         ctx.fillStyle = 'black';
-
+        
         let xx = this.x + 12;
         let yy = this.y + 36;
         let str = `p:${this.period}`;
@@ -219,47 +270,12 @@ export class SinWaveNode extends Node {
         ctx.fillText(str, xx, yy);
 
         if (this.isShowingOption) {
-            for (let y = 0; y < 4; y++) {
-                ctx.strokeStyle = 'rgb(0, 0, 0)';
-                ctx.fillStyle = 'rgb(228, 228, 228)';
-                xx = this.x + 12;
-                yy = this.y + 24 + y * 34;
-                ctx.beginPath();
-                ctx.rect(xx, yy, 120, 34);
-                ctx.fill();
-                ctx.stroke();
-                ctx.closePath();
-                ctx.fillStyle = 'rgb(0, 0, 0)';
-                ctx.font = "18px 'Times New Roman'";
-                if (y === 0) ctx.fillText('period', xx + 12, yy + 24);
-                else if (y === 1) ctx.fillText('amplitude', xx + 12, yy + 24);
-                else if (y === 2) ctx.fillText('shift', xx + 12, yy + 24);
-                else if (y === 3) ctx.fillText('offset', xx + 12, yy + 24);
-            }
+            this.renderOption(ctx);
         }
+    }
 
-        if (this.optionIndex >= 0) {
-            this.textbox.textboxX = this.x + 12;
-            this.textbox.textboxY = this.y + 24 + this.optionIndex * 34;
-            this.textbox.textboxWidth = 80;
-            this.textbox.setupTextbox();
-            this.textbox.renderOn = true;
-
-            let str;
-            if (this.optionIndex === 0) str = `${this.period}`;
-            else if (this.optionIndex === 1) str = `${this.amplitude}`;
-            else if (this.optionIndex === 2) str = `${this.phaseShift}`;
-            else if (this.optionIndex === 3) str = `${this.offset}`;
-
-            for (let i = 0; i < str.length; i++) {
-                this.textbox.textboxText[i] = str.charAt(i);
-            }
-            this.textbox.textboxCursor = str.length;
-            this.textbox.parent = this;
-            this.textbox.renderTextbox(ctx);
-        } else {
-            this.closeTextbox();
-        }
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, this.optionArray);
     }
 
     closeTextbox() {
@@ -270,23 +286,21 @@ export class SinWaveNode extends Node {
         this.textbox.renderOn = false;
     }
 
-    isPressed(mx, my) {
-        if (this.isShowingOption) {
-            for (let y = 0; y < 4; y++) {
-                const xx = this.x + 12;
-                const yy = this.y + 24 + y * 34;
-                if (xx < mx && mx < xx + 120 &&
-                    yy < my && my < yy + 34) {
-                    this.optionIndex = y;
-                    return true;
-                }
+    isPressedOption(mx, my) {
+        for (let y = 0; y < 4; y++) {
+            const xx = this.x + 12;
+            const yy = this.y + 24 + y * 34;
+            if (xx < mx && mx < xx + 120 &&
+                yy < my && my < yy + 34) {
+                this.optionIndex = y;
+                return true;
             }
         }
 
-        if (this.x < mx && mx < this.x + this.width &&
-            this.y < my && my < this.y + this.height) {
-            return true;
-        }
+        // if (this.x < mx && mx < this.x + this.width &&
+        //     this.y < my && my < this.y + this.height) {
+        //     return true;
+        // }
         this.optionIndex = -1;
         return false;
     }
@@ -347,6 +361,13 @@ export class PointNode extends Node {
         ctx.fillText(`${this.value2}`, xx, yy);
         const yy2 = yy + 18;
         ctx.fillText(`${this.value1}`, xx, yy2);
+        if (this.isShowingOption) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, ['x', 'y']);
     }
 
     update() {
@@ -511,6 +532,14 @@ export class LineMirrorNode extends Node {
         }
         ctx.fillText(`${str}`, xx, yy);
         ctx.fillText(`${this.lineMirrorType}`, xx, yy + 18);
+
+        if (this.isShowingOption) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, ['reverse']);
     }
 
     update() {
@@ -650,6 +679,13 @@ export class CircleMirrorNode extends Node {
         str1 = `r=${Math.round(this.valueR * 10) / 10}`;
         ctx.fillText(str1, xx, yy + 18);
         ctx.fillText(this.circleMirrorType, xx, yy + 18 + 18);
+        if (this.isShowingOption) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, ['reverse']);
     }
 
     update() {
