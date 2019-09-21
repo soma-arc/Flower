@@ -112,6 +112,9 @@ export default class GraphCanvas2d extends Canvas {
 
             for (const n of this.scene.nodes) {
                 n.selectNode(x, y);
+                if (n.graphState.selection === GraphState.SELECT_OPTION) {
+                    return;
+                }
                 if (n.graphState.selection === GraphState.SELECT_SOCKET) {
                     if (n.graphState.selectedSocket.edgeOn &&
                         n.graphState.selectedSocket.isOutput === false) {
@@ -169,6 +172,7 @@ export default class GraphCanvas2d extends Canvas {
                 }
                 if (n.graphState.selection === GraphState.SELECT_BODY) {
                     n.isShowingOption = !n.isShowingOption;
+                    if (n.selectedBoxIndex === -1) n.selectedBoxIndex = 0;
                     return;
                 }
             }
@@ -353,9 +357,7 @@ export default class GraphCanvas2d extends Canvas {
             this.render();
             this.canvasManager.compileRenderShader();
             this.canvasManager.constructionCanvas.render();
-        }
-
-        if (this.scene.selectedNode !== undefined &&
+        } else if (this.scene.selectedNode !== undefined &&
             this.scene.selectedNode.isShowingOption) {
             this.scene.selectedNode.keydown(event.key);
         }

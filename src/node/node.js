@@ -31,6 +31,11 @@ export class Node {
         this.graphState = new GraphState();
 
         this.optionArray = [];
+        this.selectedBoxIndex = -1;
+        this.optionWidth = 190;
+        this.optionHeight = 34;
+
+        this.currentCursors = []; // 0 ... rightmost edge
     }
 
     getUniqueStr(myStrong) {
@@ -65,57 +70,97 @@ export class Node {
 
     renderNode(ctx, sceneScale) {
         this.renderPane(ctx, sceneScale);
-        if (this.isShowingOption) {
-            this.renderOption(ctx)
-        }
+
+        this.renderOption(ctx);
     }
 
     renderOption(ctx) {
+        if (this.isShowingOption === false &&
+            this.selected === false) {
+            return;
+        }
     }
 
     renderOptionBoxes(ctx, optionNames) {
         const numBoxes = optionNames.length;
         if (numBoxes <= 0) return;
         for (let y = 0; y < numBoxes; y++) {
-            ctx.strokeStyle = 'rgb(0, 0, 0)';
+            ctx.strokeStyle = 'black';
             ctx.fillStyle = 'rgb(228, 228, 228)';
-            let xx = this.x + 12;
-            let yy = this.y + 24 + y * 34;
+            const xx = this.x + 12;
+            const yy = this.y + 24 + y * this.optionHeight;
             ctx.beginPath();
-            ctx.rect(xx, yy, 180, 34);
+            ctx.rect(xx, yy, this.optionWidth, this.optionHeight);
             ctx.fill();
             ctx.stroke();
             ctx.closePath();
 
+            // draw textbox
             ctx.fillStyle = 'white';
-            xx += 5;
-            yy += 5;
+            if (this.selectedBoxIndex === y) {
+                ctx.strokeStyle = 'blue';
+            } else {
+                ctx.strokeStyle = 'black';
+            }
+            const boxStartX = xx + 5;
+            const boxStartY = yy + 5;
             ctx.beginPath();
-            ctx.rect(xx, yy, 80, 24);
+            ctx.rect(boxStartX, boxStartY, 80, 24);
             ctx.fill();
             ctx.stroke();
             ctx.closePath();
 
+            // draw data as text
             ctx.fillStyle = 'black';
-            ctx.font = "18px 'Times New Roman'";
+            ctx.font = "21px 'Times New Roman'";
             ctx.fillText(optionNames[y], xx + 90, yy + 23);
-            const textStartX = xx + 5;
-            const textStartY = yy + 18;
-            const cursor = `${this[optionNames[y]]}`.length;
-            ctx.fillText(this[optionNames[y]], textStartX, textStartY); // data
+            const dataTextStartX = boxStartX + 5;
+            const dataTextStartY = boxStartY + 18;
+            ctx.fillText(this[optionNames[y]], dataTextStartX, dataTextStartY);
             //console.log(`cursor ${cursor}`)
+            if (this.selectedBoxIndex === y) {
+                this.renderCursor(ctx, dataTextStartX, boxStartY,
+                                  `${this[optionNames[y]]}`.length,
+                                  this.currentCursors[y]);
+            }
         }
     }
 
-    keydown(key) {
-        console.log(`keydown ${this.id}`);
+    renderCursor(ctx, textboxStartX, textboxStartY, textLength, cursor) {
+        ctx.fillStyle = 'black'
+        ctx.strokeStyle = 'black'
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(textboxStartX + (textLength - cursor) * 11,
+                   textboxStartY + 2);
+        ctx.lineTo(textboxStartX + (textLength - cursor) * 11,
+                   textboxStartY + 24 - 2);
+        ctx.stroke();
+        ctx.closePath();
     }
-    
+
+    keydown(key) {
+        if (key === 'ArrowRight') {
+            if (this.currentCursors[this.selectedBoxIndex] > 0) {
+                this.currentCursors[this.selectedBoxIndex]--;
+            }
+        } else if (key === 'ArrowLeft') {
+            if (this.currentCursors[this.selectedBoxIndex] < `${this[this.optionArray[this.selectedBoxIndex]]}`.length) {
+                this.currentCursors[this.selectedBoxIndex]++;
+            }
+        } else if (key === 'ArrowUp') {
+            if (this.selectedBoxIndex > 0) this.selectedBoxIndex--;
+        } else if (key === 'ArrowDown') {
+            if (this.selectedBoxIndex < this.optionArray.length - 1) this.selectedBoxIndex++;
+        }
+    }
+
     update() {}
 
     selectNode(mx, my) {
         this.graphState = new GraphState();
-
+        if (this.isPressedOption(mx, my)) return true;
         if (this.isPressedSocket(mx, my)) return true;
         if (this.isPressedBody(mx, my)) return true;
         return false;
@@ -151,27 +196,26 @@ export class Node {
     }
 
     isPressedOption(mx, my) {
-        console.log('isPressedOption');
-        if (this.isShowingOption && this.getOptionIndex(mx, my)) {
+        if (this.isShowingOption &&
+            this.selected &&
+            this.setOptionIndex(mx, my)) {
             this.graphState.selection = GraphState.SELECT_OPTION;
-            console.log('click option');
             return true;
         }
         return false;
     }
 
-    getOptionIndex(mx, my) {
+    setOptionIndex(mx, my) {
         for (let y = 0; y < this.optionArray.length; y++) {
             const xx = this.x + 12;
             const yy = this.y + 24 + y * 34;
-            if (xx < mx && mx < xx + 120 &&
-                yy < my && my < yy + 34) {
-                this.optionIndex = y;
+            if (xx < mx && mx < xx + this.optionWidth &&
+                yy < my && my < yy + this.optionHeight) {
+                this.selectedBoxIndex = y;
                 return true;
             }
         }
 
-        this.optionIndex = -1;
         return false;
     }
 
@@ -204,6 +248,9 @@ export class ConstantNode extends Node {
 
         this.output1 = new FloatSocket(this, this.rightX, this.downY1, true);
         this.sockets.push(this.output1);
+
+        this.optionArray = ['value'];
+        this.currentCursors = [0];
     }
 
     renderNode(ctx, sceneScale) {
@@ -214,13 +261,13 @@ export class ConstantNode extends Node {
         const yy = this.y + 36;
         ctx.fillText(`${this.value}`, xx, yy);
 
-        if (this.isShowingOption) {
+        if (this.isShowingOption && this.selected) {
             this.renderOption(ctx);
         }
     }
 
     renderOption(ctx) {
-        this.renderOptionBoxes(ctx, ['value']);
+        this.renderOptionBoxes(ctx, this.optionArray);
     }
 
     update() {
@@ -259,15 +306,15 @@ export class SinWaveNode extends Node {
         this.offset = 0;
         this.value = 1;
         this.out1 = 0;
-        this.optionIndex = -1;
 
         this.nodeColor = 'rgb(0, 255, 255)';
         this.name = 'SinWave';
         this.output1 = new FloatSocket(this, this.rightX, this.downY1, true);
         this.sockets.push(this.output1);
 
-        this.optionArray =  ['period', 'amplitude',
-                             'phaseShift', 'offset'];
+        this.optionArray = ['period', 'amplitude',
+                            'phaseShift', 'offset'];
+        this.currentCursors = [0, 0, 0, 0];
     }
 
     renderNode(ctx, sceneScale) {
@@ -288,7 +335,7 @@ export class SinWaveNode extends Node {
         str = `o:${this.offset}`;
         ctx.fillText(str, xx, yy);
 
-        if (this.isShowingOption) {
+        if (this.isShowingOption && this.selected) {
             this.renderOption(ctx);
         }
     }
@@ -297,32 +344,32 @@ export class SinWaveNode extends Node {
         this.renderOptionBoxes(ctx, this.optionArray);
     }
 
-    closeTextbox() {
-        if (this.optionIndex === 0) this.period = parseFloat(this.textbox.getTextboxArray());
-        else if (this.optionIndex === 1) this.amplitude = parseFloat(this.textbox.getTextboxArray());
-        else if (this.optionIndex === 2) this.phaseShift = parseFloat(this.textbox.getTextboxArray());
-        else if (this.optionIndex === 3) this.offset = parseFloat(this.textbox.getTextboxArray());
-        this.textbox.renderOn = false;
-    }
+    // closeTextbox() {
+    //     if (this.optionIndex === 0) this.period = parseFloat(this.textbox.getTextboxArray());
+    //     else if (this.optionIndex === 1) this.amplitude = parseFloat(this.textbox.getTextboxArray());
+    //     else if (this.optionIndex === 2) this.phaseShift = parseFloat(this.textbox.getTextboxArray());
+    //     else if (this.optionIndex === 3) this.offset = parseFloat(this.textbox.getTextboxArray());
+    //     this.textbox.renderOn = false;
+    // }
 
-    isPressedOption(mx, my) {
-        for (let y = 0; y < 4; y++) {
-            const xx = this.x + 12;
-            const yy = this.y + 24 + y * 34;
-            if (xx < mx && mx < xx + 120 &&
-                yy < my && my < yy + 34) {
-                this.optionIndex = y;
-                return true;
-            }
-        }
+    // isPressedOption(mx, my) {
+    //     for (let y = 0; y < 4; y++) {
+    //         const xx = this.x + 12;
+    //         const yy = this.y + 24 + y * 34;
+    //         if (xx < mx && mx < xx + 120 &&
+    //             yy < my && my < yy + 34) {
+    //             this.optionIndex = y;
+    //             return true;
+    //         }
+    //     }
 
-        // if (this.x < mx && mx < this.x + this.width &&
-        //     this.y < my && my < this.y + this.height) {
-        //     return true;
-        // }
-        this.optionIndex = -1;
-        return false;
-    }
+    //     // if (this.x < mx && mx < this.x + this.width &&
+    //     //     this.y < my && my < this.y + this.height) {
+    //     //     return true;
+    //     // }
+    //     this.optionIndex = -1;
+    //     return false;
+    // }
 
     update() {
         this.out1 = this.value =
@@ -370,6 +417,8 @@ export class PointNode extends Node {
         this.sockets.push(this.output1);
 
         this.uiRadius = 0.5;
+        this.optionArray = ['posX', 'posY'];
+        this.currentCursors = [0, 0];
     }
 
     renderNode(ctx, sceneScale) {
@@ -380,13 +429,13 @@ export class PointNode extends Node {
         ctx.fillText(`${this.posX}`, xx, yy);
         const yy2 = yy + 18;
         ctx.fillText(`${this.posY}`, xx, yy2);
-        if (this.isShowingOption) {
+        if (this.isShowingOption && this.selected) {
             this.renderOption(ctx);
         }
     }
 
     renderOption(ctx) {
-        this.renderOptionBoxes(ctx, ['posX', 'posY']);
+        this.renderOptionBoxes(ctx, this.optionArray);
     }
 
     update() {
@@ -697,13 +746,13 @@ export class CircleMirrorNode extends Node {
         str1 = `r=${Math.round(this.valueR * 10) / 10}`;
         ctx.fillText(str1, xx, yy + 18);
         ctx.fillText(this.circleMirrorType, xx, yy + 18 + 18);
-        if (this.isShowingOption) {
+        if (this.isShowingOption && this.selected) {
             this.renderOption(ctx);
         }
     }
 
     renderOption(ctx) {
-        this.renderOptionBoxes(ctx, ['reverse']);
+        //this.renderOptionBoxes(ctx, ['reverse']);
     }
 
     update() {
