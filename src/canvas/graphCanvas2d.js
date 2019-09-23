@@ -163,17 +163,24 @@ export default class GraphCanvas2d extends Canvas {
         } else if (event.button === Canvas.MOUSE_BUTTON_RIGHT) {
             for (const n of this.scene.nodes) {
                 n.selectNode(x, y);
+                if (n.graphState.selection === GraphState.SELECT_BODY ||
+                    n.graphState.selection === GraphState.SELECT_OPTION) {
+                    if (this.scene.selectedNode.id === n.id) {
+                        n.isShowingOption = !n.isShowingOption;
+                        if (n.selectedBoxIndex === -1) n.selectedBoxIndex = 0;
+                    } else {
+                        if (this.scene.selectedNode !== undefined) this.scene.selectedNode.selected = false;
+                        this.scene.selectedNode = n;
+                        this.scene.selectedNode.selected = true;
+                    }
+                    return;
+                }
                 if (n.graphState.selection !== GraphState.SELECT_NONE) {
                     if (this.scene.selectedNode !== undefined) {
                         this.scene.selectedNode.selected = false;
                     }
                     this.scene.selectedNode = n;
                     this.scene.selectedNode.selected = true;
-                }
-                if (n.graphState.selection === GraphState.SELECT_BODY) {
-                    n.isShowingOption = !n.isShowingOption;
-                    if (n.selectedBoxIndex === -1) n.selectedBoxIndex = 0;
-                    return;
                 }
             }
 
