@@ -95,27 +95,27 @@ void main() {
         position = position * u_geometry.z;
         position += u_geometry.xy;
 
-        if(abs(position.x) < .01) {
-            sum += vec3(1);
-            continue;
-        }
-        if(abs(position.y) < .01) {
-            sum += vec3(1);
-            continue;
-        }
-
-        vec3 col;
-        if(IIS(position, col)) {
-            sum += col;
-            continue;
-        }
-
         {% for n in range(0, numPoint) %}
         if (distance(u_point{{ n }}.xy, position) < u_point{{ n }}.z){
             sum += vec3(0, 0, 1);
             continue;
         }
         {% endfor %}
+        
+        if(abs(position.x) < .1) {
+            sum += vec3(1);
+            continue;
+        }
+        if(abs(position.y) < .1) {
+            sum += vec3(1);
+            continue;
+        }
+        
+        vec3 col;
+        if(IIS(position, col)) {
+            sum += col;
+            continue;
+        }
 
         {% for n in range(0, numLineTwoPoints) %}
         float dist{{ n }} = abs(dot(position - u_line{{ n }}.xy , u_line{{ n }}.zw));

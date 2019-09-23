@@ -63,16 +63,16 @@ export default class GraphCanvas2d extends Canvas {
         ctx.fillStyle = 'rgb(220, 220, 220)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (this.isRenderingMenu) {
-            this.renderMenu(ctx);
-        }
-
         ctx.translate(this.translate[0], this.translate[1]);
         ctx.scale(this.scale, this.scale);
 
         this.scene.renderGraph(ctx, this.mouseState);
 
         ctx.restore();
+
+        if (this.isRenderingMenu) {
+            this.renderMenu(ctx);
+        }
     }
 
     mouseWheelListener(event) {
@@ -124,6 +124,8 @@ export default class GraphCanvas2d extends Canvas {
                         this.mouseState.x = x;
                         this.mouseState.y = y;
                         for (let e = this.scene.edges.length - 1; e >= 0; e--) {
+                            if (n.graphState.selectedSocket.edge === undefined) continue;
+
                             if (this.scene.edges[e].id === n.graphState.selectedSocket.edge.id) {
                                 this.scene.edges.splice(e, 1);
                                 n.graphState.selectedSocket.edge.s1.edgeOn = false;
