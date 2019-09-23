@@ -87,8 +87,8 @@ export default class GraphCanvas2d extends Canvas {
 
     computeCoordinates(mx, my) {
         const rect = this.canvas.getBoundingClientRect();
-        return [(mx - rect.left) / this.scale - this.translate[0],
-                (my - rect.top) / this.scale - this.translate[1]];
+        return [((mx - rect.left) - this.translate[0]) / this.scale,
+                ((my - rect.top) - this.translate[1]) / this.scale];
     }
 
     computeOriginalCoord(mx, my) {

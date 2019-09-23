@@ -187,7 +187,6 @@ export class Node {
             };
             boxValueStr = this.spliceSplit(boxValueStr, cursorFromLeft - 1, 1);
             if (boxValueStr === '' || boxValueStr === '-') {
-                // console.log('zero');
                 this[this.optionArray[this.selectedBoxIndex]] = boxValueStr;
             } else {
                 this[this.optionArray[this.selectedBoxIndex]] = parseFloat(boxValueStr);
