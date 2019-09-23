@@ -141,6 +141,8 @@ export class Node {
     }
 
     keydown(key) {
+        let boxValueStr = `${this[this.optionArray[this.selectedBoxIndex]]}`;
+        const cursorFromLeft = (boxValueStr.length - this.currentCursors[this.selectedBoxIndex]);
         if (key === 'ArrowRight') {
             if (this.currentCursors[this.selectedBoxIndex] > 0) {
                 this.currentCursors[this.selectedBoxIndex]--;
@@ -153,7 +155,33 @@ export class Node {
             if (this.selectedBoxIndex > 0) this.selectedBoxIndex--;
         } else if (key === 'ArrowDown') {
             if (this.selectedBoxIndex < this.optionArray.length - 1) this.selectedBoxIndex++;
+        } else if (key === 'Backspace') {
+            if (cursorFromLeft === 0) {
+                return;
+            };
+            boxValueStr = this.spliceSplit(boxValueStr, cursorFromLeft - 1, 1);
+            if (boxValueStr === '' || boxValueStr === '-') {
+                // console.log('zero');
+                this[this.optionArray[this.selectedBoxIndex]] = boxValueStr;
+            } else {
+                this[this.optionArray[this.selectedBoxIndex]] = parseFloat(boxValueStr);
+            }
+        } else if ((0 <= key && key <= 9) ||
+                   key === '.' ||
+                   (cursorFromLeft === 0 && key === '-')) {
+            boxValueStr = this.spliceSplit(boxValueStr, cursorFromLeft, 0, key);
+            if (boxValueStr === '-') {
+                this[this.optionArray[this.selectedBoxIndex]] = boxValueStr;
+            } else {
+                this[this.optionArray[this.selectedBoxIndex]] = parseFloat(boxValueStr);
+            }
         }
+    }
+
+    spliceSplit (str, index, count, add) {
+        const ar = str.split('');
+        ar.splice(index, count, add);
+        return ar.join('');
     }
 
     update() {}
@@ -320,7 +348,7 @@ export class SinWaveNode extends Node {
     renderNode(ctx, sceneScale) {
         this.renderPane(ctx, sceneScale);
         ctx.fillStyle = 'black';
-        
+
         let xx = this.x + 12;
         let yy = this.y + 36;
         let str = `p:${this.period}`;
