@@ -501,8 +501,8 @@ export class PointNode extends Node {
     }
 
     move(mouse, constructionState) {
-        this.posX = mouse[0] - constructionState.diffX;
-        this.posY = mouse[1] - constructionState.diffY;
+        this.posX = Math.round((mouse[0] - constructionState.diffX) * 10000) / 10000;
+        this.posY = Math.round((mouse[1] - constructionState.diffY) * 10000) / 10000;
         console.log(mouse);
         console.log(constructionState.diffObj);
         this.update();
