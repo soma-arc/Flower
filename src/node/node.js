@@ -618,7 +618,7 @@ export class LineMirrorNode extends Node {
 
         this.optionArray = ['reverseNormal'];
         this.isCheckBox = [true];
-        this.reverse = [true];
+        this.reverse = [false];
     }
 
     renderNode(ctx, sceneScale) {

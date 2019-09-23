@@ -345,8 +345,8 @@ export default class GraphCanvas2d extends Canvas {
                     this.scene.nodes.splice(n, 1);
 
                     for (const socket of this.scene.selectedNode.sockets) {
-                        if (socket.edge === undefined) continue;
                         for (let e = this.scene.edges.length - 1; e >= 0; e--) {
+                            if (socket.edge === undefined) continue;
                             if (this.scene.edges[e].id === socket.edge.id) {
                                 this.scene.edges.splice(e, 1);
                                 socket.edge.s1.edgeOn = false;
