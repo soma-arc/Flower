@@ -31,6 +31,8 @@ export class Node {
         this.graphState = new GraphState();
 
         this.optionArray = [];
+        this.isCheckBox = [];
+        this.reverse = [];
         this.selectedBoxIndex = -1;
         this.optionWidth = 190;
         this.optionHeight = 34;
@@ -95,7 +97,6 @@ export class Node {
             ctx.stroke();
             ctx.closePath();
 
-            // draw textbox
             ctx.fillStyle = 'white';
             if (this.selectedBoxIndex === y) {
                 ctx.strokeStyle = 'blue';
@@ -104,24 +105,48 @@ export class Node {
             }
             const boxStartX = xx + 5;
             const boxStartY = yy + 5;
-            ctx.beginPath();
-            ctx.rect(boxStartX, boxStartY, 80, 24);
-            ctx.fill();
-            ctx.stroke();
-            ctx.closePath();
-
-            // draw data as text
-            ctx.fillStyle = 'black';
-            ctx.font = "21px 'Times New Roman'";
-            ctx.fillText(optionNames[y], xx + 90, yy + 23);
             const dataTextStartX = boxStartX + 5;
             const dataTextStartY = boxStartY + 18;
-            ctx.fillText(this[optionNames[y]], dataTextStartX, dataTextStartY);
-            //console.log(`cursor ${cursor}`)
-            if (this.selectedBoxIndex === y) {
-                this.renderCursor(ctx, dataTextStartX, boxStartY,
-                                  `${this[optionNames[y]]}`.length,
-                                  this.currentCursors[y]);
+            if (this.isCheckBox.length === numBoxes &&
+                this.isCheckBox[y]) {
+                // checkbox
+                ctx.beginPath();
+                ctx.rect(boxStartX, boxStartY, 24, 24);
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+
+                ctx.fillStyle = 'black';
+                ctx.font = "21px 'Times New Roman'";
+                if (this.reverse[y]) {
+                    ctx.beginPath();
+                    ctx.rect(boxStartX + 5, boxStartY + 5, 14, 14);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+                ctx.fillText(optionNames[y], xx + 35, yy + 23);
+            } else {
+                // number input
+                // draw textbox
+                ctx.beginPath();
+                ctx.rect(boxStartX, boxStartY, 80, 24);
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+
+                // draw data as text
+                ctx.fillStyle = 'black';
+                ctx.font = "21px 'Times New Roman'";
+                ctx.fillText(optionNames[y], xx + 90, yy + 23);
+
+                ctx.fillText(this[optionNames[y]], dataTextStartX, dataTextStartY);
+
+                if (this.selectedBoxIndex === y) {
+                    this.renderCursor(ctx, dataTextStartX, boxStartY,
+                                      `${this[optionNames[y]]}`.length,
+                                      this.currentCursors[y]);
+                }
             }
         }
     }
@@ -141,6 +166,7 @@ export class Node {
     }
 
     keydown(key) {
+        console.log(key);
         let boxValueStr = `${this[this.optionArray[this.selectedBoxIndex]]}`;
         const cursorFromLeft = (boxValueStr.length - this.currentCursors[this.selectedBoxIndex]);
         if (key === 'ArrowRight') {
@@ -175,6 +201,10 @@ export class Node {
             } else {
                 this[this.optionArray[this.selectedBoxIndex]] = parseFloat(boxValueStr);
             }
+        } else if ((key === 'Enter') &&
+                   this.isCheckBox.length === this.optionArray.length &&
+                   this.isCheckBox[this.selectedBoxIndex]) {
+            this.reverse[this.selectedBoxIndex] = !this.reverse[this.selectedBoxIndex];
         }
     }
 
@@ -240,6 +270,17 @@ export class Node {
             if (xx < mx && mx < xx + this.optionWidth &&
                 yy < my && my < yy + this.optionHeight) {
                 this.selectedBoxIndex = y;
+
+                if (this.isCheckBox.length === this.optionArray.length &&
+                    this.isCheckBox[this.selectedBoxIndex]) {
+                    const boxStartX = xx + 5;
+                    const boxStartY = yy + 5;
+                    if (boxStartX < mx && mx < boxStartX + 24 &&
+                        boxStartY < my && my < boxStartY + 24) {
+                        this.reverse[y] = !this.reverse[y];
+                    }
+                }
+
                 return true;
             }
         }
@@ -372,33 +413,6 @@ export class SinWaveNode extends Node {
         this.renderOptionBoxes(ctx, this.optionArray);
     }
 
-    // closeTextbox() {
-    //     if (this.optionIndex === 0) this.period = parseFloat(this.textbox.getTextboxArray());
-    //     else if (this.optionIndex === 1) this.amplitude = parseFloat(this.textbox.getTextboxArray());
-    //     else if (this.optionIndex === 2) this.phaseShift = parseFloat(this.textbox.getTextboxArray());
-    //     else if (this.optionIndex === 3) this.offset = parseFloat(this.textbox.getTextboxArray());
-    //     this.textbox.renderOn = false;
-    // }
-
-    // isPressedOption(mx, my) {
-    //     for (let y = 0; y < 4; y++) {
-    //         const xx = this.x + 12;
-    //         const yy = this.y + 24 + y * 34;
-    //         if (xx < mx && mx < xx + 120 &&
-    //             yy < my && my < yy + 34) {
-    //             this.optionIndex = y;
-    //             return true;
-    //         }
-    //     }
-
-    //     // if (this.x < mx && mx < this.x + this.width &&
-    //     //     this.y < my && my < this.y + this.height) {
-    //     //     return true;
-    //     // }
-    //     this.optionIndex = -1;
-    //     return false;
-    // }
-
     update() {
         this.out1 = this.value =
             this.offset + this.amplitude *
@@ -503,8 +517,6 @@ export class PointNode extends Node {
     move(mouse, constructionState) {
         this.posX = Math.round((mouse[0] - constructionState.diffX) * 10000) / 10000;
         this.posY = Math.round((mouse[1] - constructionState.diffY) * 10000) / 10000;
-        console.log(mouse);
-        console.log(constructionState.diffObj);
         this.update();
     }
 }
@@ -604,6 +616,10 @@ export class LineMirrorNode extends Node {
         this.output1 = new LineSocket(this, this.rightX, this.downY1, true);
         this.sockets.push(this.input1);
         this.sockets.push(this.output1);
+
+        this.optionArray = ['reverseNormal'];
+        this.isCheckBox = [true];
+        this.reverse = [true];
     }
 
     renderNode(ctx, sceneScale) {
@@ -627,7 +643,7 @@ export class LineMirrorNode extends Node {
             str = `x=${Math.round(-this.valueC / this.valueA * 10) / 10}`;
         }
         ctx.fillText(`${str}`, xx, yy);
-        ctx.fillText(`${this.lineMirrorType}`, xx, yy + 18);
+        ctx.fillText(`reverse: ${this.reverse[0]}`, xx, yy + 18);
 
         if (this.isShowingOption) {
             this.renderOption(ctx);
@@ -635,6 +651,7 @@ export class LineMirrorNode extends Node {
     }
 
     renderOption(ctx) {
+        this.renderOptionBoxes(ctx, this.optionArray);
     }
 
     update() {
@@ -662,10 +679,13 @@ export class LineMirrorNode extends Node {
         const d = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
         const d2 = [v[0] / d, v[1] / d];
         const n = [d2[0], d2[1]];
+        if (this.reverse[0]) {
+            n[0] *= -1;
+            n[1] *= -1;
+        }
         gl.uniform4f(uniLocation[uniI++],
                      this.p2[0], this.p2[1],
                      -n[1], n[0]); // [dirX, dirY, normal.x, normal.y]
-        console.log(`${this.p2[0]}, ${this.p2[1]}`);
         return uniI;
     }
 }
@@ -775,12 +795,12 @@ export class CircleMirrorNode extends Node {
         ctx.fillText(str1, xx, yy + 18);
         ctx.fillText(this.circleMirrorType, xx, yy + 18 + 18);
         if (this.isShowingOption && this.selected) {
-            this.renderOption(ctx);
+            //this.renderOption(ctx);
         }
     }
 
     renderOption(ctx) {
-        //this.renderOptionBoxes(ctx, ['reverse']);
+        this.renderOptionBoxes(ctx, this.optionArray);
     }
 
     update() {
