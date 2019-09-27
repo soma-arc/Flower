@@ -40,7 +40,7 @@ window.addEventListener('load', () => {
         //canvasManager.render();
         canvasManager.graphCanvas.render();
         canvasManager.constructionCanvas.render();
-        window.setTimeout(renderLoop, 10);
+        requestAnimationFrame(renderLoop);
     }
 
     renderLoop();

@@ -82,7 +82,6 @@ export default class GraphCanvas2d extends Canvas {
         } else {
             this.scale *= this.scaleFactor;
         }
-        this.render();
     }
 
     computeCoordinates(mx, my) {
@@ -107,7 +106,6 @@ export default class GraphCanvas2d extends Canvas {
             if (this.isRenderingMenu) {
                 const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
                 this.selectAddingNodeFromList(ox, oy);
-                this.render()
                 return;
             }
 
@@ -160,7 +158,6 @@ export default class GraphCanvas2d extends Canvas {
             }
 
             this.addNode(x, y);
-            this.render();
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.mouseState.x = x;
             this.mouseState.y = y;
@@ -189,7 +186,6 @@ export default class GraphCanvas2d extends Canvas {
             }
 
             this.isRenderingMenu = !this.isRenderingMenu;
-            this.render();
         }
     }
 
@@ -216,7 +212,6 @@ export default class GraphCanvas2d extends Canvas {
                         if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
                             this.pushEdge(s, new CircleEdge(this.scene.unfinishedEdge.s1, s));
                         }
-                        this.canvasManager.constructionCanvas.render();
                     }
                 }
             }
@@ -227,7 +222,6 @@ export default class GraphCanvas2d extends Canvas {
         this.draggingNode = undefined;
         this.selectedSocket = undefined;
         this.mouseState.button = -1;
-        this.render();
         // this.canvasManager.constructionCanvas.render();
     }
 
@@ -261,7 +255,6 @@ export default class GraphCanvas2d extends Canvas {
             flag = true;
         }
 
-        if (flag) this.render();
     }
 
     renderMenu(ctx) {
@@ -338,8 +331,6 @@ export default class GraphCanvas2d extends Canvas {
         this.scene.selectedNode = this.scene.nodes[this.scene.nodes.length - 1];
         if (this.scene.selectedNode !== undefined) this.scene.selectedNode.selected = true;
         this.canvasManager.compileRenderShader();
-        this.canvasManager.constructionCanvas.render();
-        this.render();
     }
 
     keydownListener(event) {
@@ -366,14 +357,10 @@ export default class GraphCanvas2d extends Canvas {
             }
 
             this.restoreSocketEdgeOn();
-            this.render();
             this.canvasManager.compileRenderShader();
-            this.canvasManager.constructionCanvas.render();
         } else if (this.scene.selectedNode !== undefined &&
             this.scene.selectedNode.isShowingOption) {
             this.scene.selectedNode.keydown(event.key);
-            this.render();
-            this.canvasManager.constructionCanvas.render();
         }
     }
 

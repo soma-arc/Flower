@@ -51,7 +51,6 @@ export default class ConstructionCanvas2d extends Canvas {
         } else {
             this.scale *= this.scaleFactor;
         }
-        this.render();
     }
 
     mouseDownListener(event) {
@@ -62,8 +61,6 @@ export default class ConstructionCanvas2d extends Canvas {
 
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             this.scene.select(mouse, this.scale);
-            console.log(this.scene.selectedState);
-            this.render();
         }
 
         this.mouseState.prevPosition = mouse;
@@ -79,13 +76,10 @@ export default class ConstructionCanvas2d extends Canvas {
         if (this.mouseState.button === Canvas.MOUSE_BUTTON_LEFT) {
             const moved = this.scene.move(mouse);
             if (moved) {
-                this.render();
-                this.canvasManager.graphCanvas.render();
             }
         } else if (this.mouseState.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.translate[0] = this.translate[0] - (mouse[0] - (this.mouseState.prevPosition[0]))
             this.translate[1] = this.translate[1] - (mouse[1] - (this.mouseState.prevPosition[1]))
-            this.render();
         }
     }
 
