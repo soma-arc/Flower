@@ -107,6 +107,7 @@ export default class GraphCanvas2d extends Canvas {
             if (this.isRenderingMenu) {
                 const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
                 this.selectAddingNodeFromList(ox, oy);
+                this.render()
                 return;
             }
 
@@ -159,6 +160,7 @@ export default class GraphCanvas2d extends Canvas {
             }
 
             this.addNode(x, y);
+            this.render();
         } else if (event.button === Canvas.MOUSE_BUTTON_WHEEL) {
             this.mouseState.x = x;
             this.mouseState.y = y;
@@ -225,7 +227,7 @@ export default class GraphCanvas2d extends Canvas {
         this.draggingNode = undefined;
         this.selectedSocket = undefined;
         this.mouseState.button = -1;
-        // this.render();
+        this.render();
         // this.canvasManager.constructionCanvas.render();
     }
 
@@ -337,6 +339,7 @@ export default class GraphCanvas2d extends Canvas {
         if (this.scene.selectedNode !== undefined) this.scene.selectedNode.selected = true;
         this.canvasManager.compileRenderShader();
         this.canvasManager.constructionCanvas.render();
+        this.render();
     }
 
     keydownListener(event) {
@@ -369,6 +372,8 @@ export default class GraphCanvas2d extends Canvas {
         } else if (this.scene.selectedNode !== undefined &&
             this.scene.selectedNode.isShowingOption) {
             this.scene.selectedNode.keydown(event.key);
+            this.render();
+            this.canvasManager.constructionCanvas.render();
         }
     }
 

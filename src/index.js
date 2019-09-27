@@ -37,7 +37,9 @@ window.addEventListener('load', () => {
     canvasManager.renderGraph();
 
     function renderLoop() {
-        canvasManager.render();
+        //canvasManager.render();
+        canvasManager.graphCanvas.render();
+        canvasManager.constructionCanvas.render();
         window.setTimeout(renderLoop, 10);
     }
 
