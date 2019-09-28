@@ -43,7 +43,8 @@ export default class Scene {
         const objects = {};
         for (const node of this.nodes) {
             if (node.name === 'Constant' ||
-                node.name === 'SinWave') continue;
+                node.name === 'SinWave' ||
+                node.name === 'CircularMotion') continue;
             if (objects[node.name] === undefined) {
                 objects[node.name] = [];
             }
@@ -52,7 +53,8 @@ export default class Scene {
         const objKeyNames = Object.keys(objects);
         for (const objName of objKeyNames) {
             if (objName === 'Constant' ||
-                objName === 'SinWave') continue;
+                objName === 'SinWave' ||
+                objName === 'CircularMotion') continue;
             const objArray = objects[objName];
             for (let i = 0; i < objArray.length; i++) {
                 objArray[i].setUniformLocations(gl, uniLocations, program, i);
@@ -65,7 +67,8 @@ export default class Scene {
         const objects = {};
         for (const node of this.nodes) {
             if (node.name === 'Constant' ||
-                node.name === 'SinWave') continue;
+                node.name === 'SinWave' ||
+                node.name === 'CircularMotion') continue;
             if (objects[node.name] === undefined) {
                 objects[node.name] = [];
             }
@@ -74,7 +77,8 @@ export default class Scene {
         const objKeyNames = Object.keys(objects);
         for (const objName of objKeyNames) {
             if (objName === 'Constant' ||
-                objName === 'SinWave') continue;
+                objName === 'SinWave' ||
+                objName === 'CircularMotion') continue;
             const objArray = objects[objName];
             for (let i = 0; i < objArray.length; i++) {
                 uniI = objArray[i].setUniformValues(gl, uniLocation, uniI, sceneScale);
@@ -124,5 +128,51 @@ export default class Scene {
             return true;
         }
         return false;
+    }
+
+    getNodeWithoutInput(nodeSet) {
+        for (const n of nodeSet) {
+            let hasInput = false;
+            for (const s of n.sockets) {
+                if (s.isOutput === false &&
+                   s.edgeOn === true) {
+                    hasInput = true;
+                }
+            }
+            if (hasInput === false) {
+                return n;
+            }
+        }
+        return undefined;
+    }
+
+    topologicalSort() {
+        const L = [];
+        const n = this.getNodeWithoutInput(this.nodes);
+        if (n === undefined) return [];
+        const S = [n];
+        while (S.length > 0) {
+            const n = S.splice(0, 1);
+            L.push(n);
+            const outputEdges = this.getOutputEdges(n)
+            for (const e of outputEdges) {
+                const mNode = e.getNode();
+                deleteEdge(e);
+                if (mNode.hasInputEdge) S.push(mNode);
+            }
+        }
+        return L;
+    }
+
+    getOutputEdges(node) {
+        const outputEdges = []
+        for (const s of node.sockets) {
+            if (s.isOutput === false ||
+                s.edge === undefined) continue;
+            const e = s.edge;
+            outputEdges.push(e);
+        }
+
+        return outputEdges;
     }
 }

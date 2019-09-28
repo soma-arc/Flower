@@ -287,10 +287,6 @@ export class Node {
         return false;
     }
 
-    showOption() {}
-
-    closeTextbox() {}
-
     setUniformLocations(gl, uniLocation, program, index) {}
 
     setUniformValues(gl, uniLocation, uniIndex, sceneScale) {}
@@ -342,26 +338,6 @@ export class ConstantNode extends Node {
         this.out1 = this.value;
         this.output1.value = this.out1;
     }
-
-    showOption() {
-        this.textbox.textboxX = this.x + 12;
-        this.textbox.textboxY = this.y + 24;
-        this.textbox.textboxWidth = 80;
-        this.textbox.setupTextbox();
-        this.textbox.renderOn = true;
-
-        const str = `${this.value}`;
-        for (let i = 0; i < str.length; i++) {
-            this.textbox.textboxText[i] = str.charAt(i);
-        }
-        this.textbox.textboxCursor = str.length;
-        this.textbox.parent = this;
-    }
-
-    closeTextbox() {
-        this.value = parseFloat(this.textbox.getTextboxArray());
-        this.textbox.renderOn = false;
-    }
 }
 
 export class SinWaveNode extends Node {
@@ -369,7 +345,7 @@ export class SinWaveNode extends Node {
         super(x, y);
 
         this.period = 1000;
-        this.amplitude = 1;
+        this.amplitude = 10;
         this.phaseShift = 0;
         this.offset = 0;
         this.value = 1;
@@ -418,25 +394,71 @@ export class SinWaveNode extends Node {
             Math.sin(2 * Math.PI * (this.phaseShift + new Date().getTime() / this.period));
         this.output1.value = this.out1;
     }
+}
 
-    showOption() {
-        this.textbox.textboxX = this.x + 12;
-        this.textbox.textboxY = this.y + 24;
-        this.textbox.textboxWidth = 80;
-        this.textbox.setupTextbox();
-        this.textbox.renderOn = true;
+export class CircularMotion extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.period = 1000;
+        this.amplitude = 10;
+        this.phaseShift = 0;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.valueX = 1;
+        this.valueY = 1;
+        this.outX = 0;
+        this.outY = 0;
 
-        const str = `${this.value}`;
-        for (let i = 0; i < str.length; i++) {
-            this.textbox.textboxText[i] = str.charAt(i);
-        }
-        this.textbox.textboxCursor = str.length;
-        this.textbox.parent = this;
+        this.nodeColor = 'rgb(0, 255, 255)';
+        this.name = 'CircularMotion';
+        this.outputY = new FloatSocket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.outputY);
+        this.outputX = new FloatSocket(this, this.rightX, this.downY2, true);
+        this.sockets.push(this.outputX);
+
+        this.optionArray = ['period', 'amplitude',
+                            'phaseShift', 'offsetX', 'offsetY'];
+        this.currentCursors = [0, 0, 0, 0, 0];
     }
 
-    closeTextbox() {
-        this.value = parseFloat(this.textbox.getTextboxArray());
-        this.textbox.renderOn = false;
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black';
+
+        let xx = this.x + 12;
+        let yy = this.y + 36;
+        let str = `p:${this.period}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `a:${this.amplitude}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `p:${this.phaseShift}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `oX:${this.offsetX}`;
+        ctx.fillText(str, xx, yy);
+        yy += 18;
+        str = `oY:${this.offsetY}`;
+        ctx.fillText(str, xx, yy);
+
+        if (this.isShowingOption && this.selected) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, this.optionArray);
+    }
+
+    update() {
+        const millis = new Date().getTime();
+        this.outX = this.valueX = this.offsetX + this.amplitude *
+            Math.cos(2 * Math.PI * (this.phaseShift + millis / this.period));
+        this.outY = this.valueY = this.offsetY + this.amplitude *
+            Math.sin(2 * Math.PI * (this.phaseShift + millis / this.period));
+        this.outputX.value = this.outX;
+        this.outputY.value = this.outY;
     }
 }
 
