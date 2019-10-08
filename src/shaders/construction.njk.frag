@@ -81,7 +81,7 @@ bool IIS(vec2 pos, out vec3 col) {
         if (inFund) break;
     }
     
-    col = computeColor(invNum) * 0.2;
+    col = computeColor(invNum);
     return (invNum == 0.) ? false : true;
 }
 
