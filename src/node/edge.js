@@ -3,6 +3,8 @@ export class Edge {
         this.s1 = s1;
         this.s2 = s2;
         this.id = this.getUniqueStr();
+
+        this.markAsDeletion = false;
     }
 
     getAnotherSocket(s) {

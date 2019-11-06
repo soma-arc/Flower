@@ -3,38 +3,27 @@
   <ul class="headerLeft">
     <li class="headerContent"><span>Flower</span></li>
   </ul>
-  <!-- <ul class="headerRight"> -->
-  <!--   <li class="buttonLi"> -->
-  <!--     <b-tooltip label="Redo: Ctrl+Shift+z" -->
-  <!--                position="is-left"> -->
-  <!--       <button class="button" -->
-  <!--               @click="redo">Redo</button> -->
-  <!--     </b-tooltip> -->
-  <!--   </li> -->
+  <ul class="headerRight">
+    <li class="buttonLi">
+      <button class="button" @click="clear">Clear</button>
+   </li>
   <!--   <b-tooltip label="Undo: Ctrl+z" -->
   <!--              position="is-left"> -->
   <!--     <li class="buttonLi"><button class="button" @click="undo">Undo</button></li> -->
   <!--   </b-tooltip> -->
   <!--   <li class="buttonLi"><button class="button" @click="clearScene">Clear</button></li> -->
-  <!-- </ul> -->
+  </ul>
 </header>
 </template>
 
 <script>
 export default {
-    props: ['scene', 'canvasHandler'],
+    props: ['scene', 'canvasManager'],
     methods: {
-        undo: function() {
-            this.scene.undo();
-            this.canvasHandler.render();
-        },
-        redo: function() {
-            this.scene.redo();
-            this.canvasHandler.render();
-        },
-        clearScene: function() {
-            this.scene.clearObjects();
-            this.canvasHandler.render();
+        clear: function() {
+            this.scene.clearScene();
+            this.canvasManager.compileRenderShader();
+            this.canvasManager.render();
         }
     }
 }

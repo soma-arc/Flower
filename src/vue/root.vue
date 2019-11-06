@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <header-panel />
+    <header-panel :scene="scene" :canvasManager="canvasManager"/>
     <middle-panel :scene="scene" :canvasManager="canvasManager"/>
     <footer-panel />
   </div>

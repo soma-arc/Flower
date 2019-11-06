@@ -46,6 +46,17 @@ export class Node {
         return new Date().getTime().toString(16) + Math.floor(strong * Math.random()).toString(16)
     }
 
+    hasInputEdge() {
+        for (const s of this.socket) {
+            if (s.isOutput === false &&
+                s.edgeOn === true &&
+                s.edge.markAsDeletion === false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     renderPane(ctx, sceneScale) {
         if (this.selected) {
             ctx.lineWidth = 3.0;

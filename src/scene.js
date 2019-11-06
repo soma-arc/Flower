@@ -39,6 +39,14 @@ export default class Scene {
         this.nodes.push(node);
     }
 
+    clearScene() {
+        this.nodes = [];
+        this.edges = [];
+        this.unfinishedEdge = undefined;
+        this.selectedNode = undefined;
+        this.constructionState = new ConstructionState();
+    }
+
     setUniformLocations(gl, uniLocations, program) {
         const objects = {};
         for (const node of this.nodes) {
@@ -130,7 +138,8 @@ export default class Scene {
         return false;
     }
 
-    getNodeWithoutInput(nodeSet) {
+    getNodesWithoutInput(nodeSet) {
+        const result = [];
         for (const n of nodeSet) {
             let hasInput = false;
             for (const s of n.sockets) {
@@ -140,25 +149,27 @@ export default class Scene {
                 }
             }
             if (hasInput === false) {
-                return n;
+                result.push(n);
             }
         }
-        return undefined;
+        return result;
     }
 
     topologicalSort() {
         const L = [];
-        const n = this.getNodeWithoutInput(this.nodes);
-        if (n === undefined) return [];
-        const S = [n];
+        const S = this.getNodesWithoutInput(this.nodes);
+
+        for (const e of this.edges) e.markAsDeletion = false;
+
         while (S.length > 0) {
             const n = S.splice(0, 1);
             L.push(n);
             const outputEdges = this.getOutputEdges(n)
             for (const e of outputEdges) {
+                if (e.markAsDeletion) continue;
                 const mNode = e.getNode();
-                deleteEdge(e);
-                if (mNode.hasInputEdge) S.push(mNode);
+                e.markAsDeletion = true;
+                if (mNode.hasInputEdge() === false) S.push(mNode);
             }
         }
         return L;
@@ -168,7 +179,8 @@ export default class Scene {
         const outputEdges = []
         for (const s of node.sockets) {
             if (s.isOutput === false ||
-                s.edge === undefined) continue;
+                s.edge === undefined ||
+                s.edge.markAsDeletion) continue;
             const e = s.edge;
             outputEdges.push(e);
         }
