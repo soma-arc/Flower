@@ -47,7 +47,7 @@ export class Node {
     }
 
     hasInputEdge() {
-        for (const s of this.socket) {
+        for (const s of this.sockets) {
             if (s.isOutput === false &&
                 s.edgeOn === true &&
                 s.edge.markAsDeletion === false) {
@@ -476,8 +476,8 @@ export class CircularMotion extends Node {
 export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);
-        this.posY = 10;
-        this.posX = 20;
+        this.posY = Math.random() * 20 - 10;
+        this.posX = Math.random() * 20 - 10;
         this.nodeColor = 'rgb(255, 0, 255)';
         this.name = 'Point';
 

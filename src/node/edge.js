@@ -64,6 +64,14 @@ export class Edge {
     }
 
     update() {}
+
+    getOutputNode() {
+        if (this.s1.isOutput) { // s1 -> s2
+            return this.s2.parent;
+        } else if (this.s2.isOutput) { // s2 -> s1
+            return this.s1.parent;
+        }
+    }
 }
 
 export class FloatEdge extends Edge {

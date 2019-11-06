@@ -162,12 +162,12 @@ export default class Scene {
         for (const e of this.edges) e.markAsDeletion = false;
 
         while (S.length > 0) {
-            const n = S.splice(0, 1);
+            const n = S.splice(0, 1)[0];
             L.push(n);
-            const outputEdges = this.getOutputEdges(n)
+            const outputEdges = this.getOutputEdges(n);
             for (const e of outputEdges) {
                 if (e.markAsDeletion) continue;
-                const mNode = e.getNode();
+                const mNode = e.getOutputNode();
                 e.markAsDeletion = true;
                 if (mNode.hasInputEdge() === false) S.push(mNode);
             }

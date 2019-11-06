@@ -6,6 +6,9 @@
   <ul class="headerRight">
     <li class="buttonLi">
       <button class="button" @click="clear">Clear</button>
+    </li>
+    <li class="buttonLi">
+      <button class="button" @click="save">Export</button>
    </li>
   <!--   <b-tooltip label="Undo: Ctrl+z" -->
   <!--              position="is-left"> -->
@@ -24,6 +27,10 @@ export default {
             this.scene.clearScene();
             this.canvasManager.compileRenderShader();
             this.canvasManager.render();
+        },
+        save: function() {
+            const result = this.scene.topologicalSort();
+            console.log(result);
         }
     }
 }
