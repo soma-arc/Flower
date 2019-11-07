@@ -177,14 +177,16 @@ export default class Scene {
 
     getOutputEdges(node) {
         const outputEdges = []
-        for (const s of node.sockets) {
-            if (s.isOutput === false ||
-                s.edge === undefined ||
-                s.edge.markAsDeletion) continue;
-            const e = s.edge;
-            outputEdges.push(e);
+        for (const edge of this.edges) {
+            for (const s of node.sockets) {
+                if (s.isOutput &&
+                    (edge.s1.id === s.id ||
+                     edge.s2.id === s.id)) {
+                    outputEdges.push(edge);
+                    break;
+                }
+            }
         }
-
         return outputEdges;
     }
 }
