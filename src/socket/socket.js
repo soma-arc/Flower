@@ -7,7 +7,9 @@ export class Socket {
         this.socketColor = 'rgb(0, 255, 0)';
         this.edgeOn = false;
         this.edge = undefined;
-        this.socketType = '';
+        this.outputEdges = []
+
+        this.name = '';
 
         this.radius = 8;
 
@@ -48,7 +50,7 @@ export class Socket {
 export class FloatSocket extends Socket {
     constructor(parent, x, y, isOutput) {
         super(parent, x, y, isOutput);
-        this.socketType = 'Float';
+        this.name = 'Float';
         this.socketColor = 'rgb(255, 255, 0)';
         this.value = 0;
     }
@@ -57,7 +59,7 @@ export class FloatSocket extends Socket {
 export class PointSocket extends Socket {
     constructor(parent, x, y, isOutput) {
         super(parent, x, y, isOutput);
-        this.socketType = 'Point';
+        this.name = 'Point';
         this.socketColor = 'rgb(255, 0, 255)';
         this.valueX = 0;
         this.valueY = 0;
@@ -67,7 +69,7 @@ export class PointSocket extends Socket {
 export class LineSocket extends Socket {
     constructor(parent, x, y, isOutput) {
         super(parent, x, y, isOutput);
-        this.socketType = 'Line';
+        this.name = 'Line';
         this.socketColor = 'rgb(255, 0, 100)';
         this.valueA = 0;
         this.valueB = 0;
@@ -81,7 +83,7 @@ export class LineSocket extends Socket {
 export class CircleSocket extends Socket {
     constructor(parent, x, y, isOutput) {
         super(parent, x, y, isOutput);
-        this.socketType = 'Circle';
+        this.name = 'Circle';
         this.socketColor = 'rgb(0, 100, 255)';
         this.valueX = 0;
         this.valueY = 0;

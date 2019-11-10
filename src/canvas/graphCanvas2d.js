@@ -199,17 +199,17 @@ export default class GraphCanvas2d extends Canvas {
                 const r2 = s.isOutput;
                 if (((r1 && !r2) || (!r1 && r2)) &&
                     !this.scene.inputDuplicate(s)) {
-                    if (this.scene.unfinishedEdge.s1.socketType === s.socketType) {
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Float') {
+                    if (this.scene.unfinishedEdge.s1.name === s.name) {
+                        if (this.scene.unfinishedEdge.s1.name === 'Float') {
                             this.pushEdge(s, new FloatEdge(this.scene.unfinishedEdge.s1, s));
                         }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Point') {
+                        if (this.scene.unfinishedEdge.s1.name === 'Point') {
                             this.pushEdge(s, new PointEdge(this.scene.unfinishedEdge.s1, s));
                         }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Line') {
+                        if (this.scene.unfinishedEdge.s1.name === 'Line') {
                             this.pushEdge(s, new LineEdge(this.scene.unfinishedEdge.s1, s));
                         }
-                        if (this.scene.unfinishedEdge.s1.socketType === 'Circle') {
+                        if (this.scene.unfinishedEdge.s1.name === 'Circle') {
                             this.pushEdge(s, new CircleEdge(this.scene.unfinishedEdge.s1, s));
                         }
                     }

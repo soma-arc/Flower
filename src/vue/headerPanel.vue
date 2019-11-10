@@ -9,6 +9,9 @@
     </li>
     <li class="buttonLi">
       <button class="button" @click="save">Export</button>
+    </li>
+    <li class="buttonLi">
+      <button class="button" @click="load">Import</button>
    </li>
   <!--   <b-tooltip label="Undo: Ctrl+z" -->
   <!--              position="is-left"> -->
@@ -29,8 +32,10 @@ export default {
             this.canvasManager.render();
         },
         save: function() {
-            const result = this.scene.topologicalSort();
-            console.log(result);
+            this.scene.saveSceneAsJson();
+        },
+        load: function() {
+            this.canvasManager.loadSceneFromFile();
         }
     }
 }

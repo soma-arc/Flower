@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import ConstructionState from './state/constructionState.js';
-
+import { ConstantNode, SinWaveNode, CircularMotion,
+         PointNode, LineTwoPointsNode, LineMirrorNode,
+         CircleThreePointsNode, CircleMirrorNode } from './node/node.js';
+import { FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js';
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
                    'CircleThreePoints', 'CircleMirror'];
 
@@ -189,4 +192,130 @@ export default class Scene {
         }
         return outputEdges;
     }
+
+    exportSceneAsJSON() {
+        const json = { 'nodes': [], 'edges': [] };
+        const objects = this.topologicalSort();
+        for (const obj of objects) {
+            const sockets = [];
+            for (const s of obj.sockets) {
+                const socket = {};
+                socket['id'] = s.id;
+                socket['name'] = s.name;
+                socket['isOutput'] = s.isOutput;
+                socket['edgeOn'] = s.edgeOn;
+                sockets.push(socket);
+            }
+
+            const jsonObj = { 'name': obj.name,
+                              'x': obj.x,
+                              'y': obj.y,
+                              'id': obj.id,
+                              'sockets': sockets };
+            json['nodes'].push(jsonObj);
+        }
+
+        for (const edge of this.edges) {
+            const edgeJson = { 'id': edge.id,
+                               'name': edge.name,
+                               's1Id': edge.s1.id,
+                               's2Id': edge.s2.id };
+            json['edges'].push(edgeJson);
+        }
+        return json;
+    }
+
+    saveSceneAsJson() {
+        const blob = new Blob([JSON.stringify(this.exportSceneAsJSON(),
+                                              null, '    ')],
+                              { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'scene.json';
+        a.click();
+    }
+
+    /*
+    load(json) {
+        for (const node of json['nodes']) {
+            let n = undefined;
+            if (node.name === 'Constant') {
+                n = new ConstantNode(node.x, node.y);
+            } else if (node.name === 'SinWave') {
+                n = new SinWaveNode(node.x, node.y);
+            } else if (node.name === 'CircularMotion') {
+                n = new CircularMotion(node.x, node.y);
+            } else if (node.name === 'Point') {
+                n = new PointNode(node.x, node.y);
+            } else if (node.name === 'LineTwoPoints') {
+                n = new LineTwoPointsNode(node.x, node.y);
+            } else if (node.name === 'LineMirror') {
+                n = new LineMirrorNode(node.x, node.y);
+            } else if (node.name === 'CircleThreePoints') {
+                n = new CircleThreePointsNode(node.x, node.y);
+            } else if (node.name === 'CircleMirror') {
+                n = new CircleMirrorNode(node.x, node.y);
+            }
+            n.id = node.id;
+
+            for (const socket of n.sockets) {
+                for (const socketData of node.sockets) {
+                    if (socket.isOutput === socketData.isOutput &&
+                        socket.name === socketData.name) {
+                        socket.id = socketData.id;
+                        break;
+                    }
+                }
+            }
+
+            this.nodes.push(n);
+        }
+        console.log(this.nodes);
+        
+        for (const edge of json['edges']) {
+            console.log('edges');
+            let s1 = undefined;
+            let s2 = undefined;
+            let foundS1 = false;
+            let foundS2 = false;
+            for (const node of this.nodes) {
+                console.log(node);
+                for (const socket of node.sockets) {
+                    if (socket.id === edge.s1Id &&
+                        foundS1 === false) {
+                        console.log('found s1')
+                        s1 = socket;
+                        foundS1 = true;
+                    }
+                    if (socket.id === edge.s2Id &&
+                        foundS2 === false) {
+                        console.log('found s2')
+                        s2 = socket;
+                        foundS2 = true;
+                    }
+                }
+            }
+            if (s1 === undefined && s2 === undefined) {
+                console.log('continue');
+                continue;
+            }
+            let e;
+            if (edge.name === 'Float') {
+                e = new FloatEdge(s1, s2);
+            } else if (edge.name === 'Point') {
+                e = new PointEdge(s1, s2);
+            } else if (edge.name === 'Line') {
+                e = new LineEdge(s1, s2);
+            } else if (edge.name === 'Circle') {
+                e = new CircleEdge(s1, s2);
+            }
+            s1.edgeOn = true;
+            s1.edge = e;
+            console.log(s2);
+            s2.edgeOn = true;
+            s2.edge = e;
+            this.edges.push(e);
+        }
+    }
+*/
 }

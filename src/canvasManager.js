@@ -41,4 +41,21 @@ export default class CanvasManager {
         this.constructionCanvas.resizeCanvas();
         this.constructionCanvas.render();
     }
+
+    loadSceneFromFile() {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            this.scene.load(JSON.parse(reader.result));
+            this.constructionCanvas.compileRenderShader();
+            this.constructionCanvas.render();
+            this.graphCanvas.render();
+        });
+        const a = document.createElement('input');
+        a.type = 'file';
+        a.addEventListener('change', function(event) {
+            const files = event.target.files;
+            reader.readAsText(files[0]);
+        });
+        a.click();
+    }
 }

@@ -5,6 +5,7 @@ export class Edge {
         this.id = this.getUniqueStr();
 
         this.markAsDeletion = false;
+        this.name = '';
     }
 
     getAnotherSocket(s) {
@@ -78,6 +79,7 @@ export class FloatEdge extends Edge {
     constructor(s1, s2) {
         super(s1, s2);
         this.value = 0;
+        this.name = 'Float';
     }
 
     update() {
@@ -96,6 +98,8 @@ export class PointEdge extends Edge {
         super(s1, s2);
         this.valueX = 0;
         this.valueY = 0;
+
+        this.name = 'Point';
     }
 
     update() {
@@ -122,6 +126,8 @@ export class LineEdge extends Edge {
 
         this.p1 = [0, 0];
         this.p2 = [0, 0];
+
+        this.name = 'Line';
     }
 
     update() {
@@ -163,6 +169,8 @@ export class CircleEdge extends Edge {
         this.valueX = 0;
         this.valueY = 0;
         this.valueR = 0;
+
+        this.name = 'Circle';
     }
 
     update() {
