@@ -476,8 +476,8 @@ export class CircularMotion extends Node {
 export class PointNode extends Node {
     constructor(x, y) {
         super(x, y);
-        this.posY = Math.random() * 20 - 10;
-        this.posX = Math.random() * 20 - 10;
+        this.posY = Math.round((Math.random() * 20 - 10) * 10000) / 10000;
+        this.posX = Math.round((Math.random() * 20 - 10) * 10000) / 10000;
         this.nodeColor = 'rgb(255, 0, 255)';
         this.name = 'Point';
 
@@ -855,5 +855,82 @@ export class CircleMirrorNode extends Node {
         gl.uniform4f(uniLocation[uniI++],
                      this.valueX, this.valueY, this.valueR, this.valueR * this.valueR);
         return uniI;
+    }
+}
+
+export class OrbitSeedNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.posX = 0;
+        this.posY = 0;
+        this.seedWidth = 10;
+        this.seedHeight = 10;
+
+        this.nodeColor = 'rgb(100, 100, 255)';
+        this.name = 'OrbitSeed'
+
+        // y coord
+        this.input1 = new FloatSocket(this, this.leftX, this.downY1, false);
+        // x coord
+        this.input2 = new FloatSocket(this, this.leftX, this.downY2, false);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.input2);
+
+        this.optionArray = ['posX', 'posY'];
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black';
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+        ctx.fillText(`${this.posX}`, xx, yy);
+        const yy2 = yy + 18;
+        ctx.fillText(`${this.posY}`, xx, yy2);
+        if (this.isShowingOption && this.selected) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, this.optionArray);
+    }
+
+    update() {
+        if (this.input1.edgeOn) {
+            this.posY = this.input1.value;
+        }
+        if (this.input2.edgeOn) {
+            this.posX = this.input2.value;
+        }
+    }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program,
+                                               `u_orbitSeed${index}`));
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform4f(uniLocation[uniI++],
+                     this.posX, this.posY, this.seedWidth, this.seedHeight);
+        return uniI;
+    }
+
+    select(mouse, sceneScale) {
+        if (this.posX < mouse[0] && mouse[0] < this.posX + this.seedWidth &&
+            this.posY < mouse[1] && mouse[1] < this.posY + this.seedHeight) {
+            const dx = mouse[0] - this.posX;
+            const dy = mouse[1] - this.posY;
+            return new ConstructionState().setNode(this)
+                .setDiffObj(dx, dy);
+        }
+        return new ConstructionState();
+    }
+
+    move(mouse, constructionState) {
+        this.posX = Math.round((mouse[0] - constructionState.diffX) * 10000) / 10000;
+        this.posY = Math.round((mouse[1] - constructionState.diffY) * 10000) / 10000;
+        this.update();
     }
 }

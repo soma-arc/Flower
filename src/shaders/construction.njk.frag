@@ -2,9 +2,10 @@
 
 precision mediump float;
 
-uniform sampler2D u_accTexture;
+uniform sampler2D u_accTextures;
 uniform vec2 u_resolution;
 uniform vec3 u_geometry; // [translateX, translateY, scele]
+uniform sampler2D u_imageTexture;
 
 //[x, y, r]
 {% for n in range(0, numPoint) %}
@@ -25,6 +26,10 @@ uniform vec3 u_circleThreePoints{{ n }};
 
 {% for n in range(0, numCircleMirror) %}
 uniform vec4 u_circleMirror{{ n }};
+{% endfor %}
+
+{% for n in range(0, numOrbitSeed) %}
+uniform vec4 u_orbitSeed{{ n }}; //[x, y, width, height]
 {% endfor %}
 
 vec3 hsv2rgb(float h, float s, float v){
@@ -60,6 +65,18 @@ bool IIS(vec2 pos, out vec3 col) {
     bool inFund = true;
     
     for (int i = 0; i < MAX_ITERATIONS; i++) {
+        {% for n in range(0, numOrbitSeed) %}
+        vec2 uv{{ n }} = (pos - u_orbitSeed{{ n }}.xy) / u_orbitSeed{{ n }}.zw;
+        if(0. < uv{{ n }}.x && uv{{ n }}.x < 1. &&
+           0. < uv{{ n }}.y && uv{{ n }}.y < 1.) {
+            vec4 c{{ n }} = textureLod(u_imageTexture, vec2(uv{{ n }}.x, 1. - uv{{ n }}.y), 0.0);
+            if(c{{ n }}.w == 1.) {
+                col = c{{ n }}.rgb;
+                return true;
+            }
+        }
+        {% endfor %}
+        
         {% for n in range(0, numCircleMirror) %}
         if(distance(pos, u_circleMirror{{ n }}.xy) < u_circleMirror{{ n }}.z){
             pos = circleInvert(pos, u_circleMirror{{ n }});
@@ -94,7 +111,7 @@ void main() {
         vec2 position = ((gl_FragCoord.xy + rand2n(gl_FragCoord.xy, i)) / u_resolution.yy ) - vec2(ratio, 0.5);
         position = position * u_geometry.z;
         position += u_geometry.xy;
-
+        
         {% for n in range(0, numPoint) %}
         if (distance(u_point{{ n }}.xy, position) < u_point{{ n }}.z){
             sum += vec3(0, 0, 1);

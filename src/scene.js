@@ -2,10 +2,10 @@ import Vue from 'vue';
 import ConstructionState from './state/constructionState.js';
 import { ConstantNode, SinWaveNode, CircularMotion,
          PointNode, LineTwoPointsNode, LineMirrorNode,
-         CircleThreePointsNode, CircleMirrorNode } from './node/node.js';
+         CircleThreePointsNode, CircleMirrorNode, OrbitSeedNode } from './node/node.js';
 import { FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js';
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
-                   'CircleThreePoints', 'CircleMirror'];
+                   'CircleThreePoints', 'CircleMirror', 'OrbitSeed'];
 
 export default class Scene {
     constructor() {
@@ -235,7 +235,6 @@ export default class Scene {
         a.click();
     }
 
-    /*
     load(json) {
         for (const node of json['nodes']) {
             let n = undefined;
@@ -261,7 +260,8 @@ export default class Scene {
             for (const socket of n.sockets) {
                 for (const socketData of node.sockets) {
                     if (socket.isOutput === socketData.isOutput &&
-                        socket.name === socketData.name) {
+                        socket.name === socketData.name &&
+                        socket.edgeOn === socketData.edgeOn) {
                         socket.id = socketData.id;
                         break;
                     }
@@ -269,7 +269,9 @@ export default class Scene {
             }
 
             this.nodes.push(n);
+            console.log(n);
         }
+        /*
         console.log(this.nodes);
         
         for (const edge of json['edges']) {
@@ -316,6 +318,6 @@ export default class Scene {
             s2.edge = e;
             this.edges.push(e);
         }
+    */
     }
-*/
 }

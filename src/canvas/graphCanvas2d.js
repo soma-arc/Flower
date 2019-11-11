@@ -2,13 +2,14 @@ import Canvas from './canvas.js';
 import { Edge, FloatEdge, PointEdge, LineEdge, CircleEdge } from '../node/edge.js';
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
-         CircleMirrorNode, SinWaveNode, CircularMotion } from '../node/node.js';
+         CircleMirrorNode, SinWaveNode, CircularMotion,
+         OrbitSeedNode } from '../node/node.js';
 
 import GraphState from '../state/graphState.js';
 
 const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
                    'LineMirror', 'CircleThreePoints',
-                   'CircleMirror', 'SinWave', 'CircularMotion'];
+                   'CircleMirror', 'OrbitSeed', 'SinWave', 'CircularMotion'];
 
 export default class GraphCanvas2d extends Canvas {
     constructor(canvasId, scene, canvasManager) {
@@ -318,6 +319,10 @@ export default class GraphCanvas2d extends Canvas {
         }
         case 'CircleMirror': {
             this.scene.addNode(new CircleMirrorNode(x, y));
+            break;
+        }
+        case 'OrbitSeed': {
+            this.scene.addNode(new OrbitSeedNode(x, y));
             break;
         }
         case 'SinWave': {
