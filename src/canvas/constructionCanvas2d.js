@@ -19,12 +19,16 @@ export default class ConstructionCanvas2d extends Canvas {
             button: -1
         };
 
-        this.canvas = document.getElementById(this.canvasId);
-        this.resizeCanvas();
-
         this.scale = 100;
         this.scaleFactor = 1.25;
         this.translate = [0, 0];
+
+        this.displayAxis = false;
+    }
+
+    init() {
+        this.canvas = document.getElementById(this.canvasId);
+        this.resizeCanvas();
 
         this.gl = GetWebGL2Context(this.canvas);
 

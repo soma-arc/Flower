@@ -13,10 +13,11 @@
     <li class="buttonLi">
       <button class="button" @click="load">Import</button>
    </li>
-  <!--   <b-tooltip label="Undo: Ctrl+z" -->
-  <!--              position="is-left"> -->
-  <!--     <li class="buttonLi"><button class="button" @click="undo">Undo</button></li> -->
-  <!--   </b-tooltip> -->
+    <li class="buttonLi"><button class="button" @click="saveImate">SaveImage</button></li>
+    <li class="buttonLi">      
+      <input type="checkbox" v-model="canvasManager.constructionCanvas.displayAxis"
+             @change="changeOption"><font size="4">DisplayAxis</font>
+    </li>
   <!--   <li class="buttonLi"><button class="button" @click="clearScene">Clear</button></li> -->
   </ul>
 </header>
@@ -36,6 +37,10 @@ export default {
         },
         load: function() {
             this.canvasManager.loadSceneFromFile();
+        },
+        saveImage: function() {
+        },
+        changeOption: function() {
         }
     }
 }
@@ -95,4 +100,5 @@ header {
 .headerContent {
     padding: 5px;
 }
+
 </style>

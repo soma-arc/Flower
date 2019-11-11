@@ -5,6 +5,8 @@ export default class CanvasManager {
     constructor(scene) {
         this.scene = scene;
 
+        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas',
+                                                           this.scene, this);
         this.resizeCallback = this.resize.bind(this);
     }
 
@@ -13,8 +15,8 @@ export default class CanvasManager {
         this.graphCanvas.resizeCanvas();
         this.graphCanvas.addEventListeners();
 
-        this.constructionCanvas = new ConstructionCanvas2d('constructionCanvas',
-                                                           this.scene, this);
+        this.constructionCanvas.init();
+
         this.constructionCanvas.resizeCanvas();
         this.constructionCanvas.addEventListeners();
 
