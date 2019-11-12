@@ -1,13 +1,13 @@
 import Canvas from './canvas.js';
-import { Edge, FloatEdge, PointEdge, LineEdge, CircleEdge } from '../node/edge.js';
+import { Edge, FloatEdge, PointEdge, Vec3Edge, LineEdge, CircleEdge } from '../node/edge.js';
 import { ConstantNode, PointNode, LineTwoPointsNode,
          LineMirrorNode, CircleThreePointsNode,
          CircleMirrorNode, SinWaveNode, CircularMotion,
-         OrbitSeedNode, ColorPalettesNode } from '../node/node.js';
+         OrbitSeedNode, ColorPalettesNode, Vec3Node } from '../node/node.js';
 
 import GraphState from '../state/graphState.js';
 
-const MENU_ITEM = ['Constant', 'Point', 'LineTwoPoints',
+const MENU_ITEM = ['Constant', 'Point', 'Vec3', 'LineTwoPoints',
                    'LineMirror', 'CircleThreePoints',
                    'CircleMirror', 'OrbitSeed', 'SinWave', 'CircularMotion',
                    'ColorPalettes'];
@@ -211,6 +211,9 @@ export default class GraphCanvas2d extends Canvas {
                         if (this.scene.unfinishedEdge.s1.name === 'Point') {
                             this.pushEdge(s, new PointEdge(this.scene.unfinishedEdge.s1, s));
                         }
+                        if (this.scene.unfinishedEdge.s1.name === 'Vec3') {
+                            this.pushEdge(s, new Vec3Edge(this.scene.unfinishedEdge.s1, s));
+                        }
                         if (this.scene.unfinishedEdge.s1.name === 'Line') {
                             this.pushEdge(s, new LineEdge(this.scene.unfinishedEdge.s1, s));
                         }
@@ -307,6 +310,10 @@ export default class GraphCanvas2d extends Canvas {
         }
         case 'Point': {
             this.scene.addNode(new PointNode(x, y));
+            break;
+        }
+        case 'Vec3': {
+            this.scene.addNode(new Vec3Node(x, y));
             break;
         }
         case 'LineTwoPoints': {

@@ -117,6 +117,35 @@ export class PointEdge extends Edge {
     }
 }
 
+export class Vec3Edge extends Edge {
+    constructor(s1, s2) {
+        super(s1, s2);
+        this.valueX = 0;
+        this.valueY = 0;
+        this.valueZ = 0;
+
+        this.name = 'Vec3';
+    }
+
+    update() {
+        if (this.s1.isOutput) { // s1 -> s2
+            this.valueX = this.s1.valueX;
+            this.valueY = this.s1.valueY;
+            this.valueZ = this.s1.valueZ;
+            this.s2.valueX = this.valueX;
+            this.s2.valueY = this.valueY;
+            this.s2.valueZ = this.valueZ;
+        } else if (this.s2.isOutput) { // s2 -> s1
+            this.valueX = this.s2.valueX;
+            this.valueY = this.s2.valueY;
+            this.valueZ = this.s2.valueZ;
+            this.s1.valueX = this.valueX;
+            this.s1.valueY = this.valueY;
+            this.s1.valueZ = this.valueZ;
+        }
+    }
+}
+
 export class LineEdge extends Edge {
     constructor(s1, s2) {
         super(s1, s2);

@@ -1,7 +1,8 @@
 import { FloatSocket,
          PointSocket,
          LineSocket,
-         CircleSocket } from '../socket/socket.js';
+         CircleSocket,
+         Vec3Socket } from '../socket/socket.js';
 import Textbox from '../textbox.js';
 import ConstructionState from '../state/constructionState.js';
 import GraphState from '../state/graphState.js';
@@ -21,6 +22,7 @@ export class Node {
         this.downY1 = this.height - 10;
         this.downY2 = this.height - 25;
         this.downY3 = this.height - 40;
+        this.downY4 = this.height - 55;
         this.name = '';
         this.isShowingOption = false;
 
@@ -944,6 +946,16 @@ export class ColorPalettesNode extends Node {
         this.c = [1.0, 1.0, 1.0];
         this.d = [0.0, 0.33, 0.67];
 
+        this.inputA = new Vec3Socket(this, this.leftX, this.downY4, false);
+        this.inputB = new Vec3Socket(this, this.leftX, this.downY3, false);
+        this.inputC = new Vec3Socket(this, this.leftX, this.downY2, false);
+        this.inputD = new Vec3Socket(this, this.leftX, this.downY1, false);
+
+        this.sockets.push(this.inputA);
+        this.sockets.push(this.inputB);
+        this.sockets.push(this.inputC);
+        this.sockets.push(this.inputD);
+
         this.nodeColor = 'rgb(100, 100, 255)';
         this.name = 'ColorPalettes'
     }
@@ -968,5 +980,82 @@ export class ColorPalettesNode extends Node {
             ctx.lineTo(xx + lx, yy + 30);
             ctx.stroke();
         }
+    }
+
+    update() {
+        if (this.inputA.edgeOn) {
+            this.a = [this.inputA.valueX, this.inputA.valueY, this.inputA.valueZ]
+        }
+        if (this.inputB.edgeOn) {
+            this.b = [this.inputB.valueX, this.inputB.valueY, this.inputB.valueZ]
+        }
+        if (this.inputC.edgeOn) {
+            this.c = [this.inputC.valueX, this.inputC.valueY, this.inputC.valueZ]
+        }
+        if (this.inputD.edgeOn) {
+            this.d = [this.inputD.valueX, this.inputD.valueY, this.inputD.valueZ]
+        }
+    }
+}
+
+export class Vec3Node extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.valueX = Math.round((Math.random()) * 10000) / 10000;
+        this.valueY = Math.round((Math.random()) * 10000) / 10000
+        this.valueZ = Math.round((Math.random()) * 10000) / 10000;
+
+        this.nodeColor = 'rgb(255, 0, 255)';
+        this.name = 'Vec3';
+
+        // z coord
+        this.input3 = new FloatSocket(this, this.leftX, this.downY1, false);
+        // y coord
+        this.input2 = new FloatSocket(this, this.leftX, this.downY2, false);
+        // x coord
+        this.input1 = new FloatSocket(this, this.leftX, this.downY3, false);
+        this.output1 = new Vec3Socket(this, this.rightX, this.downY1, true);
+        this.sockets.push(this.input1);
+        this.sockets.push(this.input2);
+        this.sockets.push(this.input3);
+        this.sockets.push(this.output1);
+
+        this.uiRadius = 0.5;
+        this.optionArray = ['valueX', 'valueY', 'valueZ'];
+        this.currentCursors = [0, 0, 0];
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black';
+        const xx = this.x + 12;
+        const yy = this.y + 36;
+        ctx.fillText(`${this.valueX}`, xx, yy);
+        const yy2 = yy + 18;
+        ctx.fillText(`${this.valueY}`, xx, yy2);
+        const yy3 = yy2 + 18;
+        ctx.fillText(`${this.valueZ}`, xx, yy3);
+        if (this.isShowingOption && this.selected) {
+            this.renderOption(ctx);
+        }
+    }
+
+    renderOption(ctx) {
+        this.renderOptionBoxes(ctx, this.optionArray);
+    }
+
+    update() {
+        if (this.input1.edgeOn) {
+            this.valueX = this.input1.value;
+        }
+        if (this.input2.edgeOn) {
+            this.valueY = this.input2.value;
+        }
+        if (this.input3.edgeOn) {
+            this.valueZ = this.input3.value;
+        }
+        this.output1.valueX = this.valueX;
+        this.output1.valueY = this.valueY;
+        this.output1.valueZ = this.valueZ;
     }
 }

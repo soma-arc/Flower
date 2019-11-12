@@ -3,7 +3,7 @@ import ConstructionState from './state/constructionState.js';
 import { ConstantNode, SinWaveNode, CircularMotion,
          PointNode, LineTwoPointsNode, LineMirrorNode,
          CircleThreePointsNode, CircleMirrorNode, OrbitSeedNode } from './node/node.js';
-import { FloatEdge, PointEdge, LineEdge, CircleEdge } from './node/edge.js';
+import { FloatEdge, PointEdge, Vec3Edge, LineEdge, CircleEdge } from './node/edge.js';
 const OBJ_NAMES = ['Point', 'LineTwoPoints', 'LineMirror',
                    'CircleThreePoints', 'CircleMirror', 'OrbitSeed'];
 
