@@ -6,6 +6,7 @@ uniform sampler2D u_accTextures;
 uniform vec2 u_resolution;
 uniform vec3 u_geometry; // [translateX, translateY, scele]
 uniform sampler2D u_imageTexture;
+uniform bool u_displayAxis;
 
 //[x, y, r]
 {% for n in range(0, numPoint) %}
@@ -118,14 +119,16 @@ void main() {
             continue;
         }
         {% endfor %}
-        
-        if(abs(position.x) < .1) {
-            sum += vec3(1);
-            continue;
-        }
-        if(abs(position.y) < .1) {
-            sum += vec3(1);
-            continue;
+
+        if (u_displayAxis) {
+            if(abs(position.x) < .1) {
+                sum += vec3(1);
+                continue;
+            }
+            if(abs(position.y) < .1) {
+                sum += vec3(1);
+                continue;
+            }
         }
         
         vec3 col;

@@ -13,7 +13,7 @@
     <li class="buttonLi">
       <button class="button" @click="load">Import</button>
    </li>
-    <li class="buttonLi"><button class="button" @click="saveImate">SaveImage</button></li>
+    <li class="buttonLi"><button class="button" @click="saveImage">SaveImage</button></li>
     <li class="buttonLi">      
       <input type="checkbox" v-model="canvasManager.constructionCanvas.displayAxis"
              @change="changeOption"><font size="4">DisplayAxis</font>
@@ -39,8 +39,10 @@ export default {
             this.canvasManager.loadSceneFromFile();
         },
         saveImage: function() {
+            this.canvasManager.constructionCanvas.renderProductAndSave();
         },
         changeOption: function() {
+            this.canvasManager.constructionCanvas.render();
         }
     }
 }

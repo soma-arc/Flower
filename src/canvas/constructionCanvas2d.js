@@ -5,6 +5,7 @@ import TextureHandler from '../textureHandler.js';
 
 const RENDER_FRAGMENT = require('../shaders/render.frag');
 const RENDER_VERTEX = require('../shaders/render.vert');
+const RENDER_FLIPPED_VERTEX = require('../shaders/renderFlipped.vert');
 const CONSTRUCTION_FRAG_TMPL = require('../shaders/construction.njk.frag');
 
 export default class ConstructionCanvas2d extends Canvas {
@@ -47,6 +48,27 @@ export default class ConstructionCanvas2d extends Canvas {
         this.compileRenderShader();
         this.initRenderTextures();
         this.texturesFrameBuffer = this.gl.createFramebuffer();
+
+        this.productRenderProgram = this.gl.createProgram();
+        AttachShader(this.gl, RENDER_FLIPPED_VERTEX,
+                     this.productRenderProgram, this.gl.VERTEX_SHADER);
+        AttachShader(this.gl, RENDER_FRAGMENT,
+                     this.productRenderProgram, this.gl.FRAGMENT_SHADER);
+        LinkProgram(this.gl, this.productRenderProgram);
+        this.productRenderVAttrib = this.gl.getAttribLocation(this.productRenderProgram,
+                                                              'a_vertex');
+        this.productRenderFrameBuffer = this.gl.createFramebuffer();
+        this.productRenderResolution = [512, 512];
+        this.initProductRenderTextures();
+    }
+
+    initProductRenderTextures() {
+        this.productRenderTextures = CreateRGBATextures(this.gl,
+                                                        this.productRenderResolution[0],
+                                                        this.productRenderResolution[1], 2);
+        this.productRenderResultTexture = CreateRGBATextures(this.gl,
+                                                             this.productRenderResolution[0],
+                                                             this.productRenderResolution[1], 1)[0];
     }
 
     mouseWheelListener(event) {
@@ -150,7 +172,8 @@ export default class ConstructionCanvas2d extends Canvas {
                                                           'u_resolution'));
         this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
                                                           'u_geometry'));
-
+        this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
+                                                          'u_displayAxis'));
         // for (let n = 0; n < this.numPoints.length; n++) {
         //     this.uniLocations.push(this.gl.getUniformLocation(this.renderProgram,
         //                                                       `u_point${n}`));
@@ -177,6 +200,7 @@ export default class ConstructionCanvas2d extends Canvas {
         this.gl.uniform2f(this.uniLocations[i++], width, height);
         this.gl.uniform3f(this.uniLocations[i++],
                           this.translate[0], this.translate[1], this.scale);
+        this.gl.uniform1i(this.uniLocations[i++], this.displayAxis);
         // this.gl.uniform1i(this.uniLocations[i++], this.maxIterations);
         // this.gl.uniform1i(this.uniLocations[i++], this.isRenderingGenerator);
         i = this.scene.setUniformValues(this.gl, this.uniLocations, i, this.scale);
@@ -214,5 +238,29 @@ export default class ConstructionCanvas2d extends Canvas {
     render() {
         this.renderToTexture(this.renderTextures, this.canvas.width, this.canvas.height);
         this.renderTexturesToCanvas(this.renderTextures);
+    }
+
+    renderProductAndSave() {
+        this.initProductRenderTextures();
+        this.renderToTexture(this.productRenderTextures,
+                             this.productRenderResolution[0],
+                             this.productRenderResolution[1]);
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.productRenderFrameBuffer);
+        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D,
+                                     this.productRenderResultTexture, 0);
+        this.gl.viewport(0, 0, this.productRenderResolution[0], this.productRenderResolution[1]);
+        this.gl.useProgram(this.productRenderProgram);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.productRenderTextures[0]);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
+        this.gl.vertexAttribPointer(this.productRenderVAttrib, 2,
+                                    this.gl.FLOAT, false, 0, 0);
+        this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+        this.gl.flush();
+
+        this.saveImage(this.gl,
+                       this.productRenderResolution[0],
+                       this.productRenderResolution[1],
+                       'construction.png');
     }
 }
