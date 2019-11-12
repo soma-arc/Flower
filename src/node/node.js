@@ -934,3 +934,39 @@ export class OrbitSeedNode extends Node {
         this.update();
     }
 }
+
+export class ColorPalettesNode extends Node {
+    constructor(x, y) {
+        super(x, y);
+        this.width = 150;
+        this.a = [0.5, 0.5, 0.5];
+        this.b = [0.5, 0.5, 0.5];
+        this.c = [1.0, 1.0, 1.0];
+        this.d = [0.0, 0.33, 0.67];
+
+        this.nodeColor = 'rgb(100, 100, 255)';
+        this.name = 'ColorPalettes'
+    }
+
+    renderNode(ctx, sceneScale) {
+        this.renderPane(ctx, sceneScale);
+        ctx.fillStyle = 'black';
+        const xx = this.x + 10;
+        const yy = this.y + 50;
+        //ctx.fillText(`${this.posX}`, xx, yy);
+        const yy2 = yy + 18;
+        //ctx.fillText(`${this.posY}`, xx, yy2);
+        const numSplit = 130;
+        for (let lx = 0; lx < numSplit; lx++) {
+            const t = lx / numSplit;
+            const r = this.a[0] + this.b[0] * Math.cos(6.28318 * (this.c[0] * t + this.d[0]));
+            const g = this.a[1] + this.b[1] * Math.cos(6.28318 * (this.c[1] * t + this.d[1]));
+            const b = this.a[2] + this.b[2] * Math.cos(6.28318 * (this.c[2] * t + this.d[2]));
+            ctx.strokeStyle = `rgb(${r * 255}, ${g * 255}, ${b * 255})`;
+            ctx.beginPath();
+            ctx.moveTo(xx + lx, yy);
+            ctx.lineTo(xx + lx, yy + 30);
+            ctx.stroke();
+        }
+    }
+}
