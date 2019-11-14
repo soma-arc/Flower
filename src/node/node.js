@@ -312,6 +312,12 @@ export class Node {
     move(mouse, selectionState) {
         return false;
     }
+
+    setJsonValue(jsonObj) {
+    }
+
+    restoreValueFromJson(jsonObj) {
+    }
 }
 
 export class ConstantNode extends Node {
@@ -351,6 +357,14 @@ export class ConstantNode extends Node {
         this.out1 = this.value;
         this.output1.value = this.out1;
     }
+
+    setJsonValue(jsonObj) {
+        jsonObj.value = this.value;
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.value = jsonObj.value;
+    }
 }
 
 export class SinWaveNode extends Node {
@@ -372,6 +386,22 @@ export class SinWaveNode extends Node {
         this.optionArray = ['period', 'amplitude',
                             'phaseShift', 'offset'];
         this.currentCursors = [0, 0, 0, 0];
+    }
+
+    setJsonValue(jsonObj) {
+        jsonObj.period = this.period;
+        jsonObj.amplitude = this.amplitude;
+        jsonObj.phaseShift = this.phaseShift;
+        jsonObj.offset = this.offset;
+        jsonObj.value = this.value;
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.period = jsonObj.period;
+        this.amplitude = jsonObj.amplitude;
+        this.phaseShift = jsonObj.phaseShift;
+        this.offset = jsonObj.offset;
+        this.value = jsonObj.value;
     }
 
     renderNode(ctx, sceneScale) {
@@ -432,6 +462,26 @@ export class CircularMotion extends Node {
         this.optionArray = ['period', 'amplitude',
                             'phaseShift', 'offsetX', 'offsetY'];
         this.currentCursors = [0, 0, 0, 0, 0];
+    }
+
+    setJsonValue(jsonObj) {
+        jsonObj.period = this.period;
+        jsonObj.amplitude = this.amplitude;
+        jsonObj.phaseShift = this.phaseShift;
+        jsonObj.offsetX = this.offsetX;
+        jsonObj.offsetY = this.offsetY;
+        jsonObj.valueX = this.valueX;
+        jsonObj.valueY = this.valueY;
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.period = jsonObj.period;
+        this.amplitude = jsonObj.amplitude;
+        this.phaseShift = jsonObj.phaseShift;
+        this.offsetX = jsonObj.offsetX;
+        this.offsetY = jsonObj.offsetY;
+        this.valueX = jsonObj.valueX;
+        this.valueY = jsonObj.valueY;
     }
 
     renderNode(ctx, sceneScale) {
@@ -552,6 +602,16 @@ export class PointNode extends Node {
         this.posX = Math.round((mouse[0] - constructionState.diffX) * 10000) / 10000;
         this.posY = Math.round((mouse[1] - constructionState.diffY) * 10000) / 10000;
         this.update();
+    }
+
+    setJsonValue(jsonObj) {
+        jsonObj.posX = this.posX;
+        jsonObj.posY = this.posY;
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.posX = jsonObj.posX;
+        this.posY = jsonObj.posY;
     }
 }
 
@@ -935,6 +995,16 @@ export class OrbitSeedNode extends Node {
         this.posY = Math.round((mouse[1] - constructionState.diffY) * 10000) / 10000;
         this.update();
     }
+
+    setJsonValue(jsonObj) {
+        jsonObj.posX = this.posX;
+        jsonObj.posY = this.posY;
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.posX = jsonObj.posX;
+        this.posY = jsonObj.posY;
+    }
 }
 
 export class ColorPalettesNode extends Node {
@@ -995,6 +1065,28 @@ export class ColorPalettesNode extends Node {
         if (this.inputD.edgeOn) {
             this.d = [this.inputD.valueX, this.inputD.valueY, this.inputD.valueZ]
         }
+    }
+
+    setUniformLocations(gl, uniLocation, program, index) {
+        uniLocation.push(gl.getUniformLocation(program, `u_colorPalettesA`));
+        uniLocation.push(gl.getUniformLocation(program, `u_colorPalettesB`));
+        uniLocation.push(gl.getUniformLocation(program, `u_colorPalettesC`));
+        uniLocation.push(gl.getUniformLocation(program, `u_colorPalettesD`));
+        uniLocation.push(gl.getUniformLocation(program, `u_useColorPalettes`));
+    }
+
+    setUniformValues(gl, uniLocation, uniIndex, sceneScale) {
+        let uniI = uniIndex;
+        gl.uniform3f(uniLocation[uniI++],
+                     this.a[0], this.a[1], this.a[2]);
+        gl.uniform3f(uniLocation[uniI++],
+                     this.b[0], this.b[1], this.b[2]);
+        gl.uniform3f(uniLocation[uniI++],
+                     this.c[0], this.c[1], this.c[2]);
+        gl.uniform3f(uniLocation[uniI++],
+                     this.d[0], this.d[1], this.d[2]);
+        gl.uniform1i(uniLocation[uniI++], true);
+        return uniI;
     }
 }
 

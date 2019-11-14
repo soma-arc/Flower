@@ -212,6 +212,7 @@ export default class Scene {
                               'y': obj.y,
                               'id': obj.id,
                               'sockets': sockets };
+            obj.setJsonValue(jsonObj);
             json['nodes'].push(jsonObj);
         }
 
@@ -254,22 +255,66 @@ export default class Scene {
                 n = new CircleThreePointsNode(node.x, node.y);
             } else if (node.name === 'CircleMirror') {
                 n = new CircleMirrorNode(node.x, node.y);
+            } else if (node.name === 'OrbitSeed') {
+                n = new OrbitSeedNode(node.x, node.y);
             }
+            n.restoreValueFromJson(node);
             n.id = node.id;
 
             for (const socket of n.sockets) {
                 for (const socketData of node.sockets) {
-                    if (socket.isOutput === socketData.isOutput &&
-                        socket.name === socketData.name &&
-                        socket.edgeOn === socketData.edgeOn) {
+                    if (socketData.used === undefined &&
+                        socket.isOutput === socketData.isOutput &&
+                        socket.name === socketData.name) {
                         socket.id = socketData.id;
+                        socketData.used = true;
                         break;
                     }
                 }
             }
 
             this.nodes.push(n);
-            console.log(n);
+        }
+        console.log('nodes');
+        console.log(this.nodes);
+
+        for (const edge of json['edges']) {
+            const s1Id = edge.s1Id;
+            const s2Id = edge.s2Id;
+
+            let newEdge;
+            let s1Socket;
+            let s2Socket;
+            for (const node of this.nodes) {
+                for (const socket of node.sockets) {
+                    console.log('socket');
+                    console.log(socket)
+                    if (s1Id === socket.id) {
+                        s1Socket = socket;
+                        s1Socket.edgeOn = true;
+                    }
+                    if (s2Id === socket.id) {
+                        s2Socket = socket;
+                        s2Socket.edgeOn = true;
+                    }
+                }
+            }
+
+            if (edge.name === 'Float') {
+                newEdge = new FloatEdge(s1Socket, s2Socket);
+            } else if (edge.name === 'Point') {
+                newEdge = new PointEdge(s1Socket, s2Socket);
+            } else if (edge.name === 'Vec3') {
+                newEdge = new Vec3Edge(s1Socket, s2Socket);
+            } else if (edge.name === 'Line') {
+                newEdge = new LineEdge(s1Socket, s2Socket);
+            } else if (edge.name === 'Circle') {
+                newEdge = new CircleEdge(s1Socket, s2Socket);
+            }
+
+            newEdge.s1.edge = newEdge;
+            newEdge.s2.edge = newEdge;
+            this.edges.push(newEdge);
         }
         /*
         console.log(this.nodes);

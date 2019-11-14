@@ -46,6 +46,7 @@ export default class CanvasManager {
     loadSceneFromFile() {
         const reader = new FileReader();
         reader.addEventListener('load', () => {
+            this.scene.clearScene();
             this.scene.load(JSON.parse(reader.result));
             this.constructionCanvas.compileRenderShader();
             this.constructionCanvas.render();

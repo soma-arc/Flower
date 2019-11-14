@@ -8,6 +8,12 @@ uniform vec3 u_geometry; // [translateX, translateY, scele]
 uniform sampler2D u_imageTexture;
 uniform bool u_displayAxis;
 
+uniform vec3 u_colorPalettesA;
+uniform vec3 u_colorPalettesB;
+uniform vec3 u_colorPalettesC;
+uniform vec3 u_colorPalettesD;
+uniform bool u_useColorPalettes;
+
 //[x, y, r]
 {% for n in range(0, numPoint) %}
 uniform vec3 u_point{{ n }};
@@ -33,6 +39,10 @@ uniform vec4 u_circleMirror{{ n }};
 uniform vec4 u_orbitSeed{{ n }}; //[x, y, width, height]
 {% endfor %}
 
+vec3 getColorFromPalettes(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
+    return a + b * cos(6.28318 * (c * t + d));
+}
+
 vec3 hsv2rgb(float h, float s, float v){
     vec3 c = vec3(h, s, v);
     const vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -56,8 +66,21 @@ vec2 circleInvert(const vec2 pos, const vec4 circle){
     return (p * circle.w)/(d * d) + circle.xy;
 }
 
-vec3 computeColor(float loopNum) {
+vec3 computeColorHSV(float loopNum) {
     return hsv2rgb(0.01 + 0.05 * (loopNum -1.), 1., 1.);
+}
+
+vec3 computeColorWithPalettes(float loopNum, vec3 a, vec3 b, vec3 c, vec3 d) {
+    return getColorFromPalettes(0.05 * (loopNum - 1.0),
+                                a, b, c, d);
+}
+
+vec3 computeColor(float loopNum) {
+    return u_useColorPalettes ?
+        computeColorWithPalettes(loopNum,
+                                 u_colorPalettesA, u_colorPalettesB,
+                                 u_colorPalettesC, u_colorPalettesD) :
+        computeColorHSV(loopNum);
 }
 
 const int MAX_ITERATIONS = 50;
