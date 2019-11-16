@@ -287,8 +287,6 @@ export default class Scene {
             let s2Socket;
             for (const node of this.nodes) {
                 for (const socket of node.sockets) {
-                    console.log('socket');
-                    console.log(socket)
                     if (s1Id === socket.id) {
                         s1Socket = socket;
                         s1Socket.edgeOn = true;
@@ -312,6 +310,9 @@ export default class Scene {
                 newEdge = new CircleEdge(s1Socket, s2Socket);
             }
 
+            newEdge.s1 = s1Socket;
+            newEdge.s2 = s2Socket;
+           
             newEdge.s1.edge = newEdge;
             newEdge.s2.edge = newEdge;
             this.edges.push(newEdge);

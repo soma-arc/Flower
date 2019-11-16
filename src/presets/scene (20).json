@@ -1,0 +1,28 @@
+{
+    "name": "test2",
+    "nodes": [
+        {
+            "name": "OrbitSeed",
+            "x": 70,
+            "y": 171,
+            "id": "16e69c79bb9211",
+            "sockets": [
+                {
+                    "id": "16e69c79bba49",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e69c79bba231",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                }
+            ],
+            "posX": -20.1729,
+            "posY": -15.562
+        }
+    ],
+    "edges": []
+}

@@ -12,13 +12,12 @@
     </li>
     <li class="buttonLi">
       <button class="button" @click="load">Import</button>
-   </li>
+    </li>
     <li class="buttonLi"><button class="button" @click="saveImage">SaveImage</button></li>
     <li class="buttonLi">      
       <input type="checkbox" v-model="canvasManager.constructionCanvas.displayAxis"
              @change="changeOption"><font size="4">DisplayAxis</font>
     </li>
-  <!--   <li class="buttonLi"><button class="button" @click="clearScene">Clear</button></li> -->
   </ul>
 </header>
 </template>
@@ -66,7 +65,7 @@ header {
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
-    cursor: default
+    cursor: default;
 }
 
 .headerLeft {

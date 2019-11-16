@@ -12,6 +12,12 @@ const MENU_ITEM = ['Constant', 'Point', 'Vec3', 'LineTwoPoints',
                    'CircleMirror', 'OrbitSeed', 'SinWave', 'CircularMotion',
                    'ColorPalettes'];
 
+const PRESETS_CONTEXT = require.context('../presets', true, /.json$/);
+const PRESETS = [];
+for (const k of PRESETS_CONTEXT.keys()) {
+    PRESETS.push(PRESETS_CONTEXT(k));
+}
+
 export default class GraphCanvas2d extends Canvas {
     constructor(canvasId, scene, canvasManager) {
         super(canvasId);
@@ -35,6 +41,7 @@ export default class GraphCanvas2d extends Canvas {
                             button: -1 };
 
         this.isRenderingMenu = false;
+
     }
 
     init () {
@@ -110,7 +117,7 @@ export default class GraphCanvas2d extends Canvas {
         if (event.button === Canvas.MOUSE_BUTTON_LEFT) {
             if (this.isRenderingMenu) {
                 const [ox, oy] = this.computeOriginalCoord(event.clientX, event.clientY)
-                this.selectAddingNodeFromList(ox, oy);
+                this.selectNodeAndSceneFromList(ox, oy);
                 return;
             }
 
@@ -273,19 +280,29 @@ export default class GraphCanvas2d extends Canvas {
             ctx.rect(5, 5 + y * 30, 150, 30);
             ctx.fill();
             ctx.stroke();
-        }
 
-        for (let y = 0; y < MENU_ITEM.length; y++) {
             ctx.font = "18px 'Times New Roman'";
             ctx.fillStyle = 'black';
             ctx.fillText(MENU_ITEM[y], 10, 30 + y * 30);
         }
+
+        for (let y = 0; y < PRESETS.length; y++) {
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'LightBlue';
+            ctx.beginPath();
+            ctx.rect(155, 5 + y * 30, 150, 30);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.font = "18px 'Times New Roman'";
+            ctx.fillStyle = 'black';
+            ctx.fillText(PRESETS[y]['name'], 160, 30 + y * 30);
+        }
     }
 
-    selectAddingNodeFromList(x, y) {
+    selectNodeAndSceneFromList(x, y) {
         let index = -1;
         for (let yy = 0; yy < MENU_ITEM.length; yy++) {
-            //ctx.rect(5, 5 + y * 30, 150, 30);
             if (5 < x && x < 5 + 150 &&
                 5 + yy * 30 < y && y < 5 + yy * 30 + 30) {
                 index = yy;
@@ -295,11 +312,29 @@ export default class GraphCanvas2d extends Canvas {
 
         if (index === -1) {
             this.addingNode = undefined;
-        }
 
-        this.addingNode = MENU_ITEM[index];
-        console.log(this.addingNode);
-        this.isRenderingMenu = false;
+            let sceneIndex = -1;
+            for (let yy = 0; yy < PRESETS.length; yy++) {
+                if (155 < x && x < 155 + 150 &&
+                    5 + yy * 30 < y && y < 5 + yy * 30 + 30) {
+                    sceneIndex = yy;
+                    break;
+                }
+            }
+
+            if (sceneIndex !== -1) {
+                const preset = PRESETS[sceneIndex];
+                this.scene.clearScene();
+                this.scene.load(preset);
+                this.canvasManager.constructionCanvas.compileRenderShader();
+                this.canvasManager.constructionCanvas.render();
+                this.canvasManager.graphCanvas.render()
+                this.isRenderingMenu = false;
+            }
+        } else {
+            this.addingNode = MENU_ITEM[index];
+            this.isRenderingMenu = false;
+        }
     }
 
     addNode(x, y) {

@@ -1,0 +1,141 @@
+{
+    "name": "test1",
+    "nodes": [
+        {
+            "name": "Point",
+            "x": 22,
+            "y": 57,
+            "id": "16e697f270b11b",
+            "sockets": [
+                {
+                    "id": "16e697f270c36b",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f270c1ee",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f270d1e8",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": -9.3511,
+            "posY": 1.4596
+        },
+        {
+            "name": "Point",
+            "x": 29,
+            "y": 198,
+            "id": "16e697f28661dd",
+            "sockets": [
+                {
+                    "id": "16e697f28663a7",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f28667e",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f28661a5",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": 6.6586,
+            "posY": 0.5828
+        },
+        {
+            "name": "Point",
+            "x": 43,
+            "y": 312,
+            "id": "16e697f2af065",
+            "sockets": [
+                {
+                    "id": "16e697f2af02b6",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f2af0226",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e697f2af01c3",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": -5.2246,
+            "posY": 4.4059
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 271,
+            "y": 220,
+            "id": "16e697f3b021af",
+            "sockets": [
+                {
+                    "id": "16e697f3b0237",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e697f3b0210d",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e697f3b02111",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e697f3b023de",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "id": "16e697f448250",
+            "name": "Point",
+            "s1Id": "16e697f270d1e8",
+            "s2Id": "16e697f3b02111"
+        },
+        {
+            "id": "16e697f4bf5150",
+            "name": "Point",
+            "s1Id": "16e697f28661a5",
+            "s2Id": "16e697f3b0210d"
+        },
+        {
+            "id": "16e697f539b16",
+            "name": "Point",
+            "s1Id": "16e697f2af01c3",
+            "s2Id": "16e697f3b0237"
+        }
+    ]
+}
