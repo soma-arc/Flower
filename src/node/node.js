@@ -782,6 +782,14 @@ export class LineMirrorNode extends Node {
                      -n[1], n[0]); // [dirX, dirY, normal.x, normal.y]
         return uniI;
     }
+
+    setJsonValue(jsonObj) {
+        jsonObj.reverse = this.reverse[0];
+    }
+
+    restoreValueFromJson(jsonObj) {
+        this.reverse[0] = jsonObj.reverse;
+    }
 }
 
 export class CircleThreePointsNode extends Node {
