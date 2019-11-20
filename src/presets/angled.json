@@ -1,0 +1,221 @@
+{
+    "name": "Angled",
+    "nodes": [
+        {
+            "name": "Point",
+            "x": -91,
+            "y": -19,
+            "id": "16e82969b8e2ba",
+            "sockets": [
+                {
+                    "id": "16e82969b8e1c6",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e82969b8f19d",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e82969b8f80",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": 10.5576,
+            "posY": -11.4274
+        },
+        {
+            "name": "Point",
+            "x": -89,
+            "y": 248,
+            "id": "16e8296a45030d",
+            "sockets": [
+                {
+                    "id": "16e8296a4503ca",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8296a450202",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8296a450328",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": -3.9362,
+            "posY": 0.3744
+        },
+        {
+            "name": "Point",
+            "x": -89,
+            "y": 119,
+            "id": "16e829c49fa2a2",
+            "sockets": [
+                {
+                    "id": "16e829c49fa2b7",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e829c49fa6a",
+                    "name": "Float",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e829c49fa350",
+                    "name": "Point",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ],
+            "posX": 13.6447,
+            "posY": -1.3171
+        },
+        {
+            "name": "LineTwoPoints",
+            "x": 102,
+            "y": -12,
+            "id": "16e8296bd2d30a",
+            "sockets": [
+                {
+                    "id": "16e8296bd2d1b1",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e8296bd2d180",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e8296bd2d3e1",
+                    "name": "Line",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ]
+        },
+        {
+            "name": "LineTwoPoints",
+            "x": 108,
+            "y": 132,
+            "id": "16e8296bf412ba",
+            "sockets": [
+                {
+                    "id": "16e8296bf412ea",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e8296bf413cd",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e8296bf415",
+                    "name": "Line",
+                    "isOutput": true,
+                    "edgeOn": true
+                }
+            ]
+        },
+        {
+            "name": "LineMirror",
+            "x": 270,
+            "y": -16,
+            "id": "16e829f551b7",
+            "sockets": [
+                {
+                    "id": "16e829f551b158",
+                    "name": "Line",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e829f551bab",
+                    "name": "Line",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ],
+            "reverse": false
+        },
+        {
+            "name": "LineMirror",
+            "x": 264,
+            "y": 132,
+            "id": "16e829f5ba934e",
+            "sockets": [
+                {
+                    "id": "16e829f5ba930c",
+                    "name": "Line",
+                    "isOutput": false,
+                    "edgeOn": true
+                },
+                {
+                    "id": "16e829f5ba91bc",
+                    "name": "Line",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ],
+            "reverse": true
+        }
+    ],
+    "edges": [
+        {
+            "id": "16e829eeecb12d",
+            "name": "Point",
+            "s1Id": "16e82969b8f80",
+            "s2Id": "16e8296bd2d180"
+        },
+        {
+            "id": "16e829eeecb2b",
+            "name": "Point",
+            "s1Id": "16e8296a450328",
+            "s2Id": "16e8296bd2d1b1"
+        },
+        {
+            "id": "16e829eeecb35e",
+            "name": "Point",
+            "s1Id": "16e8296a450328",
+            "s2Id": "16e8296bf412ea"
+        },
+        {
+            "id": "16e829eeecb1d6",
+            "name": "Point",
+            "s1Id": "16e829c49fa350",
+            "s2Id": "16e8296bf413cd"
+        },
+        {
+            "id": "16e829f64ac333",
+            "name": "Line",
+            "s1Id": "16e8296bd2d3e1",
+            "s2Id": "16e829f551b158"
+        },
+        {
+            "id": "16e829f756af0",
+            "name": "Line",
+            "s1Id": "16e8296bf415",
+            "s2Id": "16e829f5ba930c"
+        }
+    ]
+}
