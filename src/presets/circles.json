@@ -23,11 +23,11 @@
                     "id": "16e8d3c85f0182",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -7.2229,
-            "posY": 0.6373
+            "posX": -6.181,
+            "posY": 8.2727
         },
         {
             "name": "Point",
@@ -51,11 +51,11 @@
                     "id": "16e8d3c89a91de",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -16.7651,
-            "posY": -4.146
+            "posX": -21.6315,
+            "posY": 1.2413
         },
         {
             "name": "Point",
@@ -79,11 +79,11 @@
                     "id": "16e8d3c8dc1193",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -18.2355,
-            "posY": 6.8663
+            "posX": -21.6625,
+            "posY": 11.2529
         },
         {
             "name": "Point",
@@ -107,11 +107,11 @@
                     "id": "16e8d3c93b13bf",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -11.3258,
-            "posY": -18.4317
+            "posX": -15.7809,
+            "posY": -2.4617
         },
         {
             "name": "Point",
@@ -135,11 +135,11 @@
                     "id": "16e8d3c9710299",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -2.558,
-            "posY": -13.0647
+            "posX": -13.9941,
+            "posY": -25.9538
         },
         {
             "name": "Point",
@@ -163,11 +163,11 @@
                     "id": "16e8d3c9bce2a9",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -11.2369,
-            "posY": -3.9012
+            "posX": -4.5712,
+            "posY": -21.4475
         },
         {
             "name": "Point",
@@ -191,11 +191,11 @@
                     "id": "16e8d3d72312c9",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": 2.3006,
-            "posY": -15.605
+            "posX": -1.6575,
+            "posY": -17.0443
         },
         {
             "name": "Point",
@@ -219,11 +219,11 @@
                     "id": "16e8d3d770a22f",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -0.1111,
-            "posY": -14.0622
+            "posX": -1.6703,
+            "posY": -10.9436
         },
         {
             "name": "Point",
@@ -247,11 +247,11 @@
                     "id": "16e8d3d7aa9367",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": 6.7246,
-            "posY": -0.7365
+            "posX": 11.591,
+            "posY": 1.2855
         },
         {
             "name": "Point",
@@ -275,11 +275,11 @@
                     "id": "16e8d3d7db9346",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": 6.6823,
-            "posY": 3.2157
+            "posX": 8.67,
+            "posY": 0.9539
         },
         {
             "name": "Point",
@@ -303,11 +303,11 @@
                     "id": "16e8d3d810a58",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": 0.9946,
-            "posY": -1.4756
+            "posX": 1.2688,
+            "posY": 1.0467
         },
         {
             "name": "Point",
@@ -331,11 +331,11 @@
                     "id": "16e8d3d8524354",
                     "name": "Point",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ],
-            "posX": -6.6822,
-            "posY": 2.0765
+            "posX": -5.9145,
+            "posY": 8.8209
         },
         {
             "name": "CircleThreePoints",
@@ -347,25 +347,25 @@
                     "id": "16e8d3cab1eb7",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3cab1e3e3",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3cab1e32c",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3cab1e178",
                     "name": "Circle",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ]
         },
@@ -379,25 +379,25 @@
                     "id": "16e8d3ccba5197",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3ccba510a",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3ccba565",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3ccba5238",
                     "name": "Circle",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ]
         },
@@ -411,25 +411,25 @@
                     "id": "16e8d3d932834",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d932830",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d93281db",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d9328247",
                     "name": "Circle",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ]
         },
@@ -443,25 +443,25 @@
                     "id": "16e8d3d97fb2f0",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d97fb115",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d97fb192",
                     "name": "Point",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d97fb130",
                     "name": "Circle",
                     "isOutput": true,
-                    "edgeOn": true
+                    "edgeOn": false
                 }
             ]
         },
@@ -475,7 +475,7 @@
                     "id": "16e8d3cfecd3cf",
                     "name": "Circle",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3cfecd18b",
@@ -495,7 +495,7 @@
                     "id": "16e8d3d0d189",
                     "name": "Circle",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3d0d1858",
@@ -515,7 +515,7 @@
                     "id": "16e8d3dd6d112",
                     "name": "Circle",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3dd6d13a4",
@@ -535,7 +535,471 @@
                     "id": "16e8d3de17d9a",
                     "name": "Circle",
                     "isOutput": false,
-                    "edgeOn": true
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3de17d5f",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 61,
+            "y": 93,
+            "id": "16e8d3cab1e2da",
+            "sockets": [
+                {
+                    "id": "16e8d3cab1eb7",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e3e3",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e32c",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e178",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 61,
+            "y": 93,
+            "id": "16e8d3cab1e2da",
+            "sockets": [
+                {
+                    "id": "16e8d3cab1eb7",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e3e3",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e32c",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e178",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 61,
+            "y": 93,
+            "id": "16e8d3cab1e2da",
+            "sockets": [
+                {
+                    "id": "16e8d3cab1eb7",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e3e3",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e32c",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cab1e178",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 54,
+            "y": 455,
+            "id": "16e8d3ccba5370",
+            "sockets": [
+                {
+                    "id": "16e8d3ccba5197",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba510a",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba565",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba5238",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 54,
+            "y": 455,
+            "id": "16e8d3ccba5370",
+            "sockets": [
+                {
+                    "id": "16e8d3ccba5197",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba510a",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba565",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba5238",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 54,
+            "y": 455,
+            "id": "16e8d3ccba5370",
+            "sockets": [
+                {
+                    "id": "16e8d3ccba5197",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba510a",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba565",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3ccba5238",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 499.99710079951916,
+            "y": 103.55445117630481,
+            "id": "16e8d3d9328248",
+            "sockets": [
+                {
+                    "id": "16e8d3d932834",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d932830",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d93281db",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d9328247",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 499.99710079951916,
+            "y": 103.55445117630481,
+            "id": "16e8d3d9328248",
+            "sockets": [
+                {
+                    "id": "16e8d3d932834",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d932830",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d93281db",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d9328247",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 499.99710079951916,
+            "y": 103.55445117630481,
+            "id": "16e8d3d9328248",
+            "sockets": [
+                {
+                    "id": "16e8d3d932834",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d932830",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d93281db",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d9328247",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 502.49710079951916,
+            "y": 482.3044511763048,
+            "id": "16e8d3d97fb31",
+            "sockets": [
+                {
+                    "id": "16e8d3d97fb2f0",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb115",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb192",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb130",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 502.49710079951916,
+            "y": 482.3044511763048,
+            "id": "16e8d3d97fb31",
+            "sockets": [
+                {
+                    "id": "16e8d3d97fb2f0",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb115",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb192",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb130",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleThreePoints",
+            "x": 502.49710079951916,
+            "y": 482.3044511763048,
+            "id": "16e8d3d97fb31",
+            "sockets": [
+                {
+                    "id": "16e8d3d97fb2f0",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb115",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb192",
+                    "name": "Point",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d97fb130",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleMirror",
+            "x": 208,
+            "y": 90,
+            "id": "16e8d3cfecd141",
+            "sockets": [
+                {
+                    "id": "16e8d3cfecd3cf",
+                    "name": "Circle",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3cfecd18b",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleMirror",
+            "x": 204,
+            "y": 456,
+            "id": "16e8d3d0d183c5",
+            "sockets": [
+                {
+                    "id": "16e8d3d0d189",
+                    "name": "Circle",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3d0d1858",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleMirror",
+            "x": 646.2471007995191,
+            "y": 104.80445117630481,
+            "id": "16e8d3dd6d12fb",
+            "sockets": [
+                {
+                    "id": "16e8d3dd6d112",
+                    "name": "Circle",
+                    "isOutput": false,
+                    "edgeOn": false
+                },
+                {
+                    "id": "16e8d3dd6d13a4",
+                    "name": "Circle",
+                    "isOutput": true,
+                    "edgeOn": false
+                }
+            ]
+        },
+        {
+            "name": "CircleMirror",
+            "x": 646.2471007995191,
+            "y": 483.5544511763048,
+            "id": "16e8d3de17d157",
+            "sockets": [
+                {
+                    "id": "16e8d3de17d9a",
+                    "name": "Circle",
+                    "isOutput": false,
+                    "edgeOn": false
                 },
                 {
                     "id": "16e8d3de17d5f",
@@ -548,97 +1012,97 @@
     ],
     "edges": [
         {
-            "id": "16e8d3cb5a01e5",
+            "id": "16e8dbde3cc3a3",
             "name": "Point",
             "s1Id": "16e8d3c85f0182",
             "s2Id": "16e8d3cab1e32c"
         },
         {
-            "id": "16e8d3cbbc213e",
+            "id": "16e8dbde3cd23",
             "name": "Point",
             "s1Id": "16e8d3c89a91de",
             "s2Id": "16e8d3cab1e3e3"
         },
         {
-            "id": "16e8d3cc2b466",
+            "id": "16e8dbde3cd2db",
             "name": "Point",
             "s1Id": "16e8d3c8dc1193",
             "s2Id": "16e8d3cab1eb7"
         },
         {
-            "id": "16e8d3cd58b20f",
+            "id": "16e8dbde3cd1b4",
             "name": "Point",
             "s1Id": "16e8d3c93b13bf",
             "s2Id": "16e8d3ccba565"
         },
         {
-            "id": "16e8d3cdb0a2cb",
+            "id": "16e8dbde3cd33f",
             "name": "Point",
             "s1Id": "16e8d3c9710299",
             "s2Id": "16e8d3ccba510a"
         },
         {
-            "id": "16e8d3ce26e94",
+            "id": "16e8dbde3cd134",
             "name": "Point",
             "s1Id": "16e8d3c9bce2a9",
             "s2Id": "16e8d3ccba5197"
         },
         {
-            "id": "16e8d3d088026f",
+            "id": "16e8dbde3cddf",
             "name": "Circle",
             "s1Id": "16e8d3cab1e178",
             "s2Id": "16e8d3cfecd3cf"
         },
         {
-            "id": "16e8d3d141821d",
+            "id": "16e8dbde3ce19f",
             "name": "Circle",
             "s1Id": "16e8d3ccba5238",
             "s2Id": "16e8d3d0d189"
         },
         {
-            "id": "16e8d3d9fba105",
+            "id": "16e8dbde3ce202",
             "name": "Point",
             "s1Id": "16e8d3d7db9346",
             "s2Id": "16e8d3d97fb192"
         },
         {
-            "id": "16e8d3da6d92f6",
+            "id": "16e8dbde3ce29f",
             "name": "Point",
             "s1Id": "16e8d3d810a58",
             "s2Id": "16e8d3d97fb115"
         },
         {
-            "id": "16e8d3daea01d9",
+            "id": "16e8dbde3ce218",
             "name": "Point",
             "s1Id": "16e8d3d8524354",
             "s2Id": "16e8d3d97fb2f0"
         },
         {
-            "id": "16e8d3db8b53a0",
+            "id": "16e8dbde3ce166",
             "name": "Point",
             "s1Id": "16e8d3d7aa9367",
             "s2Id": "16e8d3d932834"
         },
         {
-            "id": "16e8d3dbe8d1e1",
+            "id": "16e8dbde3ce158",
             "name": "Point",
             "s1Id": "16e8d3d770a22f",
             "s2Id": "16e8d3d932830"
         },
         {
-            "id": "16e8d3dc70415d",
+            "id": "16e8dbde3ce254",
             "name": "Point",
             "s1Id": "16e8d3d93281db",
             "s2Id": "16e8d3d72312c9"
         },
         {
-            "id": "16e8d3dddd31e6",
+            "id": "16e8dbde3ce38",
             "name": "Circle",
             "s1Id": "16e8d3d9328247",
             "s2Id": "16e8d3dd6d112"
         },
         {
-            "id": "16e8d3de74d38f",
+            "id": "16e8dbde3cfc5",
             "name": "Circle",
             "s1Id": "16e8d3d97fb130",
             "s2Id": "16e8d3de17d9a"
