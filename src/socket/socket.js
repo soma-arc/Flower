@@ -95,7 +95,7 @@ export class Vec3Socket extends Socket {
     constructor(parent, x, y, isOutput) {
         super(parent, x, y, isOutput);
         this.name = 'Vec3';
-        this.socketColor = 'rgb(255, 0, 255)';
+        this.socketColor = 'LightGreen';
         this.valueX = 0;
         this.valueY = 0;
         this.valueZ = 0;
