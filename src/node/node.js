@@ -552,9 +552,9 @@ export class PointNode extends Node {
         ctx.fillStyle = 'black';
         const xx = this.x + 12;
         const yy = this.y + 36;
-        ctx.fillText(`${this.posX}`, xx, yy);
+        ctx.fillText(`${Math.round(this.posX * 10000) / 10000}`, xx, yy);
         const yy2 = yy + 18;
-        ctx.fillText(`${this.posY}`, xx, yy2);
+        ctx.fillText(`${Math.round(this.posY * 10000) / 10000}`, xx, yy2);
         if (this.isShowingOption && this.selected) {
             this.renderOption(ctx);
         }
