@@ -10,6 +10,7 @@ However, there is no mathematical software using flow-based programming environm
 
 So, I'm developing geometrical software called Flower to generate kaleidoscope patterns based on flow-based programming. The link of the Flower is as follows.
 [https://soma-arc.net/Flower](https://soma-arc.net/Flower)
+There is an introductory video [https://youtu.be/FWp-eF5gz5o](https://youtu.be/FWp-eF5gz5o)
 
 ## Reference
 
