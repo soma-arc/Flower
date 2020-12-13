@@ -21,7 +21,7 @@ There is an introductory video [https://youtu.be/FWp-eF5gz5o](https://youtu.be/F
         Volume 12097, Springer, 2020, pp. 426--431.
 
 ## Usage
-There is a [introductory video](https://www.youtube.com/watch?v=FWp-eF5gz5o) on YouTube.
+There is an [introductory video](https://www.youtube.com/watch?v=FWp-eF5gz5o) on YouTube.
 
 ## Author
 - soma_arc (Kento Nakamura)
